@@ -1,11 +1,121 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="QR Stock, sistema de inventario y trazabilidad con códigos QR.">
+    <title>QR Stock · Inventario inteligente</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
 </head>
 <body>
-Papoi
+<svg class="svg-sprite" aria-hidden="true">
+    <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="icon-box" viewBox="0 0 24 24"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="m3 8 9 5 9-5v8l-9 5-9-5V8Z"/><path d="M12 13v8"/></symbol>
+    <symbol id="icon-orders" viewBox="0 0 24 24"><path d="M6 3h12l2 4H4l2-4Z"/><path d="M4 7h16v14H4z"/><path d="M9 11h6"/></symbol>
+    <symbol id="icon-inventory" viewBox="0 0 24 24"><path d="M4 6h16v14H4z"/><path d="M8 3h8v3H8z"/><path d="M8 11h8M8 15h5"/></symbol>
+    <symbol id="icon-qr" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3zM18 13h3M13 19v2"/></symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 10 3 3 3-3"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l4-1 11-11-4-4L4 15v5Z"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M4 20h16"/></symbol>
+    <symbol id="icon-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M12 16V4M8 8l4-4 4 4M4 20h16"/></symbol>
+    <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5M12 18h.01"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-scan" viewBox="0 0 24 24"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M8 8h8v8H8z"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M10 4H4v16h6M14 8l4 4-4 4M18 12H9"/></symbol>
+</svg>
+
+<div class="app-shell">
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <span class="brand-mark"><svg><use href="#icon-qr"></use></svg></span>
+            <span class="brand-copy"><strong>QR Stock</strong><small>Inventario inteligente</small></span>
+        </div>
+
+        <nav class="main-nav" aria-label="Navegación principal">
+            <p class="nav-label">GESTIÓN</p>
+            <button class="nav-item active" type="button" data-page="dashboard">
+                <svg><use href="#icon-grid"></use></svg><span>Inicio</span>
+            </button>
+            <button class="nav-item" type="button" data-page="products">
+                <svg><use href="#icon-box"></use></svg><span>Productos</span><span class="nav-count" id="products-count">0</span>
+            </button>
+            <button class="nav-item" type="button" data-page="orders">
+                <svg><use href="#icon-orders"></use></svg><span>Pedidos</span><span class="nav-dot" id="orders-dot"></span>
+            </button>
+            <button class="nav-item" type="button" data-page="inventory">
+                <svg><use href="#icon-inventory"></use></svg><span>Inventario</span>
+            </button>
+
+            <p class="nav-label">HERRAMIENTAS</p>
+            <button class="nav-item" type="button" data-page="qr">
+                <svg><use href="#icon-qr"></use></svg><span>Códigos QR</span>
+            </button>
+            <button class="nav-item" type="button" data-page="reports">
+                <svg><use href="#icon-chart"></use></svg><span>Reportes</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-pulse"></span>
+                <div><strong>Sistema operativo</strong><small>API local conectada</small></div>
+            </div>
+            <p>QR Stock · v1.0</p>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <button class="icon-button mobile-menu" id="mobile-menu" type="button" aria-label="Abrir menú">
+                <svg><use href="#icon-menu"></use></svg>
+            </button>
+            <form class="global-search" id="global-search" role="search">
+                <svg><use href="#icon-search"></use></svg>
+                <input type="search" id="global-search-input" placeholder="Buscar producto por nombre o código…" autocomplete="off">
+                <kbd>Ctrl K</kbd>
+            </form>
+            <div class="topbar-actions">
+                <button class="icon-button notification-button" id="notification-button" type="button" aria-label="Alertas de inventario">
+                    <svg><use href="#icon-bell"></use></svg><span class="notification-badge" id="notification-badge">0</span>
+                </button>
+                <div class="profile-wrap">
+                    <button class="profile-button" id="profile-button" type="button" aria-expanded="false">
+                        <span class="avatar">RB</span>
+                        <span class="profile-copy"><strong>Rodrigo Bravo</strong><small>Administrador</small></span>
+                        <svg><use href="#icon-chevron"></use></svg>
+                    </button>
+                    <div class="profile-menu" id="profile-menu">
+                        <div><strong>Rodrigo Bravo</strong><small>Administrador del sistema</small></div>
+                        <button type="button" id="session-info"><svg><use href="#icon-check"></use></svg>Sesión local activa</button>
+                        <button type="button" id="logout-demo"><svg><use href="#icon-logout"></use></svg>Cerrar menú</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content" id="page-content" tabindex="-1">
+            <div class="page-loader">
+                <span class="loader-mark"><svg><use href="#icon-qr"></use></svg></span>
+                <p>Preparando tu inventario…</p>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal-layer" id="modal-layer" aria-hidden="true"></div>
+<div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+<script type="module" th:src="@{/js/app.js}" src="/js/app.js"></script>
 </body>
 </html>
