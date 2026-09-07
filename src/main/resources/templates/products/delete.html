@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Confirmar eliminación', 'productos', ~{::main})}">
+<main>
+    <section class="development-card panel delete-confirmation">
+        <span class="stage-badge">Confirmación</span>
+        <span class="development-number" aria-hidden="true">?</span>
+        <h2>¿Eliminar este producto?</h2>
+        <p>Se quitará <strong th:text="${product.name}">Producto</strong> (<span class="product-code" th:text="${product.code}">EQ-001</span>) de los datos temporales del avance.</p>
+        <div class="button-row">
+            <a class="button button--ghost" th:href="@{/productos/{id}(id=${product.id})}">Cancelar</a>
+            <form method="post" th:action="@{/productos/{id}/eliminar(id=${product.id})}"><button class="button button--danger" type="submit">Sí, eliminar</button></form>
+        </div>
+    </section>
+</main>
+</html>

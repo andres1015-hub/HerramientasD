@@ -1,0 +1,4 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(${moduleTitle}, ${activePage}, ~{::main})}">
+<main><section class="development-card panel"><span class="stage-badge">En desarrollo</span><span class="development-number" aria-hidden="true">02</span><h2 th:text="${moduleTitle}">Módulo</h2><p th:text="${moduleMessage}">Este módulo estará disponible más adelante.</p><a class="button button--primary" th:href="@{/}" href="/">Volver al inicio</a></section></main>
+</html>

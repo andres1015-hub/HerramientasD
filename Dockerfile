@@ -1,24 +1,18 @@
-# 1. Etapa de compilación (Build)
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /workspace
 
-# Copiar archivos de dependencias para aprovechar la caché de Docker
-COPY pom.xml .
-RUN mvn dependency:go-offline
+COPY pom.xml ./
+RUN mvn -B -ntp dependency:go-offline
 
-# Copiar el código fuente y compilar
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn -B -ntp clean package
 
-# 2. Etapa de ejecución (Runtime)
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copiar solo el JAR generado en la etapa anterior
-COPY --from=build /app/target/*.jar app.jar
+RUN addgroup -S spring && adduser -S spring -G spring
+COPY --from=build --chown=spring:spring /workspace/target/app.jar ./app.jar
 
-# Exponer el puerto por defecto de Spring Boot
+USER spring
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

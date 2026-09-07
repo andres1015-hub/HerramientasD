@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Inventario', 'inventario', ~{::main})}">
+<main>
+    <section class="page-intro"><div><span class="section-label">Consulta de existencias</span><h2>Estado del inventario</h2><p>Vista básica de stock actual y niveles mínimos definidos en el catálogo.</p></div><span class="button button--disabled" aria-disabled="true">Movimientos · Próxima etapa</span></section>
+    <div class="notice"><strong>Alcance actual:</strong> las entradas, salidas y el historial de movimientos se incorporarán en la siguiente entrega.</div>
+    <section class="panel"><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Código</th><th class="number-cell">Stock</th><th class="number-cell">Mínimo</th><th>Nivel</th><th>Estado</th></tr></thead><tbody>
+    <tr th:each="product : ${products}"><td><strong th:text="${product.name}">Producto</strong></td><td><a class="product-code" th:href="@{/productos/{id}(id=${product.id})}" th:text="${product.code}">EQ-001</a></td><td class="number-cell" th:text="${product.stock}">10</td><td class="number-cell muted" th:text="${product.minimumStock}">2</td><td><meter class="stock-meter" min="0" th:max="${product.minimumStock * 3 + 1}" th:value="${product.stock}" th:classappend="${product.lowStock} ? ' stock-meter--low' : ''">Stock</meter></td><td><span class="status" th:classappend="${product.lowStock} ? ' status--warning' : ' status--ok'" th:text="${product.stockLabel}">Disponible</span></td></tr>
+    </tbody></table></div></section>
+</main>
+</html>

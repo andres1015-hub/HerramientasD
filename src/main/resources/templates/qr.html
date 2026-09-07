@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Códigos QR', 'qr', ~{::main})}">
+<main>
+    <section class="page-intro"><div><span class="section-label">Identificación de productos</span><h2>Generador de etiquetas QR</h2><p>Selecciona un producto; Spring Boot genera la imagen PNG en el servidor.</p></div></section>
+    <section class="qr-layout">
+        <article class="panel qr-selector"><form method="get" th:action="@{/qr}" action="/qr"><div class="field"><label for="productoId">Producto del catálogo</label><select id="productoId" name="productoId" required><option value="">Selecciona un producto</option><option th:each="product : ${products}" th:value="${product.id}" th:text="${product.code + ' · ' + product.name}" th:selected="${selectedProduct != null and selectedProduct.id == product.id}">Producto</option></select></div><button class="button button--primary" type="submit">Generar código QR</button></form><div class="notice notice--compact"><strong>Próxima etapa:</strong> lectura y validación del código con cámara.</div></article>
+        <article class="panel qr-result" th:if="${selectedProduct != null}"><div class="inventory-label inventory-label--center"><span>ETIQUETA DE PRODUCTO</span><strong th:text="${selectedProduct.code}">EQ-001</strong></div><img class="qr-image" th:src="@{/qr/productos/{id}(id=${selectedProduct.id})}" th:alt="${'Código QR de ' + selectedProduct.name}"><h3 th:text="${selectedProduct.name}">Producto</h3><p th:text="${selectedProduct.category + ' · ' + selectedProduct.stock + ' unidades'}">Categoría · 10 unidades</p><a class="button button--secondary" th:href="@{/qr/productos/{id}(id=${selectedProduct.id},download=true)}">Descargar PNG</a></article>
+        <article class="panel empty-state qr-result" th:if="${selectedProduct == null}"><span class="empty-mark" aria-hidden="true">QR</span><h3>Etiqueta pendiente</h3><p>Elige una referencia para visualizar su código.</p></article>
+    </section>
+</main>
+</html>

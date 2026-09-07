@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Pedidos', 'pedidos', ~{::main})}">
+<main>
+    <section class="page-intro"><div><span class="section-label">Módulo en desarrollo</span><h2>Pedidos</h2><p>La tabla demuestra la estructura prevista; todavía no permite registrar ni actualizar pedidos.</p></div><span class="stage-badge">Siguiente etapa</span></section>
+    <div class="notice"><strong>Datos demostrativos:</strong> estos pedidos no se guardan ni afectan el inventario.</div>
+    <section class="panel"><div class="table-wrap"><table><thead><tr><th>Código</th><th>Solicitante</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
+    <tr th:each="order : ${orders}"><td><span class="product-code" th:text="${order.code}">PED-001</span></td><td th:text="${order.customer}">Almacén</td><td class="muted" th:text="${#temporals.format(order.date, 'dd/MM/yyyy')}">01/01/2026</td><td><span class="status status--neutral" th:text="${order.status}">Registrado</span></td></tr>
+    </tbody></table></div></section>
+</main>
+</html>

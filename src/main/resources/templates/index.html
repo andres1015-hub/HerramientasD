@@ -1,11 +1,39 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-Papoi
-</body>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Inicio', 'inicio', ~{::main})}">
+<main>
+    <section class="page-intro page-intro--dashboard">
+        <div><span class="section-label">Control inicial del almacén</span><h2>Sistema de inventarios QR</h2><p>Hola, Rodrigo. Este avance permite administrar el catálogo y generar etiquetas QR desde Spring Boot.</p></div>
+        <a class="button button--primary" th:href="@{/productos/nuevo}" href="/productos/nuevo">Agregar producto</a>
+    </section>
+
+    <section class="metric-grid" aria-label="Resumen del inventario">
+        <article class="metric-card metric-card--primary"><span>Productos registrados</span><strong th:text="${dashboard.totalProducts}">8</strong><small>Referencias en el catálogo</small></article>
+        <article class="metric-card"><span>Stock disponible</span><strong th:text="${dashboard.totalStock}">140</strong><small>Unidades registradas</small></article>
+        <article class="metric-card"><span>Productos con stock bajo</span><strong th:text="${dashboard.lowStockProducts}">3</strong><small>Requieren revisión</small></article>
+    </section>
+
+    <section class="progress-strip" aria-label="Estado del avance">
+        <div><span class="progress-index">01</span><strong>Catálogo</strong><small>CRUD funcional</small></div>
+        <div><span class="progress-index">02</span><strong>Etiquetas QR</strong><small>Generación básica</small></div>
+        <div class="progress-strip--pending"><span class="progress-index">03</span><strong>Persistencia</strong><small>Siguiente etapa</small></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><span class="section-label">Vista rápida</span><h2>Últimos productos</h2></div><a class="text-link" th:href="@{/productos}" href="/productos">Ver catálogo completo</a></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th class="number-cell">Stock</th><th>Estado</th></tr></thead>
+                <tbody>
+                <tr th:each="product : ${dashboard.recentProducts}">
+                    <td><a class="product-code" th:href="@{/productos/{id}(id=${product.id})}" th:text="${product.code}">EQ-001</a></td>
+                    <td th:text="${product.name}">Escáner QR portátil</td>
+                    <td class="muted" th:text="${product.category}">Equipos</td>
+                    <td class="number-cell" th:text="${product.stock}">18</td>
+                    <td><span class="status" th:classappend="${product.lowStock} ? ' status--warning' : ' status--ok'" th:text="${product.stockLabel}">Disponible</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 </html>
