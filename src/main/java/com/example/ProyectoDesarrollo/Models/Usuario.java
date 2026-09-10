@@ -2,6 +2,9 @@ package com.example.ProyectoDesarrollo.Models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="Usuarios")
 public class Usuario {
@@ -19,16 +22,20 @@ public class Usuario {
     private int DNI;
     @Column(name = "password",length = 30, nullable = false)
     private String password;
+    @OneToMany(mappedBy = "usuario")
+    private List<Paquete>paquete=new ArrayList<>();
 
     public Usuario() {
     }
 
-    public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password) {
+    public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password,
+                   List<Paquete> usario) {
         this.idUsuarios = idUsuarios;
         this.apelllido = apelllido;
         this.DNI = DNI;
         this.nombre = nombre;
         this.password = password;
+        this.paquete=paquete;
     }
 
     public long getIdUsuarios() {
@@ -69,5 +76,13 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Paquete> getDetalles() {
+        return paquete;
+    }
+
+    public void setDetalles(List<Paquete> detalles) {
+        this.paquete = paquete;
     }
 }
