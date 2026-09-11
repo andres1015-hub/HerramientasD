@@ -1,5 +1,9 @@
 HELP.md
 target/
+.maven-cache/
+.env
+.DS_Store
+*.log
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

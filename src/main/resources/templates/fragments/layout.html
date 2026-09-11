@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(pageTitle, activePage, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Avance académico de un sistema de inventario con códigos QR.">
+    <title th:text="${pageTitle + ' · Inventario QR'}">Inventario QR</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" th:href="@{/}" href="/">
+            <span class="brand-mark" aria-hidden="true">IQ</span>
+            <span class="brand-copy"><strong>Inventario QR</strong><small>Avance académico</small></span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegación principal">
+            <a class="nav-link" th:classappend="${activePage == 'inicio'} ? ' nav-link--active' : ''" th:href="@{/}" href="/"><span class="nav-mark" aria-hidden="true">IN</span><span>Inicio</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'productos'} ? ' nav-link--active' : ''" th:href="@{/productos}" href="/productos"><span class="nav-mark" aria-hidden="true">PR</span><span>Productos</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'pedidos'} ? ' nav-link--active' : ''" th:href="@{/pedidos}" href="/pedidos"><span class="nav-mark" aria-hidden="true">PE</span><span>Pedidos</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'inventario'} ? ' nav-link--active' : ''" th:href="@{/inventario}" href="/inventario"><span class="nav-mark" aria-hidden="true">ST</span><span>Inventario</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'qr'} ? ' nav-link--active' : ''" th:href="@{/qr}" href="/qr"><span class="nav-mark" aria-hidden="true">QR</span><span>Códigos QR</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'reportes'} ? ' nav-link--active' : ''" th:href="@{/reportes}" href="/reportes"><span class="nav-mark" aria-hidden="true">RE</span><span>Reportes</span></a>
+            <a class="nav-link" th:classappend="${activePage == 'usuarios'} ? ' nav-link--active' : ''" th:href="@{/usuarios}" href="/usuarios"><span class="nav-mark" aria-hidden="true">US</span><span>Usuarios</span></a>
+        </nav>
+
+        <div class="iteration-note">
+            <span class="iteration-dot" aria-hidden="true"></span>
+            <div><strong>Avance del equipo</strong><small>Catálogo con datos guardados</small></div>
+        </div>
+    </aside>
+
+    <section class="workspace">
+        <header class="topbar">
+            <div><p class="eyebrow">Sistema de gestión · Avance 1</p><h1 th:text="${pageTitle}">Inicio</h1></div>
+            <div class="user-chip" aria-label="Entorno académico sin autenticación">
+                <span class="user-avatar" aria-hidden="true">IQ</span>
+                <span><strong>Proyecto académico</strong><small>Acceso local</small></span>
+            </div>
+        </header>
+
+        <div id="main-content" class="content" tabindex="-1"><div th:replace="${content}"></div></div>
+        <footer class="footer">Inventario QR · Proyecto académico con Spring Boot 4 y Java 21</footer>
+    </section>
+</div>
+</body>
+</html>

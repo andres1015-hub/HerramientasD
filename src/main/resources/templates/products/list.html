@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Productos', 'productos', ~{::main})}">
+<main>
+    <section class="page-intro">
+        <div><span class="section-label">Módulo principal</span><h2>Catálogo de productos</h2><p>Consulta y actualiza los productos registrados en la base del equipo.</p></div>
+        <a class="button button--primary" th:href="@{/productos/nuevo}" href="/productos/nuevo">Agregar producto</a>
+    </section>
+    <div class="alert alert--success" role="status" th:if="${message}" th:text="${message}">Operación realizada.</div>
+    <section class="panel">
+        <form class="search-bar" method="get" th:action="@{/productos}" action="/productos">
+            <label for="product-search">Buscar en el catálogo</label>
+            <div class="search-row"><input id="product-search" name="q" type="search" th:value="${query}" placeholder="Código, nombre o categoría"><button class="button button--secondary" type="submit">Buscar</button><a class="text-link" th:if="${query != null and !query.isBlank()}" th:href="@{/productos}" href="/productos">Limpiar</a></div>
+        </form>
+        <div class="result-note" th:if="${query != null and !query.isBlank()}">Resultados para <strong th:text="${query}">consulta</strong>: <span th:text="${#lists.size(products)}">0</span></div>
+        <div class="empty-state" th:if="${#lists.isEmpty(products)}"><span class="empty-mark" aria-hidden="true">0</span><h3>No se encontraron productos</h3><p>Prueba otro término o registra una nueva referencia.</p></div>
+        <div class="table-wrap" th:unless="${#lists.isEmpty(products)}">
+            <table>
+                <thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th class="number-cell">Stock</th><th>Estado</th><th class="actions-cell">Acciones</th></tr></thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td><a class="product-code" th:href="@{/productos/{id}(id=${product.id})}" th:text="${product.code}">EQ-001</a></td>
+                    <td><strong th:text="${product.name}">Producto</strong><small class="table-subline" th:text="${product.description}">Descripción</small></td>
+                    <td class="muted" th:text="${product.category}">Categoría</td>
+                    <td class="number-cell"><strong th:text="${product.stock}">10</strong><small class="table-subline" th:text="${'Mín. ' + product.minimumStock}">Mín. 2</small></td>
+                    <td><span class="status" th:classappend="${product.lowStock} ? ' status--warning' : ' status--ok'" th:text="${product.stockLabel}">Disponible</span></td>
+                    <td class="actions-cell"><a th:href="@{/productos/{id}(id=${product.id})}">Ver</a><a th:href="@{/productos/{id}/editar(id=${product.id})}">Editar</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</html>

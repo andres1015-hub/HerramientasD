@@ -35,6 +35,7 @@ public class Paquete {
         this.idPaquete = idPaquete;
         this.nPedido = nPedido;
         this.estado = estado;
+        this.usuario = usuario;
         this.detalles = detalles;
     }
 

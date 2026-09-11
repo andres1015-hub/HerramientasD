@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Detalle de producto', 'productos', ~{::main})}">
+<main>
+    <section class="page-intro"><div><span class="section-label">Ficha del catálogo</span><h2 th:text="${product.name}">Producto</h2><p th:text="${product.description}">Descripción</p></div><div class="button-row"><a class="button button--ghost" th:href="@{/productos}" href="/productos">Volver</a><a class="button button--primary" th:href="@{/productos/{id}/editar(id=${product.id})}">Editar</a></div></section>
+    <div class="alert alert--success" role="status" th:if="${message}" th:text="${message}">Operación realizada.</div>
+    <div class="alert alert--danger" role="alert" th:if="${error}" th:text="${error}">No se pudo completar la operación.</div>
+    <section class="detail-grid">
+        <article class="panel product-sheet">
+            <div class="inventory-label"><span>REFERENCIA</span><strong th:text="${product.code}">EQ-001</strong></div>
+            <dl class="detail-list">
+                <div><dt>Categoría</dt><dd th:text="${product.category}">Equipos</dd></div>
+                <div><dt>Precio</dt><dd>S/ <span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span></dd></div>
+                <div><dt>Stock actual</dt><dd th:text="${product.stock + ' unidades'}">0 unidades</dd></div>
+                <div><dt>Stock mínimo</dt><dd th:text="${product.minimumStock + ' unidades'}">0 unidades</dd></div>
+                <div><dt>Estado</dt><dd><span class="status" th:classappend="${product.lowStock} ? ' status--warning' : ' status--ok'" th:text="${product.stockLabel}">Disponible</span></dd></div>
+            </dl>
+            <div class="danger-zone"><div><strong>Eliminar registro</strong><small>El borrado es permanente. Los productos asociados a paquetes se conservan.</small></div><a class="button button--danger" th:href="@{/productos/{id}/eliminar(id=${product.id})}">Eliminar producto</a></div>
+        </article>
+        <aside class="panel qr-preview-card"><span class="section-label">Etiqueta asociada</span><img class="qr-image qr-image--small" th:src="@{/qr/productos/{id}(id=${product.id})}" alt="Código QR del producto"><a class="text-link" th:href="@{/qr(productoId=${product.id})}">Abrir módulo QR</a></aside>
+    </section>
+</main>
+</html>

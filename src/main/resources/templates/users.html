@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Usuarios', 'usuarios', ~{::main})}">
+<main>
+    <section class="page-intro"><div><span class="section-label">Equipo registrado</span><h2>Usuarios del proyecto</h2><p>Personas registradas en la base del equipo.</p></div><span class="stage-badge">Solo consulta</span></section>
+    <div class="notice"><strong>En desarrollo:</strong> la administración de usuarios, el inicio de sesión y los permisos estarán disponibles en una siguiente etapa.</div>
+    <section class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Identificador</th><th>Nombre</th><th>Apellido</th></tr></thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(users)}"><td colspan="3" class="muted">No hay usuarios registrados en la base de datos.</td></tr>
+        <tr th:each="user : ${users}"><td th:text="${user.id}">1</td><td th:text="${user.name}">Nombre</td><td th:text="${user.surname}">Apellido</td></tr>
+        </tbody>
+    </table></div></section>
+</main>
+</html>

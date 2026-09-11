@@ -29,13 +29,13 @@ public class Usuario {
     }
 
     public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password,
-                   List<Paquete> usario) {
+                   List<Paquete> paquetes) {
         this.idUsuarios = idUsuarios;
         this.apelllido = apelllido;
         this.DNI = DNI;
         this.nombre = nombre;
         this.password = password;
-        this.paquete=paquete;
+        this.paquete=paquetes;
     }
 
     public long getIdUsuarios() {
@@ -83,6 +83,6 @@ public class Usuario {
     }
 
     public void setDetalles(List<Paquete> detalles) {
-        this.paquete = paquete;
+        this.paquete = detalles;
     }
 }
