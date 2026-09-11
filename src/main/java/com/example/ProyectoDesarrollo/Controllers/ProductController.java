@@ -4,6 +4,7 @@ import com.example.ProyectoDesarrollo.Models.Product;
 import com.example.ProyectoDesarrollo.Models.ProductForm;
 import com.example.ProyectoDesarrollo.Services.InventoryService;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,6 +56,10 @@ public class ProductController {
             bindingResult.rejectValue("code", "duplicate", exception.getMessage());
             prepareForm(model, form, false, null);
             return "products/form";
+        } catch (DataIntegrityViolationException exception) {
+            bindingResult.rejectValue("code", "conflict", "No se pudo guardar el producto. Comprueba que el código no esté en uso.");
+            prepareForm(model, form, false, null);
+            return "products/form";
         }
     }
 
@@ -89,6 +94,10 @@ public class ProductController {
             bindingResult.rejectValue("code", "duplicate", exception.getMessage());
             prepareForm(model, form, true, id);
             return "products/form";
+        } catch (DataIntegrityViolationException exception) {
+            bindingResult.rejectValue("code", "conflict", "No se pudo guardar el producto. Comprueba que el código no esté en uso.");
+            prepareForm(model, form, true, id);
+            return "products/form";
         }
     }
 
@@ -100,9 +109,14 @@ public class ProductController {
 
     @PostMapping("/{id}/eliminar")
     public String delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        inventoryService.delete(id);
-        redirectAttributes.addFlashAttribute("message", "Producto eliminado del avance.");
-        return "redirect:/productos";
+        try {
+            inventoryService.delete(id);
+            redirectAttributes.addFlashAttribute("message", "Producto eliminado correctamente.");
+            return "redirect:/productos";
+        } catch (IllegalStateException | DataIntegrityViolationException exception) {
+            redirectAttributes.addFlashAttribute("error", "No se puede eliminar este producto porque está asociado a un paquete.");
+            return "redirect:/productos/" + id;
+        }
     }
 
     private void prepareForm(Model model, ProductForm form, boolean editing, Long productId) {

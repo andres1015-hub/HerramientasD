@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Productos', 'productos', ~{::main})}">
 <main>
     <section class="page-intro">
-        <div><span class="section-label">Módulo principal</span><h2>Catálogo de productos</h2><p>Consulta y actualiza los datos demostrativos almacenados durante esta ejecución.</p></div>
+        <div><span class="section-label">Módulo principal</span><h2>Catálogo de productos</h2><p>Consulta y actualiza los productos registrados en la base del equipo.</p></div>
         <a class="button button--primary" th:href="@{/productos/nuevo}" href="/productos/nuevo">Agregar producto</a>
     </section>
     <div class="alert alert--success" role="status" th:if="${message}" th:text="${message}">Operación realizada.</div>

@@ -46,7 +46,7 @@ public class QrController {
                 + "|nombre=" + product.name();
         byte[] png = qrCodeService.generatePng(content, 320);
         ContentDisposition disposition = (download ? ContentDisposition.attachment() : ContentDisposition.inline())
-                .filename("qr-" + product.code() + ".png")
+                .filename("qr-" + product.id() + ".png")
                 .build();
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)

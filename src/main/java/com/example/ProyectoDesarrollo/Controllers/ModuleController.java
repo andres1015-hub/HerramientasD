@@ -1,20 +1,20 @@
 package com.example.ProyectoDesarrollo.Controllers;
 
 import com.example.ProyectoDesarrollo.Services.InventoryService;
+import com.example.ProyectoDesarrollo.Services.ProjectDataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 public class ModuleController {
 
     private final InventoryService inventoryService;
+    private final ProjectDataService projectDataService;
 
-    public ModuleController(InventoryService inventoryService) {
+    public ModuleController(InventoryService inventoryService, ProjectDataService projectDataService) {
         this.inventoryService = inventoryService;
+        this.projectDataService = projectDataService;
     }
 
     @GetMapping("/inventario")
@@ -25,11 +25,7 @@ public class ModuleController {
 
     @GetMapping("/pedidos")
     public String orders(Model model) {
-        model.addAttribute("orders", List.of(
-                new OrderSummary("PED-001", "Almacén central", LocalDate.now().minusDays(4), "Recibido"),
-                new OrderSummary("PED-002", "Taller de mantenimiento", LocalDate.now().minusDays(2), "En revisión"),
-                new OrderSummary("PED-003", "Área de despacho", LocalDate.now(), "Registrado")
-        ));
+        model.addAttribute("orders", projectDataService.orders());
         return "orders";
     }
 
@@ -41,12 +37,7 @@ public class ModuleController {
 
     @GetMapping("/usuarios")
     public String users(Model model) {
-        model.addAttribute("moduleTitle", "Usuarios");
-        model.addAttribute("activePage", "usuarios");
-        model.addAttribute("moduleMessage", "La gestión de usuarios y la autenticación se implementarán en una siguiente etapa.");
-        return "development";
-    }
-
-    public record OrderSummary(String code, String customer, LocalDate date, String status) {
+        model.addAttribute("users", projectDataService.users());
+        return "users";
     }
 }

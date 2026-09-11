@@ -5,6 +5,7 @@
     <div class="notice"><strong>Alcance actual:</strong> las entradas, salidas y el historial de movimientos se incorporarán en la siguiente entrega.</div>
     <section class="panel"><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Código</th><th class="number-cell">Stock</th><th class="number-cell">Mínimo</th><th>Nivel</th><th>Estado</th></tr></thead><tbody>
     <tr th:each="product : ${products}"><td><strong th:text="${product.name}">Producto</strong></td><td><a class="product-code" th:href="@{/productos/{id}(id=${product.id})}" th:text="${product.code}">EQ-001</a></td><td class="number-cell" th:text="${product.stock}">10</td><td class="number-cell muted" th:text="${product.minimumStock}">2</td><td><meter class="stock-meter" min="0" th:max="${product.minimumStock * 3 + 1}" th:value="${product.stock}" th:classappend="${product.lowStock} ? ' stock-meter--low' : ''">Stock</meter></td><td><span class="status" th:classappend="${product.lowStock} ? ' status--warning' : ' status--ok'" th:text="${product.stockLabel}">Disponible</span></td></tr>
+    <tr th:if="${#lists.isEmpty(products)}"><td colspan="6" class="muted">No hay productos registrados para consultar.</td></tr>
     </tbody></table></div></section>
 </main>
 </html>

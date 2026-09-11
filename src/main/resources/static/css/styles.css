@@ -193,7 +193,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--focus); backgrou
 }
 
 @media (max-width: 860px) {
-    .app-shell { grid-template-columns: 1fr; }
+    .app-shell { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { min-width: 0; }
     .sidebar { position: static; height: auto; padding: 16px 20px; border-right: 0; border-bottom: 1px solid var(--line); }
     .main-nav { display: flex; margin-top: 16px; padding-bottom: 4px; overflow-x: auto; }
     .nav-link { flex: 0 0 auto; }

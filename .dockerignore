@@ -3,6 +3,7 @@
 .idea
 .vscode
 target
+.maven-cache
 .env
 *.log
 .DS_Store

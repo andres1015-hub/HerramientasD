@@ -1,6 +1,7 @@
 package com.example.ProyectoDesarrollo.Models;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,22 +12,23 @@ import java.math.BigDecimal;
 public class ProductForm {
 
     @NotBlank(message = "Ingresa el código")
-    @Size(max = 20, message = "El código admite hasta 20 caracteres")
+    @Size(max = 32, message = "El código admite hasta 32 caracteres")
     private String code;
 
     @NotBlank(message = "Ingresa el nombre")
-    @Size(max = 80, message = "El nombre admite hasta 80 caracteres")
+    @Size(max = 50, message = "El nombre admite hasta 50 caracteres")
     private String name;
 
     @Size(max = 180, message = "La descripción admite hasta 180 caracteres")
     private String description;
 
     @NotBlank(message = "Ingresa la categoría")
-    @Size(max = 50, message = "La categoría admite hasta 50 caracteres")
+    @Size(max = 30, message = "La categoría admite hasta 30 caracteres")
     private String category;
 
     @NotNull(message = "Ingresa el precio")
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio no puede ser negativo")
+    @Digits(integer = 12, fraction = 2, message = "El precio admite hasta 12 enteros y 2 decimales")
     private BigDecimal price = BigDecimal.ZERO;
 
     @NotNull(message = "Ingresa el stock")

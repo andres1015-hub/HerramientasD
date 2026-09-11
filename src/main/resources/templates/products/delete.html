@@ -5,7 +5,7 @@
         <span class="stage-badge">Confirmación</span>
         <span class="development-number" aria-hidden="true">?</span>
         <h2>¿Eliminar este producto?</h2>
-        <p>Se quitará <strong th:text="${product.name}">Producto</strong> (<span class="product-code" th:text="${product.code}">EQ-001</span>) de los datos temporales del avance.</p>
+        <p>Se eliminará permanentemente <strong th:text="${product.name}">Producto</strong> (<span class="product-code" th:text="${product.code}">EQ-001</span>) del catálogo. Si está asociado a un paquete, el sistema impedirá el borrado.</p>
         <div class="button-row">
             <a class="button button--ghost" th:href="@{/productos/{id}(id=${product.id})}">Cancelar</a>
             <form method="post" th:action="@{/productos/{id}/eliminar(id=${product.id})}"><button class="button button--danger" type="submit">Sí, eliminar</button></form>
