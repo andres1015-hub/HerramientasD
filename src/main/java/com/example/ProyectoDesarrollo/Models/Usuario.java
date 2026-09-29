@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="Usuarios")
+@Table(name="usuarios")
 public class Usuario {
 
-
+    public enum Rol{
+        ADMINISTRADOR, USUARIO, PROVEEDOR
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuarios",nullable = false)
@@ -18,23 +20,27 @@ public class Usuario {
     private String nombre;
     @Column(name = "apellido",length = 30, nullable = false)
     private String apelllido;
-    @Column(name = "DNI", length = 30, unique = true, nullable = false)
+    @Column(name = "DNI", length = 10, unique = true, nullable = false)
     private int DNI;
     @Column(name = "password",length = 30, nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol",nullable = false,length = 30)
+    private Usuario.Rol rol;
     @OneToMany(mappedBy = "usuario")
     private List<Paquete>paquete=new ArrayList<>();
 
     public Usuario() {
     }
 
-    public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password,
+    public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password, Rol rol,
                    List<Paquete> usario) {
         this.idUsuarios = idUsuarios;
         this.apelllido = apelllido;
         this.DNI = DNI;
         this.nombre = nombre;
         this.password = password;
+        this.rol = rol;
         this.paquete=paquete;
     }
 
@@ -78,11 +84,15 @@ public class Usuario {
         this.password = password;
     }
 
+    public Rol getrol(){return  rol;}
+
+    public void setrol(Rol rol){this.rol=rol;}
+
     public List<Paquete> getDetalles() {
         return paquete;
     }
 
     public void setDetalles(List<Paquete> detalles) {
-        this.paquete = paquete;
+        this.paquete = detalles;
     }
 }
