@@ -21,7 +21,7 @@ public class Usuario {
     @Column(name = "apellido",length = 30, nullable = false)
     private String apelllido;
     @Column(name = "DNI", length = 10, unique = true, nullable = false)
-    private int DNI;
+    private String DNI;
     @Column(name = "password",length = 30, nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
@@ -33,15 +33,15 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(long idUsuarios, String apelllido, int DNI, String nombre, String password, Rol rol,
-                   List<Paquete> usario) {
+    public Usuario(long idUsuarios, String apelllido, String DNI, String nombre, String password, Rol rol,
+                   List<Paquete> usuario) {
         this.idUsuarios = idUsuarios;
         this.apelllido = apelllido;
         this.DNI = DNI;
         this.nombre = nombre;
         this.password = password;
         this.rol = rol;
-        this.paquete=paquete;
+        this.paquete=usuario;
     }
 
     public long getIdUsuarios() {
@@ -68,11 +68,11 @@ public class Usuario {
         this.apelllido = apelllido;
     }
 
-    public int getDNI() {
+    public String getDNI() {
         return DNI;
     }
 
-    public void setDNI(int DNI) {
+    public void setDNI(String DNI) {
         this.DNI = DNI;
     }
 

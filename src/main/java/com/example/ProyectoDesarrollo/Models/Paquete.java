@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "package")
+@Table(name = "paquete")
 public class Paquete {
 
     public enum Estado {
