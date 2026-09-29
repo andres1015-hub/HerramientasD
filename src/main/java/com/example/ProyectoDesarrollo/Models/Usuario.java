@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="Usuarios")
+@Table(name="usuarios")
 public class Usuario {
 
     public enum Rol{
@@ -20,7 +20,7 @@ public class Usuario {
     private String nombre;
     @Column(name = "apellido",length = 30, nullable = false)
     private String apelllido;
-    @Column(name = "DNI", length = 30, unique = true, nullable = false)
+    @Column(name = "DNI", length = 10, unique = true, nullable = false)
     private int DNI;
     @Column(name = "password",length = 30, nullable = false)
     private String password;
