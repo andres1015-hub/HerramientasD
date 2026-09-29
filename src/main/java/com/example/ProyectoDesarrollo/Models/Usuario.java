@@ -86,7 +86,7 @@ public class Usuario {
 
     public Rol getrol(){return  rol;}
 
-    public void setrol(Rol rol){this.rol=rol;}
+    public void setRol(Rol rol){this.rol=rol;}
 
     public List<Paquete> getDetalles() {
         return paquete;
