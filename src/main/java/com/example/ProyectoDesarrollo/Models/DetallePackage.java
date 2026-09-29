@@ -1,5 +1,8 @@
 package com.example.ProyectoDesarrollo.Models;
 import jakarta.persistence.*;
+
+import java.util.UUID;
+
 @Entity
 @Table(name = "detallePaquete")
 public class DetallePackage {
@@ -17,6 +20,13 @@ public class DetallePackage {
     private Producto producto;
     @Column(name = "cantidad",nullable = false)
     private int cantidad;
+
+    @PrePersist
+    public void generarCodigoQR() {
+        if (this.codigoQR == null) {
+            this.codigoQR = UUID.randomUUID().toString();
+        }
+    }
 
     public DetallePackage() {
     }

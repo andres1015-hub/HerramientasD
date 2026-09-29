@@ -93,6 +93,6 @@ public class Usuario {
     }
 
     public void setDetalles(List<Paquete> detalles) {
-        this.paquete = paquete;
+        this.paquete = detalles;
     }
 }
