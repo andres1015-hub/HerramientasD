@@ -20,7 +20,7 @@ public class Usuario {
     private String apelllido;
     @Column(name = "DNI", length = 30, unique = true, nullable = false)
     private int DNI;
-    @Column(name = "password",length = 30, nullable = false)
+    @Column(name = "password",length = 100, nullable = false)
     private String password;
     @OneToMany(mappedBy = "usuario")
     private List<Paquete>paquete=new ArrayList<>();

@@ -3,9 +3,14 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Inicio</title>
 </head>
 <body>
-Papoi
+<p>Bienvenido, DNI <span sec:authentication="name"></span></p>
+<a th:href="@{/paquete}">Empaquetador</a>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar sesión</button>
+</form>
 </body>
 </html>
