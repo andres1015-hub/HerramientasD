@@ -19,17 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String dni) throws UsernameNotFoundException {
-        int dniNumero;
-        try {
-            dniNumero = Integer.parseInt(dni.trim());
-        } catch (NumberFormatException e) {
-            throw new UsernameNotFoundException("DNI inválido");
-        }
-
-        Usuario usuario = usuarioRepository.findByDNI(dniNumero)
+        // Busca directamente usando el String y aprovecha el Optional
+        Usuario usuario = usuarioRepository.findByDNI(dni.trim())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return User.withUsername(String.valueOf(usuario.getDNI()))
+        return User.withUsername(usuario.getDNI())
                 .password(usuario.getPassword())
                 .roles("USER")
                 .build();

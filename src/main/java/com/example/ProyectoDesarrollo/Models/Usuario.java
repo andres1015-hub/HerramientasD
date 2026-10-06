@@ -10,7 +10,7 @@ import java.util.List;
 public class Usuario {
 
     public enum Rol{
-        ADMINISTRADOR, USUARIO, PROVEEDOR
+        ADMINISTRADOR, USER, PROVEEDOR
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Usuario {
     private String apelllido;
     @Column(name = "DNI", length = 10, unique = true, nullable = false)
     private String DNI;
-    @Column(name = "password",length = 30, nullable = false)
+    @Column(name = "password",length = 100, nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
     @Column(name = "rol",nullable = false,length = 30)
