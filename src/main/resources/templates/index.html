@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="QR Stock, sistema de inventario y trazabilidad con códigos QR.">
-    <title>QR Stock · Inventario inteligente</title>
+    <meta name="theme-color" content="#132f3b">
+    <title>QR Stock | Panel de inventario</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
 </head>
 <body>
@@ -80,7 +81,7 @@
             <button class="icon-button mobile-menu" id="mobile-menu" type="button" aria-label="Abrir menú">
                 <svg><use href="#icon-menu"></use></svg>
             </button>
-            <form class="global-search" id="global-search" role="search">
+            <form class="global-search" id="global-search" role="search" aria-label="Buscar en el inventario">
                 <svg><use href="#icon-search"></use></svg>
                 <input type="search" id="global-search-input" placeholder="Buscar producto por nombre o código…" autocomplete="off">
                 <kbd>Ctrl K</kbd>
