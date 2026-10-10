@@ -6,7 +6,7 @@
     <meta name="description" content="QR Stock, sistema de inventario y trazabilidad con códigos QR.">
     <meta name="theme-color" content="#132f3b">
     <title>QR Stock | Panel de inventario</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true">
@@ -81,9 +81,9 @@
             <button class="icon-button mobile-menu" id="mobile-menu" type="button" aria-label="Abrir menú">
                 <svg><use href="#icon-menu"></use></svg>
             </button>
-            <form class="global-search" id="global-search" role="search" aria-label="Buscar en el inventario">
+            <form class="global-search" id="global-search" aria-label="Buscar en el inventario">
                 <svg><use href="#icon-search"></use></svg>
-                <input type="search" id="global-search-input" placeholder="Buscar producto por nombre o código…" autocomplete="off">
+                <input type="search" id="global-search-input" aria-label="Buscar productos" placeholder="Buscar producto por nombre o código…" autocomplete="off">
                 <kbd>Ctrl K</kbd>
             </form>
             <div class="topbar-actions">
@@ -117,6 +117,6 @@
 <div class="modal-layer" id="modal-layer" aria-hidden="true"></div>
 <div class="toast-region" id="toast-region" aria-live="polite"></div>
 
-<script type="module" th:src="@{/js/app.js}" src="/js/app.js"></script>
+<script type="module" th:src="@{/js/app.js}"></script>
 </body>
 </html>
