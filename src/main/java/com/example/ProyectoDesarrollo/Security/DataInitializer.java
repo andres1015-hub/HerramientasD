@@ -19,6 +19,7 @@ public class DataInitializer {
                 u.setApelllido("Prueba");
                 u.setDNI("12345678");
                 u.setPassword(encoder.encode("admin123"));
+                u.setEstado(Usuario.Estado.ACTIVO);
                 u.setRol(Usuario.Rol.ADMINISTRADOR);
                 repo.save(u);
             }

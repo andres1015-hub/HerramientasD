@@ -12,6 +12,9 @@ public class Usuario {
     public enum Rol{
         ADMINISTRADOR, USER, PROVEEDOR
     }
+    public enum Estado{
+        ACTIVO, INNACTIVO, ELIMINADO
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuarios",nullable = false)
@@ -27,6 +30,9 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(name = "rol",nullable = false,length = 30)
     private Usuario.Rol rol;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado",nullable=false,length =30)
+    private Usuario.Estado estado;
     @OneToMany(mappedBy = "usuario")
     private List<Paquete>paquete=new ArrayList<>();
 
@@ -34,13 +40,14 @@ public class Usuario {
     }
 
     public Usuario(long idUsuarios, String apelllido, String DNI, String nombre, String password, Rol rol,
-                   List<Paquete> usuario) {
+                   Estado estado,  List<Paquete> usuario) {
         this.idUsuarios = idUsuarios;
         this.apelllido = apelllido;
         this.DNI = DNI;
         this.nombre = nombre;
         this.password = password;
         this.rol = rol;
+        this.estado= estado;
         this.paquete=usuario;
     }
 
@@ -87,6 +94,10 @@ public class Usuario {
     public Rol getrol(){return  rol;}
 
     public void setRol(Rol rol){this.rol=rol;}
+
+    public Estado getEstado() {return estado;}
+
+    public void setEstado(Estado estado){this.estado=estado;}
 
     public List<Paquete> getDetalles() {
         return paquete;
