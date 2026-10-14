@@ -2,31 +2,51 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciar sesión</title>
-    <style>
-        body { font-family: sans-serif; background: #f2f4f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        form { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.15); width: 300px; }
-        h2 { margin-top: 0; text-align: center; }
-        input { width: 100%; padding: .6rem; margin: .4rem 0 1rem; box-sizing: border-box; }
-        button { width: 100%; padding: .7rem; background: #2563eb; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
-        .msg { padding: .5rem; margin-bottom: 1rem; border-radius: 4px; font-size: .9rem; }
-        .error { background: #fee2e2; color: #991b1b; }
-        .ok { background: #dcfce7; color: #166534; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
-<body>
-<form th:action="@{/login}" method="post">
-    <h2>Iniciar sesión</h2>
-    <div class="msg error" th:if="${param.error}">DNI o contraseña incorrectos</div>
-    <div class="msg ok" th:if="${param.logout}">Sesión cerrada correctamente</div>
-
-    <label for="dni">DNI</label>
-    <input type="text" id="dni" name="dni" required autofocus>
-
-    <label for="password">Contraseña</label>
-    <input type="password" id="password" name="password" required>
-
-    <button type="submit">Ingresar</button>
-</form>
+<body class="login-page">
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<header class="site-header">
+    <span class="brand">HerramientasD<span class="brand-caption">Gestión interna</span></span>
+    <span class="header-context">Acceso al sistema</span>
+</header>
+<main id="contenido" class="login-layout">
+    <section class="login-context" aria-labelledby="contexto-titulo">
+        <p class="eyebrow">Operaciones / Empaquetado</p>
+        <h1 id="contexto-titulo">Gestión de<br>empaquetado.</h1>
+        <p class="intro">Accede al sistema de gestión de productos y empaquetado.</p>
+        <p class="context-note">Herramientas de trabajo para la operación interna.</p>
+    </section>
+    <section class="login-access" aria-labelledby="acceso-titulo">
+        <div class="form-heading">
+            <p class="eyebrow">Identificación</p>
+            <h2 id="acceso-titulo">Iniciar sesión</h2>
+            <p>Ingresa con tu DNI y contraseña.</p>
+        </div>
+        <form th:action="@{/login}" method="post" class="login-form">
+            <div class="message message-error" role="alert" th:if="${param.error}">
+                <strong>No se pudo iniciar sesión.</strong>
+                <p>DNI o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo.</p>
+            </div>
+            <div class="message message-success" role="status" th:if="${param.logout}">
+                <strong>Sesión cerrada correctamente.</strong>
+                <p>Puedes volver a ingresar cuando lo necesites.</p>
+            </div>
+            <div class="field">
+                <label for="dni">DNI</label>
+                <input type="text" id="dni" name="dni" required autocomplete="username" inputmode="numeric" spellcheck="false" autocapitalize="none" aria-describedby="dni-ayuda">
+                <p class="field-help" id="dni-ayuda">Usa el DNI asociado a tu cuenta.</p>
+            </div>
+            <div class="field">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button class="button button-primary" type="submit">Ingresar <span aria-hidden="true">→</span></button>
+        </form>
+    </section>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 </body>
 </html>

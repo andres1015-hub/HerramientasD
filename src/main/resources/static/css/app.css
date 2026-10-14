@@ -1,0 +1,97 @@
+:root {
+    color-scheme: light;
+    --paper: #f5f5f0;
+    --surface: #ffffff;
+    --ink: #242e2b;
+    --muted: #59635e;
+    --rule: #d3d8d1;
+    --control-border: #7b8780;
+    --primary: #285442;
+    --primary-hover: #1b3e30;
+    --focus: #946014;
+    --danger: #922e26;
+    --danger-surface: #fff0ec;
+    --success-surface: #edf5ee;
+    --space-1: .5rem;
+    --space-2: 1rem;
+    --space-3: 1.5rem;
+    --space-4: 2rem;
+    --space-5: 3rem;
+    --space-6: 4rem;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 100%;
+    color: var(--ink);
+    background: var(--paper);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; line-height: 1.55; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 600; line-height: 1.15; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.035em; }
+h2 { font-size: 1.75rem; letter-spacing: -.025em; }
+h3 { font-size: 1.5rem; letter-spacing: -.02em; }
+a { color: inherit; text-underline-offset: .2em; }
+button, input { font: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.skip-link { position: absolute; top: .5rem; left: 1rem; z-index: 1; padding: .75rem 1rem; background: var(--surface); transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); }
+.site-header, .site-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding-inline: clamp(1.25rem, 5vw, 5rem); }
+.site-header { min-height: 6rem; padding-block: var(--space-3); border-bottom: 1px solid var(--rule); }
+.brand { display: inline-flex; flex-direction: column; font-size: 1.125rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
+.brand-caption { font-size: .75rem; font-weight: 400; letter-spacing: .04em; color: var(--muted); }
+.header-context { font-size: .8125rem; color: var(--muted); text-align: right; }
+.site-footer { margin-top: auto; padding-block: var(--space-3); border-top: 1px solid var(--rule); font-size: .75rem; color: var(--muted); }
+.eyebrow { font-size: .75rem; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.login-layout { display: grid; flex: 1; }
+.login-context { padding: var(--space-5) clamp(1.25rem, 5vw, 5rem); border-bottom: 1px solid var(--rule); }
+.login-context h1 { margin-top: var(--space-3); max-width: 14ch; }
+.intro { margin-top: var(--space-3); max-width: 34ch; color: var(--muted); }
+.context-note { margin-top: var(--space-5); max-width: 35ch; padding-top: var(--space-2); border-top: 1px solid var(--rule); font-size: .8125rem; color: var(--muted); }
+.login-access { padding: var(--space-5) clamp(1.25rem, 5vw, 5rem); background: var(--surface); }
+.form-heading, .login-form { width: 100%; max-width: 25rem; margin-inline: auto; }
+.form-heading h2 { margin-top: var(--space-1); }
+.form-heading > p:last-child { margin-top: var(--space-2); color: var(--muted); font-size: .9375rem; }
+.login-form { display: grid; gap: var(--space-3); margin-top: var(--space-4); }
+.field { display: grid; gap: var(--space-1); }
+.field label { font-size: .875rem; font-weight: 600; }
+.field input { min-width: 0; width: 100%; min-height: 48px; padding: .625rem .75rem; border: 1px solid var(--control-border); border-radius: 2px; background: var(--paper); color: var(--ink); }
+.field input:hover { border-color: var(--ink); }
+.field-help { color: var(--muted); font-size: .8125rem; }
+.button { display: inline-flex; justify-content: center; align-items: center; gap: var(--space-3); min-height: 44px; padding: .625rem 1rem; border: 1px solid transparent; border-radius: 2px; font-size: .875rem; font-weight: 600; line-height: 1.5; text-decoration: none; cursor: pointer; transition: background-color 140ms ease-out, border-color 140ms ease-out; }
+.button-primary { background: var(--primary); color: var(--surface); }
+.button-primary:hover { background: var(--primary-hover); }
+.button-primary:active { background: var(--ink); }
+.button-secondary { background: transparent; border-color: var(--control-border); }
+.button-secondary:hover { background: var(--surface); border-color: var(--ink); }
+.button-secondary:active { background: var(--rule); }
+.button:disabled { opacity: .6; cursor: not-allowed; }
+.login-form > .button { margin-top: var(--space-1); justify-content: space-between; min-height: 48px; }
+.message { padding: var(--space-2); border-left: 3px solid currentColor; font-size: .875rem; }
+.message strong { font-weight: 600; }
+.message p { margin-top: .25rem; }
+.message-error { color: var(--danger); background: var(--danger-surface); }
+.message-success { color: var(--primary); background: var(--success-surface); }
+.workspace { width: min(100%, 76rem); margin-inline: auto; padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem) var(--space-6); }
+.workspace-heading h1 { margin-top: var(--space-2); }
+.welcome { margin-top: var(--space-3); color: var(--muted); overflow-wrap: anywhere; }
+.user-name { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+.tools-section { margin-top: clamp(3rem, 6vw, 5rem); }
+.section-label { font-size: .875rem; letter-spacing: 0; margin-bottom: var(--space-2); }
+.tool-row { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding-block: var(--space-4); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.tool-description h3 { margin-top: var(--space-1); }
+.tool-description > p:last-child { margin-top: var(--space-2); color: var(--muted); font-size: .9375rem; }
+
+@media (min-width: 48rem) {
+    .login-layout { grid-template-columns: 1.1fr 1fr; }
+    .login-context { display: flex; flex-direction: column; justify-content: center; padding-block: var(--space-6); border-bottom: 0; border-right: 1px solid var(--rule); }
+    .login-context h1 { font-size: clamp(2.5rem, 4.2vw, 4rem); }
+    .context-note { margin-top: var(--space-6); }
+    .login-access { display: flex; flex-direction: column; justify-content: center; padding-block: var(--space-6); }
+    .tool-row { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-5); }
+    .tool-row > .button { flex-shrink: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .button { transition: none; }
+}

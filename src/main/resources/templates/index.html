@@ -1,16 +1,39 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<p>Bienvenido, DNI <span sec:authentication="name"></span></p>
-<a th:href="@{/paquete}">Empaquetador</a>
-
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Cerrar sesión</button>
-</form>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<header class="site-header">
+    <a class="brand" th:href="@{/}" aria-current="page">HerramientasD<span class="brand-caption">Gestión interna</span></a>
+    <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+        <button class="button button-secondary" type="submit">Cerrar sesión</button>
+    </form>
+    <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
+</header>
+<main id="contenido" class="workspace">
+    <header class="workspace-heading">
+        <p class="eyebrow">Operaciones / Inicio</p>
+        <h1>Área de trabajo</h1>
+        <p class="welcome" sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>.</p>
+        <p class="welcome" sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p>
+    </header>
+    <section class="tools-section" aria-labelledby="herramientas-titulo">
+        <h2 id="herramientas-titulo" class="section-label">Herramientas</h2>
+        <article class="tool-row" aria-labelledby="empaquetador-titulo">
+            <div class="tool-description">
+                <p class="eyebrow">Empaquetado</p>
+                <h3 id="empaquetador-titulo">Empaquetador</h3>
+                <p>Accede al espacio de trabajo de empaquetado.</p>
+            </div>
+            <a class="button button-primary" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
+        </article>
+    </section>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 </body>
 </html>
