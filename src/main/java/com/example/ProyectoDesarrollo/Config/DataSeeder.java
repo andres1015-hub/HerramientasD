@@ -33,6 +33,7 @@ public class DataSeeder {
             u.setApelllido("Pérez");
             u.setDNI("01234567");
             u.setPassword("1234");
+            u.setEstado(Usuario.Estado.ACTIVO);
             u.setRol(Usuario.Rol.ADMINISTRADOR);
             ur.save(u);
 
