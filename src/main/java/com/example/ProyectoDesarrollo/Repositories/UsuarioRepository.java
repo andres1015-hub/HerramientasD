@@ -10,4 +10,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
     List<Usuario> findByNombre(String nombre);
     Optional<Usuario> findByDNI(String DNI);
     List<Usuario> findByRol(Usuario.Rol rol);
+    List<Usuario> findByEstado(Usuario.Estado estado);
 }
