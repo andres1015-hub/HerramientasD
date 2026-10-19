@@ -1,0 +1,15 @@
+{
+  "name": "herramientasd-styles",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/main/resources/static/css/tailwind.css -o ./src/main/resources/static/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/main/resources/static/css/tailwind.css -o ./src/main/resources/static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  },
+  "overrides": {
+    "@parcel/watcher": "2.6.0"
+  }
+}
