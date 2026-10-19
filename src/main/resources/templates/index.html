@@ -15,22 +15,22 @@
     </form>
     <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
 </header>
-<main id="contenido" class="workspace">
-    <header class="workspace-heading">
-        <p class="eyebrow">Operaciones / Inicio</p>
-        <h1>Tu espacio de trabajo</h1>
-        <p class="welcome" sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>.</p>
-        <p class="welcome" sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p>
+<main id="contenido" class="mx-auto w-full max-w-7xl px-5 pt-6 pb-16 sm:px-8 lg:px-16">
+    <header class="rounded-card bg-primary px-6 py-8 text-white sm:px-10 sm:py-12 lg:px-16 lg:py-16">
+        <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-success-surface">Operaciones / Inicio</p>
+        <h1 class="mt-6 max-w-[14ch] text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[1.15] tracking-[-.035em]">Tu espacio de trabajo</h1>
+        <p class="mt-6 max-w-[50ch] break-words text-success-surface" sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>.</p>
+        <p class="mt-6 max-w-[50ch] text-success-surface" sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p>
     </header>
-    <section class="tools-section" aria-labelledby="herramientas-titulo">
-        <h2 id="herramientas-titulo" class="section-label">Herramientas de trabajo</h2>
-        <article class="tool-row" aria-labelledby="empaquetador-titulo">
-            <div class="tool-description">
-                <p class="eyebrow">Operaciones / Empaquetado</p>
-                <h3 id="empaquetador-titulo">Empaquetador</h3>
-                <p>Accede al espacio de trabajo de empaquetado.</p>
+    <section class="mt-12 sm:mt-16" aria-labelledby="herramientas-titulo">
+        <h2 id="herramientas-titulo" class="mb-4 text-sm font-semibold">Herramientas de trabajo</h2>
+        <article class="flex flex-col items-stretch gap-8 rounded-card border border-rule bg-surface p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12" aria-labelledby="empaquetador-titulo">
+            <div>
+                <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-muted">Operaciones / Empaquetado</p>
+                <h3 id="empaquetador-titulo" class="mt-2 text-2xl font-semibold tracking-tight">Empaquetador</h3>
+                <p class="mt-4 max-w-[55ch] text-[.9375rem] text-muted">Accede al espacio de trabajo de empaquetado.</p>
             </div>
-            <a class="button button-primary" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
+            <a class="button button-primary lg:flex-none" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
         </article>
     </section>
 </main>

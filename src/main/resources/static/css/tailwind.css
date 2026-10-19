@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "./legacy.css" layer(components);
+@source "../../templates";
+
+@theme {
+  --color-paper: #f5f5f0;
+  --color-surface: #ffffff;
+  --color-ink: #242e2b;
+  --color-muted: #59635e;
+  --color-rule: #d3d8d1;
+  --color-primary: #285442;
+  --color-primary-hover: #1b3e30;
+  --color-success-surface: #edf5ee;
+  --font-sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --radius-card: 8px;
+}
