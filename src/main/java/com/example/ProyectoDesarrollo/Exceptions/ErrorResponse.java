@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Cuerpo JSON estándar que devuelven las respuestas de error de la API.
- * Lo construyen los manejadores globales de excepciones.
- */
+
 public class ErrorResponse {
 
     private LocalDateTime timestamp;
@@ -46,9 +43,7 @@ public class ErrorResponse {
     public List<CampoError> getErroresCampo() { return erroresCampo; }
     public void setErroresCampo(List<CampoError> erroresCampo) { this.erroresCampo = erroresCampo; }
 
-    /**
-     * Detalle de un campo inválido encontrado durante la validación.
-     */
+
     public static class CampoError {
 
         private String campo;

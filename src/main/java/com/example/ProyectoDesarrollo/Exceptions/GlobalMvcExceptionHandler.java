@@ -14,11 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.thymeleaf.exceptions.TemplateInputException;
 
-/**
- * Manejador global de excepciones para los controladores MVC (vistas Thymeleaf).
- * Renderiza la plantilla "error" con un mensaje amigable y el código HTTP correcto.
- * Los controladores REST no entran aquí: los atiende GlobalExceptionHandler (JSON).
- */
+
 @ControllerAdvice(basePackages = "com.example.ProyectoDesarrollo.Controllers")
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class GlobalMvcExceptionHandler {
@@ -83,9 +79,7 @@ public class GlobalMvcExceptionHandler {
                 req, res, model);
     }
 
-    /**
-     * Prepara la vista "error" con el código, título y mensaje adecuados.
-     */
+
     private String vistaError(HttpStatus estado, String titulo, String mensaje,
                               HttpServletRequest req, HttpServletResponse res, Model model) {
         res.setStatus(estado.value());

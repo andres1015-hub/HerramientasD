@@ -20,20 +20,14 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
-/**
- * Manejador global de excepciones para los controladores REST (Controllers.API).
- * Traduce cada excepción a una respuesta JSON estructurada (ErrorResponse)
- * sin necesidad de try/catch en cada controlador.
- */
+
 @RestControllerAdvice(basePackages = "com.example.ProyectoDesarrollo.Controllers.API")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // ---------------------------------------------------------------
-    // Excepciones personalizadas del proyecto
-    // ---------------------------------------------------------------
+
 
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<ErrorResponse> recursoNoEncontrado(RecursoNoEncontradoException ex,
@@ -56,9 +50,7 @@ public class GlobalExceptionHandler {
         return responder(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
     }
 
-    // ---------------------------------------------------------------
-    // Validación (@Valid / restricciones)
-    // ---------------------------------------------------------------
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> validacionFallida(MethodArgumentNotValidException ex,
@@ -106,9 +98,7 @@ public class GlobalExceptionHandler {
         return responder(HttpStatus.BAD_REQUEST, mensaje, req);
     }
 
-    // ---------------------------------------------------------------
-    // Excepciones de Spring y de la base de datos
-    // ---------------------------------------------------------------
+
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> responseStatus(ResponseStatusException ex,
@@ -144,9 +134,7 @@ public class GlobalExceptionHandler {
                 "No se pudo consultar la base de datos", req);
     }
 
-    // ---------------------------------------------------------------
-    // Último recurso: cualquier otra excepción
-    // ---------------------------------------------------------------
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> errorInesperado(Exception ex, HttpServletRequest req) {
@@ -155,9 +143,6 @@ public class GlobalExceptionHandler {
                 "Ocurrió un error inesperado. Contacte al administrador", req);
     }
 
-    // ---------------------------------------------------------------
-    // Helpers
-    // ---------------------------------------------------------------
 
     private ResponseEntity<ErrorResponse> responder(HttpStatus estado, String mensaje, HttpServletRequest req) {
         return ResponseEntity.status(estado)
