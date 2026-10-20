@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${tituloError != null ? tituloError + ' · HerramientasD' : 'Error · HerramientasD'}">Error · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<header class="site-header">
+    <a class="brand" th:href="@{/}">HerramientasD<span class="brand-caption">Gestión interna</span></a>
+    <span class="header-context">Ocurrió un problema</span>
+</header>
+<main id="contenido" class="mx-auto w-full max-w-7xl px-5 pt-6 pb-16 sm:px-8 lg:px-16">
+    <p class="eyebrow" th:text="'Error ' + ${codigoError != null ? codigoError : (status != null ? status : '—')}">Error</p>
+    <h1 class="mt-6 max-w-[14ch] text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[1.15] tracking-[-.035em]"
+        th:text="${tituloError != null ? tituloError : 'Algo salió mal'}">Algo salió mal</h1>
+    <div class="message message-error mt-6" role="alert">
+        <strong>No pudimos completar la operación.</strong>
+        <p th:text="${mensajeError != null ? mensajeError : (error != null ? error : 'Ocurrió un error inesperado. Vuelve a intentarlo.')}">Ocurrió un error inesperado. Vuelve a intentarlo.</p>
+    </div>
+    <p class="mt-4 text-sm text-muted" th:if="${rutaError != null}">
+        Ruta solicitada: <span th:text="${rutaError}"></span>
+    </p>
+    <div class="mt-6 flex gap-8">
+        <a class="button button-primary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
+        <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
+    </div>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+</body>
+</html>
