@@ -4,6 +4,7 @@ import com.example.ProyectoDesarrollo.Models.Producto;
 import com.example.ProyectoDesarrollo.Repositories.InventarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,6 +45,7 @@ public class InventarioService {
         return inventarioRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
     public int registrarEntrada(Long idProducto, int cantidad) {
         if (cantidad <= 0) {
@@ -58,6 +60,7 @@ public class InventarioService {
         return producto.getStock();
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
     public int registrarSalida(Long idProducto, int cantidad) {
         if (cantidad <= 0) {
@@ -76,6 +79,7 @@ public class InventarioService {
         return producto.getStock();
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
     public int ajustarStock(Long idProducto, int nuevoStock) {
         if (nuevoStock < 0) {

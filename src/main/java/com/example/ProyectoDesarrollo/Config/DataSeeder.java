@@ -11,17 +11,17 @@ import com.example.ProyectoDesarrollo.Repositories.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-//@Profile("dev")
 public class DataSeeder {
 
     @Bean
     CommandLineRunner initData(UsuarioRepository ur,
                                ProductRepository pr,
                                PaqueteRepository par,
-                               DetallePackageRepository dr) {
+                               DetallePackageRepository dr,
+                               PasswordEncoder encoder) {
         return args -> {
             if (dr.count() > 0) {
                 System.out.println(">>> Ya hay datos");
@@ -32,7 +32,7 @@ public class DataSeeder {
             u.setNombre("Juan");
             u.setApelllido("Pérez");
             u.setDNI("01234567");
-            u.setPassword("1234");
+            u.setPassword(encoder.encode("1234"));
             u.setEstado(Usuario.Estado.ACTIVO);
             u.setRol(Usuario.Rol.ADMINISTRADOR);
             ur.save(u);
