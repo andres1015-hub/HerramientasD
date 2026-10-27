@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<main id="contenido" class="workspace" th:fragment="contenido">
+    <section class="registration-layout" aria-labelledby="registro-titulo">
+        <div class="registration-context"><p class="eyebrow">Personas / Registro</p><h1>Un equipo.<br>Todo conectado.</h1><p>Un espacio para las personas que hacen posible cada operación.</p><ol class="registration-steps"><li><span>01</span><div><strong>Datos personales</strong><p>Nombre, apellidos y documento.</p></div></li><li><span>02</span><div><strong>Acceso al sistema</strong><p>Tu DNI y una contraseña personal.</p></div></li><li><span>03</span><div><strong>Tu espacio de trabajo</strong><p>Productos, inventario y operación.</p></div></li></ol><a class="text-link" th:href="@{/login}">¿Ya tienes cuenta? Inicia sesión <span aria-hidden="true">→</span></a></div>
+        <div class="registration-access"><div class="form-heading"><p class="eyebrow">Nueva cuenta</p><h2 id="registro-titulo">Crear usuario</h2><p>Completa los datos de la persona que se incorporará al sistema.</p></div>
+            <!-- No hay un endpoint de registro en main. Evitar enviar datos a una ruta inventada. -->
+            <form method="post" class="login-form registration-form" aria-describedby="registro-disponibilidad">
+                <div class="form-columns"><div class="field"><label for="registro-nombre">Nombre</label><input id="registro-nombre" name="nombre" autocomplete="given-name" maxlength="30" required placeholder="Tu nombre"></div><div class="field"><label for="registro-apellido">Apellidos</label><input id="registro-apellido" name="apelllido" autocomplete="family-name" maxlength="30" required placeholder="Tus apellidos"></div></div>
+                <div class="field"><label for="registro-dni">DNI</label><input id="registro-dni" name="DNI" type="text" inputmode="numeric" pattern="[0-9]{8}" minlength="8" maxlength="8" autocomplete="username" required aria-describedby="registro-dni-ayuda" placeholder="8 dígitos"><p class="field-help" id="registro-dni-ayuda">Se utilizará para iniciar sesión.</p></div>
+                <fieldset class="account-options"><legend>¿Cómo usarás el sistema?</legend><label><input type="radio" name="rol" value="USER" checked required><span><strong>Usuario</strong><small>Consulta productos y utiliza las herramientas de trabajo.</small></span></label><label><input type="radio" name="rol" value="PROVEEDOR" required><span><strong>Proveedor</strong><small>Identifica tu cuenta como proveedor de productos.</small></span></label></fieldset>
+                <div class="field"><label for="registro-password">Contraseña</label><input id="registro-password" name="password" type="password" autocomplete="new-password" maxlength="100" required aria-describedby="registro-password-ayuda"><p class="field-help" id="registro-password-ayuda">Usa una contraseña personal y evita compartirla.</p></div>
+                <p class="availability-note" id="registro-disponibilidad">El registro de nuevas cuentas aún no está disponible.</p>
+                <button class="button button-primary" type="submit" disabled>Crear usuario <span aria-hidden="true">→</span></button>
+                <p class="field-help">¿Ya tienes cuenta? <a class="text-link" th:href="@{/login}">Iniciar sesión</a></p>
+            </form>
+        </div>
+    </section>
+    <section class="section-block panel" id="usuarios" sec:authorize="hasRole('ADMINISTRADOR')" aria-labelledby="usuarios-titulo">
+        <th:block th:with="usuarios=${@usuarioService.listarTodos()}">
+            <div class="section-heading"><div><p class="eyebrow">Administración / Personas</p><h2 id="usuarios-titulo">Usuarios del sistema</h2></div><span class="section-caption"><span th:text="${#lists.size(usuarios)}">0</span> usuarios registrados</span></div>
+            <div class="empty-state compact-empty" th:if="${#lists.isEmpty(usuarios)}"><h3>Aún no hay usuarios registrados</h3><p>Los usuarios aparecerán aquí cuando formen parte del sistema.</p></div>
+            <div class="table-scroll" th:unless="${#lists.isEmpty(usuarios)}" role="region" aria-label="Usuarios registrados" tabindex="0"><table class="users-table"><caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption><thead><tr><th scope="col">Persona</th><th scope="col">DNI</th><th scope="col">Rol</th><th scope="col">Estado</th></tr></thead><tbody><tr th:each="usuario : ${usuarios}"><th scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th><td class="tabular" th:text="${usuario.DNI}">Documento</td><td th:text="${usuario.getrol()}">Rol</td><td><span class="stock-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? '' : 'stock-low'}" th:text="${usuario.estado}">Estado</span></td></tr></tbody></table></div>
+        </th:block>
+    </section>
+</main>
+</body>
+</html>
