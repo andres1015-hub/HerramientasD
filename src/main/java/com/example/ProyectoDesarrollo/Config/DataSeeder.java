@@ -32,7 +32,6 @@ public class DataSeeder {
             u.setNombre("Juan");
             u.setApelllido("Pérez");
             u.setDNI("01234567");
-            // La contraseña se guarda cifrada con BCrypt, nunca en texto plano.
             u.setPassword(encoder.encode("1234"));
             u.setEstado(Usuario.Estado.ACTIVO);
             u.setRol(Usuario.Rol.ADMINISTRADOR);

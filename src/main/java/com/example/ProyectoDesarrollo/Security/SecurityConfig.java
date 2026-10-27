@@ -24,37 +24,27 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 
-/**
- * Configuración de seguridad de la aplicación.
- *
- * Nivel de protección:
- *  - Autenticación por formulario (DNI + contraseña cifrada con BCrypt).
- *  - Autorización por rutas y por roles (ADMINISTRADOR, USER, PROVEEDOR).
- *  - Protección de fijación de sesión y cierre que invalida la sesión.
- *  - CSRF activo en formularios web; exento solo en /api/** (clientes externos).
- *  - Errores 401/403 en JSON para la API y en la página de error para la web.
- */
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    /** Identifica las peticiones dirigidas a la API REST. */
+
     private static final RequestMatcher API = request -> request.getRequestURI().startsWith("/api/");
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Recursos públicos
+
                 .requestMatchers("/", "/login", "/error", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                // API REST: cualquier usuario autenticado
+
                 .requestMatchers("/api/**").authenticated()
-                // Empaquetado: administradores y operarios
-                .requestMatchers("/paquete", "/paquete/**").hasAnyRole("ADMINISTRADOR", "USER")
-                // Administración (zonas reservadas)
+                               .requestMatchers("/paquete", "/paquete/**").hasAnyRole("ADMINISTRADOR", "USER")
+
                 .requestMatchers("/usuarios", "/usuarios/**", "/inventario", "/inventario/**").hasRole("ADMINISTRADOR")
-                // Todo lo demás requiere iniciar sesión
+
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -74,12 +64,9 @@ public class SecurityConfig {
                 .permitAll()
             )
             .csrf(csrf -> csrf
-                // Los clientes de la API (lectores QR) no envían formularios ni token CSRF.
-                // Los formularios web conservan la protección CSRF por defecto.
                 .ignoringRequestMatchers(API)
             )
             .sessionManagement(session -> session
-                // Evita fijación de sesión: se genera un nuevo id al iniciar sesión.
                 .sessionFixation(fixation -> fixation.changeSessionId())
             )
             .exceptionHandling(ex -> ex
@@ -95,9 +82,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Sin autenticación: JSON 401 para /api/** y redirección al login para la web.
-     */
+
     private AuthenticationEntryPoint entryPoint() {
         LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> puntos = new LinkedHashMap<>();
         puntos.put(API, (request, response, ex) -> escribirErrorJson(request, response,
@@ -107,9 +92,7 @@ public class SecurityConfig {
         return new DelegatingAuthenticationEntryPoint(puntos, new LoginUrlAuthenticationEntryPoint("/login"));
     }
 
-    /**
-     * Sin permisos: JSON 403 para /api/** y página de error (403) para la web.
-     */
+
     private AccessDeniedHandler accessDeniedHandler() {
         AccessDeniedHandler sinPermisosApi = (request, response, ex) -> escribirErrorJson(request, response,
                 HttpStatus.FORBIDDEN, "Acceso denegado",
@@ -125,10 +108,7 @@ public class SecurityConfig {
         };
     }
 
-    /**
-     * Escribe un ErrorResponse como JSON usando un formato fijo,
-     * sin acoplarse a la versión de Jackson del proyecto.
-     */
+
     private static void escribirErrorJson(HttpServletRequest request, HttpServletResponse response,
                                           HttpStatus estado, String error, String mensaje) throws IOException {
         response.setStatus(estado.value());
