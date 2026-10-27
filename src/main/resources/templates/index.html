@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:with="solicitada=${param.vista != null ? param.vista[0] : 'inicio'}, vista=${solicitada == 'administrador' or solicitada == 'inventario' or solicitada == 'registro' or solicitada == 'cuenta' ? solicitada : 'inicio'}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Inicio · HerramientasD</title>
+    <title th:text="${vista == 'inventario' ? 'Inventario · HerramientasD' : (vista == 'registro' ? 'Registro · HerramientasD' : (vista == 'cuenta' ? 'Mi cuenta · HerramientasD' : 'Inicio · HerramientasD'))}">Inicio · HerramientasD</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
 <a class="skip-link" href="#contenido">Ir al contenido</a>
-<header class="site-header">
-    <a class="brand" th:href="@{/}" aria-current="page">HerramientasD<span class="brand-caption">Gestión interna</span></a>
-    <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
-        <button class="button button-secondary" type="submit">Cerrar sesión</button>
-    </form>
-    <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
-</header>
+<th:block th:replace="~{fragments/navegacion :: cabecera(${vista})}"/>
+<th:block th:if="${vista == 'inicio' or vista == 'administrador'}">
+    <th:block sec:authorize="hasRole('ADMINISTRADOR')"><th:block th:replace="~{administrador :: contenido}"/></th:block>
+    <main id="contenido" class="workspace empty-state" th:if="${vista == 'administrador'}" sec:authorize="!hasRole('ADMINISTRADOR')"><h1>Acceso de administrador</h1><p>Esta sección está disponible para cuentas con permisos de administración.</p><a class="button button-primary" th:href="@{/}">Volver al inicio</a></main>
+    <th:block th:if="${vista == 'inicio'}" sec:authorize="!hasRole('ADMINISTRADOR')">
 <main id="contenido" class="mx-auto w-full max-w-7xl px-5 pt-6 pb-16 sm:px-8 lg:px-16">
     <header class="rounded-card bg-primary px-6 py-8 text-white sm:px-10 sm:py-12 lg:px-16 lg:py-16">
         <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-success-surface">Operaciones / Inicio</p>
@@ -32,8 +31,20 @@
             </div>
             <a class="button button-primary lg:flex-none" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
         </article>
+        <article class="home-inventory-card" sec:authorize="isAuthenticated()" aria-labelledby="inventario-titulo"><div><p class="eyebrow">Productos / Inventario</p><h3 id="inventario-titulo">Explora el catálogo</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p></div><a class="button button-primary" th:href="@{/(vista='inventario')}">Ver galería <span aria-hidden="true">→</span></a></article>
     </section>
 </main>
+    </th:block>
+</th:block>
+<th:block th:if="${vista == 'inventario'}">
+    <th:block sec:authorize="isAuthenticated()"><th:block th:replace="~{inventario :: contenido}"/></th:block>
+    <main id="contenido" class="workspace empty-state" sec:authorize="isAnonymous()"><h1>Tu inventario te espera.</h1><p>Inicia sesión para consultar los productos y sus existencias.</p><a class="button button-primary" th:href="@{/login}">Iniciar sesión</a></main>
+</th:block>
+<th:block th:if="${vista == 'registro'}"><th:block th:replace="~{registro :: contenido}"/></th:block>
+<th:block th:if="${vista == 'cuenta'}">
+    <th:block sec:authorize="isAuthenticated()"><th:block th:replace="~{cuenta :: contenido}"/></th:block>
+    <main id="contenido" class="workspace empty-state" sec:authorize="isAnonymous()"><h1>Accede a tu cuenta.</h1><p>Inicia sesión para consultar tus datos de acceso.</p><a class="button button-primary" th:href="@{/login}">Iniciar sesión</a></main>
+</th:block>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 </body>
 </html>

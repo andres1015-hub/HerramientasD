@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./legacy.css" layer(components);
+@import "./workspace.css" layer(components);
 @source "../../templates";
 
 @theme {
