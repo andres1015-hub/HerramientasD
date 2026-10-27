@@ -19,10 +19,11 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcherEntry;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
+import java.util.List;
 
 
 @Configuration
@@ -36,43 +37,43 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/", "/login", "/error", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/login", "/error", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
 
-                .requestMatchers("/api/**").authenticated()
-                               .requestMatchers("/paquete", "/paquete/**").hasAnyRole("ADMINISTRADOR", "USER")
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/paquete", "/paquete/**").hasAnyRole("ADMINISTRADOR", "USER")
 
-                .requestMatchers("/usuarios", "/usuarios/**", "/inventario", "/inventario/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/usuarios", "/usuarios/**", "/inventario", "/inventario/**").hasRole("ADMINISTRADOR")
 
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .usernameParameter("dni")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers(API)
-            )
-            .sessionManagement(session -> session
-                .sessionFixation(fixation -> fixation.changeSessionId())
-            )
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(entryPoint())
-                .accessDeniedHandler(accessDeniedHandler())
-            );
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("dni")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(API)
+                )
+                .sessionManagement(session -> session
+                        .sessionFixation(fixation -> fixation.changeSessionId())
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(entryPoint())
+                        .accessDeniedHandler(accessDeniedHandler())
+                );
 
         return http.build();
     }
@@ -84,12 +85,14 @@ public class SecurityConfig {
 
 
     private AuthenticationEntryPoint entryPoint() {
-        LinkedHashMap<RequestMatcher, AuthenticationEntryPoint> puntos = new LinkedHashMap<>();
-        puntos.put(API, (request, response, ex) -> escribirErrorJson(request, response,
+        AuthenticationEntryPoint apiEntryPoint = (request, response, ex) -> escribirErrorJson(request, response,
                 HttpStatus.UNAUTHORIZED, "No autenticado",
-                "Debes iniciar sesión para acceder a este recurso"));
+                "Debes iniciar sesión para acceder a este recurso");
 
-        return new DelegatingAuthenticationEntryPoint(puntos, new LoginUrlAuthenticationEntryPoint("/login"));
+        List<RequestMatcherEntry<AuthenticationEntryPoint>> puntos =
+                List.of(new RequestMatcherEntry<>(API, apiEntryPoint));
+
+        return new DelegatingAuthenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"), puntos);
     }
 
 
