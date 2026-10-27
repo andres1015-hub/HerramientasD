@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" th:content="${_csrf.token}">
+    <meta name="csrf-header" th:content="${_csrf.headerName}">
+    <title>Escanear QR · HerramientasD</title>
+    <style>
+        :root{--p:#285442;--bg:#f4f6f3;--rule:#d3d8d1;--muted:#59635e;--ok:#edf5ee;--err:#8a1f1f}
+        *{box-sizing:border-box}
+        body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:#1c2420}
+        header{background:var(--p);color:#fff;padding:16px}
+        header h1{margin:0;font-size:1.3rem}
+        main{max-width:520px;margin:0 auto;padding:16px}
+        .card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:16px;margin-bottom:14px}
+        button{width:100%;background:var(--p);color:#fff;border:0;border-radius:8px;padding:14px;font-size:1.05rem;cursor:pointer}
+        button.sec{background:#fff;color:var(--p);border:1px solid var(--p);margin-top:8px}
+        .visor{position:relative;display:none;border-radius:8px;overflow:hidden;background:#000;margin-bottom:12px}
+        video{width:100%;display:block}
+        .marco{position:absolute;inset:18% 18%;border:3px solid #fff;border-radius:12px;box-shadow:0 0 0 999px rgba(0,0,0,.35);pointer-events:none}
+        canvas{display:none}
+        #msg{margin:10px 0 0;color:var(--muted);text-align:center;min-height:1.4em}
+        #msg.err{color:var(--err)}
+        dl{margin:12px 0 0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px}
+        dt{color:var(--muted)} dd{margin:0;text-align:right;font-weight:600;word-break:break-word}
+        .prod{font-size:1.35rem;font-weight:600;margin:0}
+        #resultado{display:none}
+        .manual{display:flex;gap:8px;margin-top:8px}
+        .manual input{flex:1;padding:10px;border:1px solid var(--rule);border-radius:8px;font-size:1rem;min-width:0}
+        .manual button{width:auto;padding:10px 16px}
+    </style>
+</head>
+<body>
+<header><h1>Escanear QR</h1></header>
+<main>
+    <section class="card" id="panelCamara">
+        <div class="visor" id="visor">
+            <video id="video" playsinline muted></video>
+            <div class="marco"></div>
+        </div>
+        <canvas id="canvas"></canvas>
+        <button type="button" id="btnAbrir">Abrir cámara y escanear</button>
+        <button type="button" id="btnCerrar" class="sec" style="display:none">Cerrar cámara</button>
+        <p id="msg">Pulsa el botón y permite el acceso a la cámara.</p>
+        <details>
+            <summary>¿No funciona la cámara? Ingresar código</summary>
+            <form class="manual" id="formManual">
+                <input id="codigoManual" placeholder="Código del QR" autocomplete="off">
+                <button type="submit">Buscar</button>
+            </form>
+        </details>
+    </section>
+
+    <section class="card" id="resultado">
+        <p class="prod" id="rProducto"></p>
+        <dl>
+            <dt>Tipo</dt><dd id="rTipo"></dd>
+            <dt>Cantidad</dt><dd id="rCantidad"></dd>
+            <dt>Precio unit.</dt><dd id="rPrecio"></dd>
+            <dt>Pedido</dt><dd id="rPedido"></dd>
+            <dt>Estado</dt><dd id="rEstado"></dd>
+            <dt>Responsable</dt><dd id="rUsuario"></dd>
+            <dt>Emisión</dt><dd id="rFecha"></dd>
+        </dl>
+        <button type="button" class="sec" id="btnOtro">Escanear otro</button>
+    </section>
+</main>
+
+<script th:src="@{/js/jsQR.js}"></script>
+<script>
+    (function () {
+        var video = document.getElementById('video');
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        var visor = document.getElementById('visor');
+        var btnAbrir = document.getElementById('btnAbrir');
+        var btnCerrar = document.getElementById('btnCerrar');
+        var msg = document.getElementById('msg');
+        var stream = null, activo = false, procesando = false;
+
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        var csrfHeader = document.querySelector('meta[name="csrf-header"]').content;
+
+        function setMsg(t, esError) { msg.textContent = t; msg.className = esError ? 'err' : ''; }
+
+        async function abrirCamara() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                setMsg('La cámara requiere HTTPS (o localhost). Usa "Ingresar código" o abre el sitio con https.', true);
+                return;
+            }
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: 'environment' } }, audio: false
+                });
+            } catch (e) {
+                setMsg(e.name === 'NotAllowedError'
+                    ? 'Permiso de cámara denegado. Habilítalo en el navegador y reintenta.'
+                    : 'No se pudo abrir la cámara: ' + e.message, true);
+                return;
+            }
+            video.srcObject = stream;
+            await video.play();
+            visor.style.display = 'block';
+            btnAbrir.style.display = 'none';
+            btnCerrar.style.display = 'block';
+            document.getElementById('resultado').style.display = 'none';
+            setMsg('Apunta al código QR…');
+            activo = true;
+            requestAnimationFrame(leerFrame);
+        }
+
+        function cerrarCamara() {
+            activo = false;
+            if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+            video.srcObject = null;
+            visor.style.display = 'none';
+            btnCerrar.style.display = 'none';
+            btnAbrir.style.display = 'block';
+        }
+
+        function leerFrame() {
+            if (!activo) return;
+            if (video.readyState === video.HAVE_ENOUGH_DATA && !procesando) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                var img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                var qr = jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+                if (qr && qr.data) {
+                    procesando = true;
+                    if (navigator.vibrate) navigator.vibrate(80);
+                    cerrarCamara();
+                    consultar(qr.data);
+                    return;
+                }
+            }
+            requestAnimationFrame(leerFrame);
+        }
+
+        // Acepta el UUID solo, o una URL tipo http://host/qr/ver/<uuid>
+        function extraerCodigo(texto) {
+            texto = (texto || '').trim();
+            var m = texto.match(/\/qr\/ver\/([^\/?#\s]+)/);
+            return m ? m[1] : texto;
+        }
+
+        async function consultar(texto) {
+            var codigo = extraerCodigo(texto);
+            setMsg('Consultando…');
+            try {
+                var headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+                headers[csrfHeader] = csrfToken;
+                var resp = await fetch('/api/detalle/qr', {
+                    method: 'POST',
+                    headers: headers,
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ codigoQR: codigo })
+                });
+                if (resp.status === 404) { setMsg('QR no válido: no existe en el sistema.', true); return; }
+                if (resp.redirected || resp.status === 401 || resp.status === 403) {
+                    setMsg('Sesión expirada. Vuelve a iniciar sesión.', true); return;
+                }
+                if (!resp.ok) { setMsg('Error del servidor (' + resp.status + ').', true); return; }
+                mostrar(await resp.json());
+                setMsg('');
+            } catch (e) {
+                setMsg('No se pudo conectar con el servidor.', true);
+            } finally {
+                procesando = false;
+            }
+        }
+
+        function mostrar(d) {
+            function set(id, v) { document.getElementById(id).textContent = v == null ? '—' : v; }
+            set('rProducto', d.nombreProducto);
+            set('rTipo', d.tipoProducto);
+            set('rCantidad', d.cantidad);
+            set('rPrecio', d.precioUnitario != null ? Number(d.precioUnitario).toFixed(2) : null);
+            set('rPedido', d.nPedido);
+            set('rEstado', d.estadoPaquete);
+            set('rUsuario', ((d.nombreUsuario || '') + ' ' + (d.apellidoUsuario || '')).trim() || null);
+            set('rFecha', d.fechaEmision ? String(d.fechaEmision).replace('T', ' ').substring(0, 16) : null);
+            document.getElementById('resultado').style.display = 'block';
+        }
+
+        btnAbrir.addEventListener('click', abrirCamara);
+        btnCerrar.addEventListener('click', function () { cerrarCamara(); setMsg('Cámara cerrada.'); });
+        document.getElementById('btnOtro').addEventListener('click', function () {
+            document.getElementById('resultado').style.display = 'none';
+            abrirCamara();
+        });
+        document.getElementById('formManual').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var v = document.getElementById('codigoManual').value;
+            if (v.trim()) consultar(v);
+        });
+        window.addEventListener('pagehide', cerrarCamara);
+    })();
+</script>
+</body>
+</html>
