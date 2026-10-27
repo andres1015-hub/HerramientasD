@@ -50,15 +50,6 @@ public class DataSeeder {
                 return;
             }
 
-            Usuario u = new Usuario();
-            u.setNombre("Juan");
-            u.setApelllido("Pérez");
-            u.setDNI("01234567");
-            u.setPassword("1234");
-            u.setEstado(Usuario.Estado.ACTIVO);
-            u.setRol(Usuario.Rol.ADMINISTRADOR);
-            ur.save(u);
-
             Producto p = new Producto();
             p.setNombre("Camiseta");
             p.setStock(50);
@@ -86,3 +77,4 @@ public class DataSeeder {
             System.out.println("==================================================");
         };
     }
+}
