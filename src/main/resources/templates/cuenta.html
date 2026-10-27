@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<main id="contenido" class="workspace" th:fragment="contenido">
+    <header class="page-heading"><div><p class="eyebrow">Personas / Mi cuenta</p><h1>Tu acceso, en tus manos.</h1><p>Consulta tu identificación y administra tu contraseña.</p></div><a class="text-link" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a></header>
+    <div class="account-layout">
+        <aside class="panel account-summary" aria-labelledby="identificacion-titulo"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><p class="eyebrow">Tu identificación</p><h2 id="identificacion-titulo">Cuenta de trabajo</h2><dl><dt>DNI de acceso</dt><dd class="tabular" sec:authentication="name"></dd><dt>Permisos de la sesión</dt><dd sec:authorize="hasRole('ADMINISTRADOR')">Administrador</dd><dd sec:authorize="hasRole('PROVEEDOR')">Proveedor</dd><dd sec:authorize="!hasRole('ADMINISTRADOR') and !hasRole('PROVEEDOR')">Usuario</dd></dl><p class="field-help">Los permisos corresponden a los que reconoce la sesión actual.</p></aside>
+        <section class="panel account-security" aria-labelledby="seguridad-titulo"><div class="form-heading"><p class="eyebrow">Seguridad</p><h2 id="seguridad-titulo">Cambiar contraseña</h2><p>Mantén tu acceso personal protegido.</p></div>
+            <!-- La actualización de contraseña no dispone de servicio ni ruta web en main. -->
+            <form method="post" class="login-form" aria-describedby="password-disponibilidad">
+                <div class="field"><label for="password-actual">Contraseña actual</label><input id="password-actual" name="passwordActual" type="password" autocomplete="current-password" required></div>
+                <div class="field"><label for="password-nueva">Nueva contraseña</label><input id="password-nueva" name="passwordNueva" type="password" autocomplete="new-password" maxlength="100" required aria-describedby="password-ayuda"><p class="field-help" id="password-ayuda">Elige una contraseña personal que no utilices en otras cuentas.</p></div>
+                <div class="field"><label for="password-confirmacion">Repite la nueva contraseña</label><input id="password-confirmacion" name="passwordConfirmacion" type="password" autocomplete="new-password" maxlength="100" required></div>
+                <p class="availability-note" id="password-disponibilidad">El cambio de contraseña aún no está disponible.</p><button class="button button-primary" type="submit" disabled>Actualizar contraseña <span aria-hidden="true">→</span></button>
+            </form>
+        </section>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Se inserta desde index dentro del bloque autorizado para ADMINISTRADOR. -->
+<main id="contenido" class="workspace" th:fragment="contenido"
+      th:with="productos=${@inventarioService.listarTodos()}, bajos=${@inventarioService.productosStockBajo(5)}, usuarios=${@usuarioService.listarTodos()}">
+    <header class="page-heading">
+        <div><p class="eyebrow">Administración / Inicio</p><h1>La operación empieza aquí.</h1><p>Productos, existencias y equipo. Todo en un mismo lugar.</p></div>
+        <a class="button button-primary" th:href="@{/(vista='inventario')}">Abrir inventario <span aria-hidden="true">↗</span></a>
+    </header>
+    <section class="overview-grid" aria-label="Resumen de la operación">
+        <article class="overview-feature">
+            <div class="overview-label"><svg class="icon" aria-hidden="true"><use href="#icon-caja"/></svg><span>Tu catálogo</span></div>
+            <p class="overview-number" th:text="${#lists.size(productos)}">0</p>
+            <h2>Productos para seguir trabajando.</h2>
+            <p>Consulta cada artículo, su precio y las unidades disponibles.</p>
+            <a class="text-link" th:href="@{/(vista='inventario')}">Explorar galería <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="overview-stat">
+            <p class="eyebrow">Atención al stock</p><p class="stat-number" th:text="${#lists.size(bajos)}">0</p>
+            <h2>Productos por reponer</h2><p>Con 5 unidades o menos.</p>
+            <a class="text-link" th:href="@{/(vista='inventario', stock='bajo')}">Revisar existencias <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="overview-stat">
+            <p class="eyebrow">Equipo</p><p class="stat-number" th:text="${#lists.size(usuarios)}">0</p>
+            <h2>Usuarios registrados</h2><p>Personas que forman parte de la operación.</p>
+            <a class="text-link" th:href="@{/(vista='registro')} + '#usuarios'">Consultar usuarios <span aria-hidden="true">→</span></a>
+        </article>
+    </section>
+    <section class="section-block" aria-labelledby="servicios-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Accesos de trabajo</p><h2 id="servicios-titulo">Tus servicios</h2></div><span class="section-caption">Elige por dónde empezar</span></div>
+        <div class="service-grid">
+            <a class="service-card" th:href="@{/(vista='inventario')}"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Busca por nombre, explora por tipo y selecciona artículos desde la galería.</p><span class="text-link">Ver productos <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/(vista='inventario')} + '#movimientos'"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-movimientos"/></svg><h3>Movimientos de stock</h3><p>Un espacio para entradas, salidas y ajustes de las existencias.</p><span class="text-link">Ver movimientos <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/(vista='registro')}"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Registro y usuarios</h3><p>Consulta el equipo y encuentra el formulario de registro de cuentas.</p><span class="text-link">Ir a usuarios <span aria-hidden="true">→</span></span></a>
+        </div>
+    </section>
+    <section class="section-block panel" aria-labelledby="reposicion-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Para revisar</p><h2 id="reposicion-titulo">Existencias que necesitan atención</h2></div><a class="text-link" th:href="@{/(vista='inventario', stock='bajo')}">Ver todos <span aria-hidden="true">→</span></a></div>
+        <div class="empty-state compact-empty" th:if="${#lists.isEmpty(bajos)}"><svg class="icon" aria-hidden="true"><use href="#icon-caja"/></svg><h3>Sin alertas de stock</h3><p>No hay productos con 5 unidades o menos.</p></div>
+        <ul class="stock-list" th:unless="${#lists.isEmpty(bajos)}">
+            <li th:each="producto, fila : ${bajos}" th:if="${fila.index &lt; 4}"><div><strong th:text="${producto.nombre}">Producto</strong><span th:text="${producto.tipo}">Tipo</span></div><span class="stock-badge stock-low" th:text="${producto.stock + ' unidades'}">0 unidades</span><a class="text-link" th:href="@{/(vista='inventario', nombre=${producto.nombre})}">Revisar <span class="sr-only" th:text="${producto.nombre}">producto</span><span aria-hidden="true">→</span></a></li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

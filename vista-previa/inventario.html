@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventario · HerramientasD</title>
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+<style>.preview-note{padding:8px 20px;background:#242e2b;color:#fff;text-align:center;font:12px/1.5 "Segoe UI",sans-serif}a[aria-disabled="true"]{opacity:.6;cursor:not-allowed}</style></head>
+<body><div class="preview-note">Vista previa HTML · Sesión de muestra · Datos de ejemplo · No guarda cambios</div>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <symbol id="icon-catalogo" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="icon-caja" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z M3 7l9 4 9-4 M12 11v10 M7 5l9 4"/></symbol>
+        <symbol id="icon-movimientos" viewBox="0 0 24 24"><path d="M4 7h16m-4-4 4 4-4 4 M20 17H4m4-4-4 4 4 4"/></symbol>
+        <symbol id="icon-usuarios" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3 M17 4a3 3 0 0 1 0 6 M18 14a5 5 0 0 1 3 4v3"/></symbol>
+        <symbol id="icon-buscar" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+        <symbol id="icon-prenda" viewBox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"/></symbol>
+        <symbol id="icon-alerta" viewBox="0 0 24 24"><path d="m12 3 10 18H2Z M12 9v5 M12 17v1"/></symbol>
+    </svg>
+    <header class="site-header workspace-header">
+        <a class="brand" href="inicio.html">HerramientasD<span class="brand-caption">Gestión interna</span></a>
+        <nav class="workspace-nav" aria-label="Navegación principal">
+            <a href="inicio.html">Inicio</a>
+            <a href="inventario.html" aria-current="page">Inventario</a>
+            <a href="registro.html">Registro</a>
+            <a href="cuenta.html">Mi cuenta</a>
+        </nav>
+        <form action="/logout" method="post">
+            <button class="button button-secondary" type="submit" disabled title="Acción no disponible en la vista previa">Cerrar sesión</button>
+        </form>
+
+    </header>
+
+
+
+    <main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div><p class="eyebrow">Operaciones / Inventario</p><h1>Tu catálogo, a la vista.</h1><p>Encuentra productos y revisa lo que tienes disponible.</p></div>
+        <a class="button button-primary" href="#nuevo-producto">Agregar producto <span aria-hidden="true">+</span></a>
+    </header>
+    <section class="catalog-toolbar" aria-label="Buscar y filtrar productos">
+        <form method="get" action="inventario.html" class="catalog-search" role="search">
+            <input type="hidden" name="vista" value="inventario">
+            <label for="buscar-producto" class="sr-only">Buscar producto por nombre</label>
+            <svg class="icon" aria-hidden="true"><use href="#icon-buscar"/></svg>
+            <input id="buscar-producto" type="search" name="nombre" placeholder="¿Qué producto estás buscando?" maxlength="50" value="">
+            <button class="button button-primary" type="submit" disabled title="Acción no disponible en la vista previa">Buscar</button>
+        </form>
+        <nav class="catalog-filters" aria-label="Filtrar catálogo">
+            <a class="filter-chip" href="inventario.html" aria-current="true">Todo el catálogo</a>
+            <a class="filter-chip" href="inventario-ropa.html">Ropa</a>
+            <a class="filter-chip" href="inventario-bajo.html"><svg class="icon" aria-hidden="true"><use href="#icon-alerta"/></svg>Stock bajo</a>
+            <details class="type-filter"><summary class="filter-chip">Otro tipo <span aria-hidden="true">⌄</span></summary><form method="get" action="inventario.html"><input type="hidden" name="vista" value="inventario"><label for="tipo-producto">Tipo de producto</label><input id="tipo-producto" name="tipo" maxlength="30" required value="" placeholder="Ej. Accesorios"><button class="button button-secondary" type="submit" disabled title="Acción no disponible en la vista previa">Aplicar</button></form></details>
+        </nav>
+    </section>
+    <section class="section-block catalog-section" aria-labelledby="catalogo-titulo">
+        <div class="section-heading"><div><h2 id="catalogo-titulo">Explora tus productos</h2><p class="section-caption"><span>8</span> resultados</p></div><span class="section-caption">Precios en soles · S/</span></div>
+
+        <form class="catalog-selection-form">
+            <fieldset class="catalog-grid"><legend class="sr-only">Selecciona productos del catálogo</legend>
+                <article class="product-card">
+                    <div class="product-art art-clothing">
+                        <span class="art-category">Ropa</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-prenda"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 1</span>
+                        <h3>Camiseta de algodón</h3>
+                        <p class="product-price">S/ <span>25.50</span></p>
+                        <p class="stock-badge">50 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-1" value="1" aria-label="Seleccionar Camiseta de algodón">
+                        <label class="button product-select" for="seleccion-1"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-clothing">
+                        <span class="art-category">Ropa</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-prenda"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 2</span>
+                        <h3>Polo de trabajo</h3>
+                        <p class="product-price">S/ <span>39.90</span></p>
+                        <p class="stock-badge stock-low">4 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-2" value="2" aria-label="Seleccionar Polo de trabajo">
+                        <label class="button product-select" for="seleccion-2"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-clothing">
+                        <span class="art-category">Ropa</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-prenda"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 3</span>
+                        <h3>Casaca ligera</h3>
+                        <p class="product-price">S/ <span>89.00</span></p>
+                        <p class="stock-badge stock-empty">Agotado</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-3" value="3" aria-label="Seleccionar Casaca ligera" disabled="disabled">
+                        <label class="button product-select" for="seleccion-3"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-package">
+                        <span class="art-category">Empaque</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-caja"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 4</span>
+                        <h3>Caja de envío mediana</h3>
+                        <p class="product-price">S/ <span>4.50</span></p>
+                        <p class="stock-badge">24 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-4" value="4" aria-label="Seleccionar Caja de envío mediana">
+                        <label class="button product-select" for="seleccion-4"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-package">
+                        <span class="art-category">Empaque</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-caja"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 5</span>
+                        <h3>Bolsa de empaque</h3>
+                        <p class="product-price">S/ <span>1.20</span></p>
+                        <p class="stock-badge stock-low">3 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-5" value="5" aria-label="Seleccionar Bolsa de empaque">
+                        <label class="button product-select" for="seleccion-5"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-package">
+                        <span class="art-category">Empaque</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-caja"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 6</span>
+                        <h3>Cinta de embalaje</h3>
+                        <p class="product-price">S/ <span>8.90</span></p>
+                        <p class="stock-badge">18 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-6" value="6" aria-label="Seleccionar Cinta de embalaje">
+                        <label class="button product-select" for="seleccion-6"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-package">
+                        <span class="art-category">Empaque</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-caja"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 7</span>
+                        <h3>Guantes de trabajo</h3>
+                        <p class="product-price">S/ <span>16.00</span></p>
+                        <p class="stock-badge">12 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-7" value="7" aria-label="Seleccionar Guantes de trabajo">
+                        <label class="button product-select" for="seleccion-7"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-art art-package">
+                        <span class="art-category">Empaque</span>
+                        <svg class="product-illustration" role="img" aria-label="Ilustración de referencia del tipo de producto"><use href="#icon-caja"/></svg>
+                        <span class="art-caption">Ilustración de referencia</span>
+                    </div>
+                    <div class="product-body">
+                        <span class="product-code">ART. 8</span>
+                        <h3>Caja de envío grande</h3>
+                        <p class="product-price">S/ <span>6.50</span></p>
+                        <p class="stock-badge">32 disponibles</p>
+                        <input class="product-checkbox" type="checkbox" name="productos" id="seleccion-8" value="8" aria-label="Seleccionar Caja de envío grande">
+                        <label class="button product-select" for="seleccion-8"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
+                    </div>
+                </article>
+            </fieldset>
+            <div class="selection-bar" role="status"><div><strong>Productos seleccionados</strong><p>Selección temporal. No modifica el inventario.</p></div><button type="reset" class="button button-secondary">Limpiar selección</button></div>
+        </form>
+        <p class="catalog-footnote">Las ilustraciones identifican el tipo de artículo; no son fotografías del producto.</p>
+    </section>
+    <section class="section-block" aria-labelledby="gestion-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Gestión de existencias</p><h2 id="gestion-titulo">Organiza tu inventario</h2></div></div>
+        <div class="management-grid">
+            <details class="panel management-panel" id="nuevo-producto"><summary><svg class="icon" aria-hidden="true"><use href="#icon-caja"/></svg><span>Agregar un producto<small>Nombre, tipo, precio y stock inicial</small></span><span aria-hidden="true">+</span></summary>
+                <form method="post" class="management-form" aria-describedby="producto-pendiente">
+                    <div class="field"><label for="producto-nombre">Nombre</label><input id="producto-nombre" name="nombre" maxlength="50" required placeholder="Ej. Camiseta de algodón"></div>
+                    <div class="field"><label for="producto-tipo">Tipo</label><input id="producto-tipo" name="tipo" maxlength="30" required placeholder="Ej. Ropa"></div>
+                    <div class="form-columns"><div class="field"><label for="producto-precio">Precio (S/)</label><input id="producto-precio" name="precio" type="number" min="0" step="0.01" required></div><div class="field"><label for="producto-stock">Stock inicial</label><input id="producto-stock" name="stock" type="number" min="0" step="1" required></div></div>
+                    <p class="availability-note" id="producto-pendiente">El guardado de nuevos productos aún no está disponible.</p><button type="submit" class="button button-primary" disabled>Guardar producto</button>
+                </form>
+            </details>
+            <details class="panel management-panel" id="movimientos"><summary><svg class="icon" aria-hidden="true"><use href="#icon-movimientos"/></svg><span>Movimientos de stock<small>Entradas, salidas y ajustes</small></span><span aria-hidden="true">+</span></summary>
+                <form method="post" class="management-form" aria-describedby="movimiento-pendiente">
+                    <div class="field"><label for="movimiento-producto">Producto del catálogo visible</label><select id="movimiento-producto" name="idProducto" required><option value="">Selecciona un producto</option><option value="1">Camiseta de algodón · Stock: 50</option><option value="2">Polo de trabajo · Stock: 4</option><option value="3">Casaca ligera · Stock: 0</option><option value="4">Caja de envío mediana · Stock: 24</option><option value="5">Bolsa de empaque · Stock: 3</option><option value="6">Cinta de embalaje · Stock: 18</option><option value="7">Guantes de trabajo · Stock: 12</option><option value="8">Caja de envío grande · Stock: 32</option></select></div>
+                    <fieldset class="movement-options"><legend>Tipo de movimiento</legend><label><input type="radio" name="operacion" value="entrada" checked> Entrada</label><label><input type="radio" name="operacion" value="salida"> Salida</label><label><input type="radio" name="operacion" value="ajuste"> Ajuste</label></fieldset>
+                    <div class="field"><label for="movimiento-cantidad">Cantidad / stock final</label><input id="movimiento-cantidad" name="cantidad" type="number" min="0" step="1" required aria-describedby="cantidad-ayuda"><p class="field-help" id="cantidad-ayuda">Entrada o salida: cantidad mayor a cero. Ajuste: stock final desde cero.</p></div>
+                    <p class="availability-note" id="movimiento-pendiente">El envío de movimientos aún no está disponible.</p><button type="submit" class="button button-primary" disabled>Registrar movimiento</button>
+                </form>
+            </details>
+        </div>
+    </section>
+</main>
+
+
+
+
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+</body>
+</html>

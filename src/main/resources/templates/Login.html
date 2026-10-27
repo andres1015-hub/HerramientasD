@@ -36,17 +36,19 @@
             </div>
             <div class="field">
                 <label for="dni">DNI</label>
-                <input type="text" id="dni" name="dni" required autocomplete="username" inputmode="numeric" spellcheck="false" autocapitalize="none" aria-describedby="dni-ayuda">
-                <p class="field-help" id="dni-ayuda">Usa el DNI asociado a tu cuenta.</p>
+                <input type="text" id="dni" name="dni" required minlength="8" maxlength="8" pattern="[0-9]{8}" title="El DNI debe tener exactamente 8 dígitos" autocomplete="username" inputmode="numeric" spellcheck="false" autocapitalize="none" aria-describedby="dni-ayuda">
+                <p class="field-help" id="dni-ayuda">Ingresa tu DNI de 8 dígitos (solo números).</p>
             </div>
             <div class="field">
                 <label for="password">Contraseña</label>
                 <input type="password" id="password" name="password" required autocomplete="current-password">
             </div>
             <button class="button button-primary" type="submit">Ingresar <span aria-hidden="true">→</span></button>
+            <p class="field-help">¿Necesitas una cuenta? <a class="text-link" th:href="@{/(vista='registro')}">Ver registro</a></p>
         </form>
     </section>
 </main>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script th:src="@{/js/login.js}" defer></script>
 </body>
 </html>
