@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio · HerramientasD</title>
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+<style>.preview-note{padding:8px 20px;background:#242e2b;color:#fff;text-align:center;font:12px/1.5 "Segoe UI",sans-serif}a[aria-disabled="true"]{opacity:.6;cursor:not-allowed}</style></head>
+<body><div class="preview-note">Vista previa HTML · Sesión de muestra · Datos de ejemplo · No guarda cambios</div>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <symbol id="icon-catalogo" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="icon-caja" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z M3 7l9 4 9-4 M12 11v10 M7 5l9 4"/></symbol>
+        <symbol id="icon-movimientos" viewBox="0 0 24 24"><path d="M4 7h16m-4-4 4 4-4 4 M20 17H4m4-4-4 4 4 4"/></symbol>
+        <symbol id="icon-usuarios" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3 M17 4a3 3 0 0 1 0 6 M18 14a5 5 0 0 1 3 4v3"/></symbol>
+        <symbol id="icon-buscar" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+        <symbol id="icon-prenda" viewBox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"/></symbol>
+        <symbol id="icon-alerta" viewBox="0 0 24 24"><path d="m12 3 10 18H2Z M12 9v5 M12 17v1"/></symbol>
+    </svg>
+    <header class="site-header workspace-header">
+        <a class="brand" href="inicio.html">HerramientasD<span class="brand-caption">Gestión interna</span></a>
+        <nav class="workspace-nav" aria-label="Navegación principal">
+            <a href="inicio.html" aria-current="page">Inicio</a>
+            <a href="inventario.html">Inventario</a>
+            <a href="registro.html">Registro</a>
+            <a href="cuenta.html">Mi cuenta</a>
+        </nav>
+        <form action="/logout" method="post">
+            <button class="button button-secondary" type="submit" disabled title="Acción no disponible en la vista previa">Cerrar sesión</button>
+        </form>
+        
+    </header>
+
+
+    <main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div><p class="eyebrow">Administración / Inicio</p><h1>La operación empieza aquí.</h1><p>Productos, existencias y equipo. Todo en un mismo lugar.</p></div>
+        <a class="button button-primary" href="inventario.html">Abrir inventario <span aria-hidden="true">↗</span></a>
+    </header>
+    <section class="overview-grid" aria-label="Resumen de la operación">
+        <article class="overview-feature">
+            <div class="overview-label"><svg class="icon" aria-hidden="true"><use href="#icon-caja"/></svg><span>Tu catálogo</span></div>
+            <p class="overview-number">8</p>
+            <h2>Productos para seguir trabajando.</h2>
+            <p>Consulta cada artículo, su precio y las unidades disponibles.</p>
+            <a class="text-link" href="inventario.html">Explorar galería <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="overview-stat">
+            <p class="eyebrow">Atención al stock</p><p class="stat-number">3</p>
+            <h2>Productos por reponer</h2><p>Con 5 unidades o menos.</p>
+            <a class="text-link" href="inventario-bajo.html">Revisar existencias <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="overview-stat">
+            <p class="eyebrow">Equipo</p><p class="stat-number">3</p>
+            <h2>Usuarios registrados</h2><p>Personas que forman parte de la operación.</p>
+            <a class="text-link" href="registro.html#usuarios">Consultar usuarios <span aria-hidden="true">→</span></a>
+        </article>
+    </section>
+    <section class="section-block" aria-labelledby="servicios-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Accesos de trabajo</p><h2 id="servicios-titulo">Tus servicios</h2></div><span class="section-caption">Elige por dónde empezar</span></div>
+        <div class="service-grid">
+            <a class="service-card" href="inventario.html"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Busca por nombre, explora por tipo y selecciona artículos desde la galería.</p><span class="text-link">Ver productos <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" href="inventario.html#movimientos"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-movimientos"/></svg><h3>Movimientos de stock</h3><p>Un espacio para entradas, salidas y ajustes de las existencias.</p><span class="text-link">Ver movimientos <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" href="registro.html"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Registro y usuarios</h3><p>Consulta el equipo y encuentra el formulario de registro de cuentas.</p><span class="text-link">Ir a usuarios <span aria-hidden="true">→</span></span></a>
+        </div>
+    </section>
+    <section class="section-block panel" aria-labelledby="reposicion-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Para revisar</p><h2 id="reposicion-titulo">Existencias que necesitan atención</h2></div><a class="text-link" href="inventario-bajo.html">Ver todos <span aria-hidden="true">→</span></a></div>
+        
+        <ul class="stock-list">
+            <li><div><strong>Polo de trabajo</strong><span>Ropa</span></div><span class="stock-badge stock-low">4 unidades</span><a class="text-link" href="inventario.html">Revisar <span class="sr-only">Polo de trabajo</span><span aria-hidden="true">→</span></a></li>
+            <li><div><strong>Casaca ligera</strong><span>Ropa</span></div><span class="stock-badge stock-low">0 unidades</span><a class="text-link" href="inventario.html">Revisar <span class="sr-only">Casaca ligera</span><span aria-hidden="true">→</span></a></li>
+            <li><div><strong>Bolsa de empaque</strong><span>Empaque</span></div><span class="stock-badge stock-low">3 unidades</span><a class="text-link" href="inventario.html">Revisar <span class="sr-only">Bolsa de empaque</span><span aria-hidden="true">→</span></a></li>
+        </ul>
+    </section>
+</main>
+    
+    
+
+
+
+
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+</body>
+</html>

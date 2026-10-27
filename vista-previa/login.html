@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión · HerramientasD</title>
+    <link rel="stylesheet" href="../src/main/resources/static/css/app.css">
+<style>.preview-note{padding:8px 20px;background:#242e2b;color:#fff;text-align:center;font:12px/1.5 "Segoe UI",sans-serif}a[aria-disabled="true"]{opacity:.6;cursor:not-allowed}</style></head>
+<body class="login-page"><div class="preview-note">Vista previa HTML · Sin conexión al servidor</div>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<header class="site-header">
+    <span class="brand">HerramientasD<span class="brand-caption">Gestión interna</span></span>
+    <span class="header-context">Acceso al sistema</span>
+</header>
+<main id="contenido" class="login-layout">
+    <section class="login-context" aria-labelledby="contexto-titulo">
+        <p class="eyebrow">Operaciones / Empaquetado</p>
+        <h1 id="contexto-titulo">Gestión de<br>empaquetado.</h1>
+        <p class="intro">Accede al sistema de gestión de productos y empaquetado.</p>
+        <p class="context-note">Herramientas de trabajo para la operación interna.</p>
+    </section>
+    <section class="login-access" aria-labelledby="acceso-titulo">
+        <div class="form-heading">
+            <p class="eyebrow">Identificación</p>
+            <h2 id="acceso-titulo">Iniciar sesión</h2>
+            <p>Ingresa con tu DNI y contraseña.</p>
+        </div>
+        <form action="/login" method="post" class="login-form">
+            
+            
+            <div class="field">
+                <label for="dni">DNI</label>
+                <input type="text" id="dni" name="dni" required autocomplete="username" inputmode="numeric" spellcheck="false" autocapitalize="none" aria-describedby="dni-ayuda">
+                <p class="field-help" id="dni-ayuda">Usa el DNI asociado a tu cuenta.</p>
+            </div>
+            <div class="field">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button class="button button-primary" type="submit" disabled title="Acción no disponible en la vista previa">Ingresar <span aria-hidden="true">→</span></button>
+            <p class="field-help">¿Necesitas una cuenta? <a class="text-link" href="registro.html">Ver registro</a></p>
+        </form>
+    </section>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+</body>
+</html>
