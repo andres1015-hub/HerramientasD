@@ -10,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,6 +21,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcherEntry;
 
@@ -39,20 +43,29 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/", "/login", "/error", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        // Público: inicio, login, auto-registro y recursos estáticos
+                        .requestMatchers("/", "/login", "/registro", "/error", "/css/**", "/js/**",
+                                "/images/**", "/favicon.ico").permitAll()
 
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/paquete", "/paquete/**").hasAnyRole("ADMINISTRADOR", "USER")
+                        // Operación (ADMINISTRADOR y USER): empaquetado, escáner y API de QR
+                        .requestMatchers("/paquete", "/paquete/**", "/escaner", "/escaner/**", "/api/**")
+                                .hasAnyRole("ADMINISTRADOR", "USER")
 
-                        .requestMatchers("/usuarios", "/usuarios/**", "/inventario", "/inventario/**").hasRole("ADMINISTRADOR")
+                        // Administración: solo ADMINISTRADOR
+                        .requestMatchers("/usuarios", "/usuarios/**", "/inventario", "/inventario/**")
+                                .hasRole("ADMINISTRADOR")
 
+                        // Cuenta propia: cualquier rol autenticado (incluye PROVEEDOR)
+                        .requestMatchers("/miperfil", "/miperfil/**").authenticated()
+
+                        // Resto: cualquier sesión válida (PROVEEDOR: inicio y catálogo)
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("dni")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/")
                         .failureUrl("/login?error")
                         .permitAll()
                 )
@@ -68,7 +81,14 @@ public class SecurityConfig {
                         .ignoringRequestMatchers(API)
                 )
                 .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .invalidSessionUrl("/login?expirada")
                         .sessionFixation(fixation -> fixation.changeSessionId())
+                        // Una sola sesión activa por usuario: al iniciar sesión en otro
+                        // navegador, la sesión anterior queda invalidada.
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/login?expirada")
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint())
@@ -81,6 +101,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /** Registro compartido de sesiones para poder limitar sesiones concurrentes. */
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    /** Notifica a Spring Security cuándo se crea o destruye una sesión HTTP. */
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
 

@@ -11,8 +11,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
@@ -135,6 +139,36 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accesoDenegado(AccessDeniedException ex,
+                                                        HttpServletRequest req) {
+        log.warn("Acceso denegado en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return responder(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta acción", req);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> noAutenticado(AuthenticationException ex,
+                                                       HttpServletRequest req) {
+        log.warn("Autenticación requerida en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return responder(HttpStatus.UNAUTHORIZED, "Debes iniciar sesión para acceder a este recurso", req);
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    public ResponseEntity<ErrorResponse> peticionIncompleta(ServletRequestBindingException ex,
+                                                            HttpServletRequest req) {
+        log.warn("Petición incompleta en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return responder(HttpStatus.BAD_REQUEST,
+                "La petición no contiene todos los datos necesarios", req);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> metodoNoSoportado(HttpRequestMethodNotSupportedException ex,
+                                                           HttpServletRequest req) {
+        log.warn("Método no soportado en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return responder(HttpStatus.METHOD_NOT_ALLOWED,
+                "El método HTTP utilizado no está permitido para este recurso", req);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> errorInesperado(Exception ex, HttpServletRequest req) {
