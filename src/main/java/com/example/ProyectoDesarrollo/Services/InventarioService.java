@@ -17,11 +17,13 @@ public class InventarioService {
 
     private final InventarioRepository inventarioRepository;
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> listarTodos() {
         return inventarioRepository.findAll();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public int obtenerStock(Long idProducto) {
         Producto producto = inventarioRepository.findById(idProducto)
@@ -30,16 +32,19 @@ public class InventarioService {
         return producto.getStock();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> productosStockBajo(int minimo) {
         return inventarioRepository.findByStockLessThanEqual(minimo);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> productosPorTipo(String tipo) {
         return inventarioRepository.findByTipo(tipo);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> buscarPorNombre(String nombre) {
         return inventarioRepository.findByNombreContainingIgnoreCase(nombre);

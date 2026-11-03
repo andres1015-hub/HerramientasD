@@ -25,7 +25,7 @@ public class Usuario {
     @Column(name = "apellido",length = 30, nullable = false)
     private String apelllido;
     @Pattern(regexp = "\\d{8}", message = "El DNI debe contener exactamente 8 dígitos numéricos")
-    @Column(name = "DNI", length = 10, unique = true, nullable = false)
+    @Column(name = "DNI", length = 11, unique = true, nullable = false)
     private String DNI;
     @Column(name = "password",length = 100, nullable = false)
     private String password;

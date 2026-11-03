@@ -5,6 +5,7 @@ import com.example.ProyectoDesarrollo.Models.DetallePackage;
 import com.example.ProyectoDesarrollo.Repositories.DetallePackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +16,7 @@ public class DetallePackageService {
 
     private final DetallePackageRepository repo;
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional(readOnly = true)
     public DetallePackageResponse obtenerPorQR(String codigoQR) {
         DetallePackage detalle = repo.findByCodigoQRWithRelations(codigoQR)
@@ -23,6 +25,7 @@ public class DetallePackageService {
         return DetallePackageResponse.from(detalle);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional(readOnly = true)
     public DetallePackageResponse obtenerPorId(Long id) {
         DetallePackage detalle = repo.findByIdWithRelations(id)
