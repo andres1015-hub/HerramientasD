@@ -30,6 +30,14 @@
                 <strong>No se pudo iniciar sesión.</strong>
                 <p>DNI o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo.</p>
             </div>
+            <div class="message message-error" role="alert" th:if="${param.expirada}">
+                <strong>Tu sesión expiró.</strong>
+                <p>Por seguridad, vuelve a iniciar sesión para continuar.</p>
+            </div>
+            <div class="message message-success" role="status" th:if="${param.registrado != null or exitoRegistro != null}">
+                <strong>Cuenta creada correctamente.</strong>
+                <p th:text="${exitoRegistro != null ? exitoRegistro : 'Ya puedes iniciar sesión con tu DNI y contraseña.'}">Ya puedes iniciar sesión.</p>
+            </div>
             <div class="message message-success" role="status" th:if="${param.logout}">
                 <strong>Sesión cerrada correctamente.</strong>
                 <p>Puedes volver a ingresar cuando lo necesites.</p>

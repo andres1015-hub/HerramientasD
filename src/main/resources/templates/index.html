@@ -23,7 +23,7 @@
     </header>
     <section class="mt-12 sm:mt-16" aria-labelledby="herramientas-titulo">
         <h2 id="herramientas-titulo" class="mb-4 text-sm font-semibold">Herramientas de trabajo</h2>
-        <article class="flex flex-col items-stretch gap-8 rounded-card border border-rule bg-surface p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12" aria-labelledby="empaquetador-titulo">
+        <article class="flex flex-col items-stretch gap-8 rounded-card border border-rule bg-surface p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12" sec:authorize="!hasRole('PROVEEDOR')" aria-labelledby="empaquetador-titulo">
             <div>
                 <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-muted">Operaciones / Empaquetado</p>
                 <h3 id="empaquetador-titulo" class="mt-2 text-2xl font-semibold tracking-tight">Empaquetador</h3>
@@ -46,5 +46,6 @@
     <main id="contenido" class="workspace empty-state" sec:authorize="isAnonymous()"><h1>Accede a tu cuenta.</h1><p>Inicia sesión para consultar tus datos de acceso.</p><a class="button button-primary" th:href="@{/login}">Iniciar sesión</a></main>
 </th:block>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script th:src="@{/js/registro.js}" defer></script>
 </body>
 </html>
