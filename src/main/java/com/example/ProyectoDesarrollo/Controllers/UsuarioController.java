@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class UsuarioController{
     @GetMapping("/miperfil")
-    public String cuenta() {
+    public String cuenta(Model model) {
         return "cuenta";
     }
 }
