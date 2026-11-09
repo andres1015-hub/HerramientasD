@@ -28,7 +28,7 @@ public class UsuarioController {
 
     @GetMapping("/miperfil")
     public String cuenta() {
-        return VISTA_CUENTA;
+        return "cuenta";
     }
 
     @PostMapping("/miperfil/password")
@@ -50,6 +50,6 @@ public class UsuarioController {
             flash.addFlashAttribute("errorCuenta", ex.getMessage());
         }
 
-        return VISTA_CUENTA;
+        return "cuenta";
     }
 }
