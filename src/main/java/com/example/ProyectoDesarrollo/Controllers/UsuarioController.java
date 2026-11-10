@@ -7,6 +7,7 @@ import com.example.ProyectoDesarrollo.Services.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,12 @@ public class UsuarioController {
     @GetMapping("/miperfil")
     public String cuenta() {
         return "cuenta";
+    }
+
+    @GetMapping("/usuarios")
+    public String usuarios(Model model) {
+        model.addAttribute("usuarios", usuarioService.listarTodos());
+        return "usuarios";
     }
 
     @PostMapping("/miperfil/password")

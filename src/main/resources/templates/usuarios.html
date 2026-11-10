@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Usuarios · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<th:block th:replace="~{fragments/navegacion :: cabecera('usuarios')}"/>
+<main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div>
+            <p class="eyebrow">Administración / Personas</p>
+            <h1>El equipo del sistema.</h1>
+            <p>Consulta las cuentas registradas, su documento, rol y estado de acceso.</p>
+        </div>
+        <a class="button button-secondary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
+    </header>
+
+    <section class="section-block panel" aria-labelledby="usuarios-titulo">
+        <div class="section-heading">
+            <div><p class="eyebrow">Cuentas registradas</p><h2 id="usuarios-titulo">Usuarios del sistema</h2></div>
+            <span class="section-caption"><span th:text="${#lists.size(usuarios)}">0</span> usuarios registrados</span>
+        </div>
+
+        <div class="empty-state compact-empty" th:if="${#lists.isEmpty(usuarios)}">
+            <svg class="icon empty-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg>
+            <h3>Aún no hay usuarios registrados</h3>
+            <p>Las cuentas aparecerán aquí cuando formen parte del sistema.</p>
+        </div>
+
+        <div class="table-scroll" th:unless="${#lists.isEmpty(usuarios)}" role="region" aria-label="Usuarios registrados" tabindex="0">
+            <table class="users-table">
+                <caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption>
+                <thead>
+                <tr><th scope="col">Persona</th><th scope="col">DNI</th><th scope="col">Rol</th><th scope="col">Estado</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <th scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
+                    <td class="tabular" th:text="${usuario.DNI}">Documento</td>
+                    <td th:text="${usuario.rol}">Rol</td>
+                    <td><span class="stock-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? '' : 'stock-low'}" th:text="${usuario.estado}">Estado</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="catalog-footnote">El alta de nuevas cuentas se realiza desde el enlace «Ver registro» de la pantalla de inicio de sesión.</p>
+    </section>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+</body>
+</html>

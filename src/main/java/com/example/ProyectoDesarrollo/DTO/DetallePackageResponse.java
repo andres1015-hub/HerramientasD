@@ -1,6 +1,7 @@
 package com.example.ProyectoDesarrollo.DTO;
 
 import com.example.ProyectoDesarrollo.Models.DetallePackage;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,10 @@ public class DetallePackageResponse {
 
     // Paquete
     private Long idPaquete;
+
+    @JsonProperty("nPedido")
     private String nPedido;
+
     private String estadoPaquete;
 
     // Producto

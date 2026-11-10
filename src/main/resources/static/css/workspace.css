@@ -158,6 +158,88 @@
 .home-inventory-card h3 { margin-top: 8px; }
 .home-inventory-card p:last-child { margin-top: 16px; color: var(--muted); }
 .home-inventory-card .button { flex: none; }
+[hidden] { display: none !important; }
+
+/* Empaquetador: selección de productos y paquetes recientes. */
+.packaging-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, .95fr); align-items: start; gap: 24px; }
+.packaging-panel { padding: 28px; }
+.packaging-form { display: grid; gap: 24px; margin-top: 24px; }
+.package-products { display: grid; gap: 10px; margin: 0; padding: 0; border: 0; }
+.package-products legend { margin-bottom: 4px; font-size: .875rem; font-weight: 600; }
+.package-product { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); }
+.package-product:has(.package-product-check:checked) { border-color: var(--primary); background: var(--success-surface); }
+.package-product:has(.package-product-check:disabled) { opacity: .65; }
+.package-product-check { width: 20px; height: 20px; accent-color: var(--primary); flex: none; }
+.package-product-info { min-width: 0; }
+.package-product-info label { display: block; cursor: pointer; }
+.package-product-info strong { display: block; font-size: .9375rem; overflow-wrap: anywhere; }
+.package-product-info span { display: block; margin-top: 2px; color: var(--muted); font-size: .8125rem; }
+.package-product .stock-badge { white-space: nowrap; }
+.package-qty { display: flex; align-items: center; gap: 8px; }
+.package-qty label { color: var(--muted); font-size: .75rem; }
+.package-qty input { width: 82px; min-height: 44px; padding: 8px; border: 1px solid var(--control-border); border-radius: 2px; background: var(--surface); color: var(--ink); }
+.package-qty input:disabled { opacity: .45; background: var(--paper); }
+.packaging-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 20px; border: 1px solid var(--primary); border-radius: var(--workspace-radius); background: var(--success-surface); }
+.packaging-summary strong { display: block; font-size: .9375rem; }
+.packaging-summary p { margin-top: 4px; color: var(--muted); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+.packaging-summary .button { flex: none; }
+.packaging-success { margin-bottom: 24px; }
+.packaging-success > p { margin-top: 4px; }
+.packaging-success .qr-grid { margin-block: 20px 12px; }
+.packaging-side { display: grid; gap: 20px; }
+.packaging-side .section-heading { margin-bottom: 16px; }
+.packaging-help { background: var(--catalog-sage); border-color: var(--catalog-sage); }
+.packaging-help h2 { margin-top: 8px; font-size: 1.25rem; }
+.packaging-help .field-help { margin-top: 12px; color: var(--ink); }
+.packaging-help .text-link { margin-top: 8px; }
+.package-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.package-card { padding: 16px; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); }
+.package-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.package-card-head strong { overflow-wrap: anywhere; font-size: .9375rem; }
+.package-card > p { margin-top: 6px; color: var(--muted); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+.package-card details { margin-top: 6px; }
+.package-card summary { display: flex; align-items: center; min-height: 44px; color: var(--primary); font-size: .8125rem; font-weight: 600; cursor: pointer; }
+.package-detail-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.package-detail-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 8px; border-top: 1px solid var(--rule); font-size: .8125rem; }
+.package-detail-list li > span { min-width: 0; overflow-wrap: anywhere; }
+.package-detail-list .text-link { flex: none; min-height: 36px; font-size: .75rem; }
+.qr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.qr-card { margin: 0; padding: 12px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); text-align: center; }
+.qr-card img { display: block; width: 100%; max-width: 190px; height: auto; margin-inline: auto; aspect-ratio: 1; image-rendering: pixelated; }
+.qr-card figcaption { display: grid; gap: 2px; margin-top: 8px; }
+.qr-card figcaption strong { font-size: .8125rem; overflow-wrap: anywhere; }
+.qr-card figcaption span { color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+
+/* Escáner QR: pensado primero para pantallas de celular. */
+.scanner-workspace { max-width: 1120px; }
+.scanner-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; gap: 24px; }
+.scanner-panel { padding: 24px; border: 1px solid var(--rule); border-radius: var(--workspace-radius); background: var(--surface); }
+.scanner-stage { position: relative; display: grid; place-items: center; overflow: hidden; aspect-ratio: 4 / 3; border-radius: 6px; background: #0f1714; }
+.scanner-stage video { display: none; width: 100%; height: 100%; object-fit: cover; }
+.scanner-stage.is-active video { display: block; }
+.scanner-placeholder { max-width: 36ch; padding: 24px; color: #d7e0da; font-size: .875rem; text-align: center; }
+.scanner-stage.is-active .scanner-placeholder { display: none; }
+.scanner-frame { position: absolute; inset: 14% 12%; display: none; border: 2px solid rgba(255, 255, 255, .92); border-radius: 12px; box-shadow: 0 0 0 999px rgba(0, 0, 0, .38); pointer-events: none; }
+.scanner-stage.is-active .scanner-frame { display: block; }
+.scanner-status { min-height: 1.5em; margin-top: 14px; color: var(--muted); font-size: .875rem; }
+.scanner-status[data-state="error"] { color: var(--danger); }
+.scanner-status[data-state="ok"] { color: var(--primary); font-weight: 600; }
+.scanner-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.scanner-actions .button { flex: 1 1 180px; }
+.scanner-permission { margin-top: 12px; }
+.scanner-manual { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.scanner-manual summary { display: flex; align-items: center; min-height: 44px; color: var(--primary); font-size: .875rem; font-weight: 600; cursor: pointer; }
+.scanner-photo { display: grid; justify-items: start; gap: 8px; margin-top: 12px; }
+.scanner-photo .field-help { max-width: 42ch; }
+.scanner-manual-form { display: grid; gap: 12px; margin-top: 12px; }
+.scanner-result { padding: 28px; }
+.scanner-result .scan-product { margin-top: 8px; font-size: 1.5rem; overflow-wrap: anywhere; }
+.scan-details { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 20px; margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--rule); }
+.scan-details dt { color: var(--muted); font-size: .8125rem; }
+.scan-details dd { margin: 0; text-align: right; font-weight: 600; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.scan-details .scan-code { font-family: var(--font-mono); font-size: .75rem; font-weight: 400; }
+.scanner-footnote { margin-top: 20px; color: var(--muted); font-size: .75rem; text-align: center; }
+
 @media (max-width: 68rem) {
     .workspace-header { gap: 16px; padding-inline: 32px; }
     .workspace-nav a { padding-inline: 12px; }
@@ -177,10 +259,12 @@
     .service-card { padding: 24px; }
     .service-icon { margin-bottom: 16px; }
     .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .management-grid, .registration-layout, .account-layout { grid-template-columns: 1fr; }
+    .management-grid, .registration-layout, .account-layout,
+    .packaging-layout, .scanner-layout { grid-template-columns: 1fr; }
     .registration-context { padding: 32px; }
     .registration-steps { margin-block: 32px; }
     .home-inventory-card { align-items: stretch; flex-direction: column; }
+    .scanner-result { order: -1; }
 }
 @media (max-width: 35rem) {
     .workspace-header { padding: 20px; }
@@ -212,5 +296,16 @@
     .registration-context h1 { font-size: 2.25rem; }
     .panel { padding: 20px; }
     .users-table th, .users-table td { padding: 12px; }
+    .package-product { grid-template-columns: auto minmax(0, 1fr); gap: 10px 12px; }
+    .package-product .stock-badge { grid-column: 2; justify-self: start; }
+    .package-qty { grid-column: 1 / -1; justify-content: flex-end; }
+    .packaging-summary { align-items: stretch; flex-direction: column; }
+    .packaging-summary .button { width: 100%; }
+    .scanner-panel, .scanner-result { padding: 16px; }
+    .scanner-actions .button { flex-basis: 100%; }
+    .scan-details { grid-template-columns: 1fr; gap: 4px; }
+    .scan-details dd { text-align: left; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+    .scan-details dd:last-child { border-bottom: 0; }
+    .scanner-heading .button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .service-card { transition: none; } }

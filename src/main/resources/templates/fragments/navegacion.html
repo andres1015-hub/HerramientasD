@@ -10,13 +10,17 @@
         <symbol id="icon-buscar" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
         <symbol id="icon-prenda" viewBox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"/></symbol>
         <symbol id="icon-alerta" viewBox="0 0 24 24"><path d="m12 3 10 18H2Z M12 9v5 M12 17v1"/></symbol>
+        <symbol id="icon-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4Z M14 4h6v6h-6Z M4 14h6v6H4Z M15 14h2v2h-2Z M19 14h1 M14 19h2 M19 18v2"/></symbol>
+        <symbol id="icon-paquete" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5Z M3 7v10l9 5 9-5V7 M12 12v10 M7.5 9.5l9-5"/></symbol>
     </svg>
     <header class="site-header workspace-header">
         <a class="brand" th:href="@{/}">HerramientasD<span class="brand-caption">Gestión interna</span></a>
         <nav class="workspace-nav" aria-label="Navegación principal">
             <a th:href="@{/}" th:attr="aria-current=${vista == 'inicio' or vista == 'administrador' ? 'page' : null}">Inicio</a>
+            <a th:href="@{/paquete}" th:attr="aria-current=${vista == 'empaquetador' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Empaquetador</a>
+            <a th:href="@{/escaner}" th:attr="aria-current=${vista == 'escaner' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Escáner QR</a>
             <a th:href="@{/(vista='inventario')}" th:attr="aria-current=${vista == 'inventario' ? 'page' : null}" sec:authorize="isAuthenticated()">Inventario</a>
-            <a th:href="@{/(vista='registro')}" th:attr="aria-current=${vista == 'registro' ? 'page' : null}">Registro</a>
+            <a th:href="@{/usuarios}" th:attr="aria-current=${vista == 'usuarios' ? 'page' : null}" sec:authorize="hasRole('ADMINISTRADOR')">Usuarios</a>
             <a th:href="@{/(vista='cuenta')}" th:attr="aria-current=${vista == 'cuenta' ? 'page' : null}" sec:authorize="isAuthenticated()">Mi cuenta</a>
         </nav>
         <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">

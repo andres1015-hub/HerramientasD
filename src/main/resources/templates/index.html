@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:with="solicitada=${param.vista != null ? param.vista[0] : 'inicio'}, vista=${solicitada == 'administrador' or solicitada == 'inventario' or solicitada == 'registro' or solicitada == 'cuenta' ? solicitada : 'inicio'}">
+      th:with="solicitada=${param.vista != null ? param.vista[0] : 'inicio'}, vista=${vistaInicial == 'registro' ? 'registro' : (solicitada == 'administrador' or solicitada == 'inventario' or solicitada == 'cuenta' ? solicitada : 'inicio')}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,6 +32,7 @@
             <a class="button button-primary lg:flex-none" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
         </article>
         <article class="home-inventory-card" sec:authorize="isAuthenticated()" aria-labelledby="inventario-titulo"><div><p class="eyebrow">Productos / Inventario</p><h3 id="inventario-titulo">Explora el catálogo</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p></div><a class="button button-primary" th:href="@{/(vista='inventario')}">Ver galería <span aria-hidden="true">→</span></a></article>
+        <article class="home-inventory-card" sec:authorize="!hasRole('PROVEEDOR')" aria-labelledby="escaner-inicio-titulo"><div><p class="eyebrow">Operaciones / Escáner QR</p><h3 id="escaner-inicio-titulo">Escanea desde el celular</h3><p>Abre la cámara del teléfono y consulta el paquete de cada código QR.</p></div><a class="button button-primary" th:href="@{/escaner}">Abrir escáner <span aria-hidden="true">→</span></a></article>
     </section>
 </main>
     </th:block>
@@ -46,6 +47,6 @@
     <main id="contenido" class="workspace empty-state" sec:authorize="isAnonymous()"><h1>Accede a tu cuenta.</h1><p>Inicia sesión para consultar tus datos de acceso.</p><a class="button button-primary" th:href="@{/login}">Iniciar sesión</a></main>
 </th:block>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
-<script th:src="@{/js/registro.js}" defer></script>
+<script th:if="${vista == 'registro'}" th:src="@{/js/registro.js}" defer></script>
 </body>
 </html>
