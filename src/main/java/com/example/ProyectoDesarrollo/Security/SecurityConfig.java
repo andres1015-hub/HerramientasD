@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -77,12 +76,19 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(API)
-                )
+                // CSRF activo también para /api/**: la sesión viaja en cookie y
+                // las vistas envían el token en la cabecera configurada.
+                .csrf(csrf -> {
+                    // Se mantiene la protección CSRF por defecto, también en /api/**.
+                })
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; base-uri 'self'; form-action 'self'; "
+                                        + "frame-ancestors 'none'; img-src 'self' data:; "
+                                        + "style-src 'self'; script-src 'self'; connect-src 'self'; "
+                                        + "media-src 'self' blob:; object-src 'none'")))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .invalidSessionUrl("/login?expirada")
                         .sessionFixation(fixation -> fixation.changeSessionId())
                         // Una sola sesión activa por usuario: al iniciar sesión en otro
                         // navegador, la sesión anterior queda invalidada.
@@ -132,7 +138,8 @@ public class SecurityConfig {
         AccessDeniedHandler sinPermisosApi = (request, response, ex) -> escribirErrorJson(request, response,
                 HttpStatus.FORBIDDEN, "Acceso denegado",
                 "No tienes permisos para realizar esta acción");
-        AccessDeniedHandlerImpl sinPermisosWeb = new AccessDeniedHandlerImpl();
+        AccessDeniedHandler sinPermisosWeb = (request, response, ex) ->
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
 
         return (request, response, ex) -> {
             if (API.matches(request)) {

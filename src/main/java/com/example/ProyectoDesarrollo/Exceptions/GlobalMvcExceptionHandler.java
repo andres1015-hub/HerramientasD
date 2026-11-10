@@ -16,6 +16,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.thymeleaf.exceptions.TemplateInputException;
@@ -109,6 +110,14 @@ public class GlobalMvcExceptionHandler {
         log.warn("Petición incompleta en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
         return vistaError(HttpStatus.BAD_REQUEST, "Petición inválida",
                 "La petición no contiene todos los datos necesarios.", req, res, model);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public String parametroInvalido(MethodArgumentTypeMismatchException ex, HttpServletRequest req,
+                                    HttpServletResponse res, Model model) {
+        log.warn("Parámetro inválido en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return vistaError(HttpStatus.BAD_REQUEST, "Parámetro inválido",
+                "Uno de los parámetros de la dirección no tiene un formato válido.", req, res, model);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

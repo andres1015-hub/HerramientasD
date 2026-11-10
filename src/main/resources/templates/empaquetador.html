@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#285442">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>Empaquetador · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<th:block th:replace="~{fragments/navegacion :: cabecera('empaquetador')}"/>
+
+<main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div>
+            <p class="eyebrow">Operaciones / Empaquetado</p>
+            <h1>Prepara cada pedido.</h1>
+            <p>Selecciona los productos, genera el paquete y obtén un código QR por cada artículo.</p>
+        </div>
+        <a class="button button-primary" th:href="@{/escaner}">Escanear QR <span aria-hidden="true">→</span></a>
+    </header>
+
+    <section class="message message-success packaging-success" th:if="${paqueteCreado != null}" aria-labelledby="creado-titulo">
+        <strong id="creado-titulo">Paquete <span th:text="${paqueteCreado.getnPedido()}">PED-000</span> listo.</strong>
+        <p>Los códigos QR ya están disponibles. Puedes imprimirlos o escanearlos desde el celular.</p>
+        <div class="qr-grid">
+            <figure class="qr-card" th:each="detalle : ${paqueteCreado.detalles}">
+                <img th:src="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
+                     th:alt="${'Código QR de ' + detalle.nombreProducto}" width="300" height="300" loading="lazy">
+                <figcaption>
+                    <strong th:text="${detalle.nombreProducto}">Producto</strong>
+                    <span th:text="${detalle.cantidad + ' unidad(es) · S/ ' + #numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}">1 unidad</span>
+                </figcaption>
+            </figure>
+        </div>
+        <p class="field-help">Prueba el flujo completo desde el <a class="text-link" th:href="@{/escaner}">escáner QR</a>.</p>
+    </section>
+
+    <div class="packaging-layout">
+        <section class="panel packaging-panel" aria-labelledby="nuevo-paquete-titulo">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Nuevo paquete</p>
+                    <h2 id="nuevo-paquete-titulo">Arma el pedido</h2>
+                    <p class="section-caption">Elige los productos y la cantidad de cada uno.</p>
+                </div>
+                <span class="section-caption"><span th:text="${#lists.size(productos)}">0</span> productos disponibles</span>
+            </div>
+
+            <form id="form-paquete" class="packaging-form" th:action="@{/api/paquetes}" method="post">
+                <div class="field">
+                    <label for="numero-pedido">Número de pedido</label>
+                    <input id="numero-pedido" name="numeroPedido" type="text" maxlength="50" required
+                           pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,49}" autocomplete="off"
+                           placeholder="Ej. PED-002" aria-describedby="pedido-ayuda">
+                    <p class="field-help" id="pedido-ayuda">Entre 3 y 50 caracteres. Puedes usar letras, números, punto, guion y guion bajo.</p>
+                </div>
+
+                <div class="empty-state compact-empty" th:if="${#lists.isEmpty(productos)}">
+                    <svg class="icon empty-icon" aria-hidden="true"><use href="#icon-caja"/></svg>
+                    <h3>No hay productos con existencias</h3>
+                    <p>El administrador debe registrar productos en el inventario antes de empaquetar.</p>
+                    <a class="button button-secondary" th:href="@{/(vista='inventario')}">Ir al inventario</a>
+                </div>
+
+                <fieldset class="package-products" th:unless="${#lists.isEmpty(productos)}" aria-describedby="productos-ayuda">
+                    <legend>Productos del paquete</legend>
+                    <p class="field-help" id="productos-ayuda">Marca un producto para habilitar su cantidad. El stock se descuenta al generar el paquete.</p>
+
+                    <div class="package-product" th:each="producto : ${productos}">
+                        <input class="package-product-check" type="checkbox"
+                               th:id="${'producto-' + producto.idProducto}" th:value="${producto.idProducto}"
+                               th:disabled="${producto.stock &lt; 1}"
+                               th:attr="data-precio=${producto.precio},data-stock=${producto.stock}">
+                        <div class="package-product-info">
+                            <label th:for="${'producto-' + producto.idProducto}">
+                                <strong th:text="${producto.nombre}">Producto</strong>
+                                <span th:text="${producto.tipo + ' · S/ ' + #numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">Tipo · S/ 0.00</span>
+                            </label>
+                        </div>
+                        <span class="stock-badge" th:classappend="${producto.stock &lt; 1 ? 'stock-empty' : (producto.stock &lt;= 5 ? 'stock-low' : '')}"
+                              th:text="${producto.stock &lt; 1 ? 'Agotado' : producto.stock + ' disp.'}">Disponible</span>
+                        <div class="package-qty">
+                            <label th:for="${'cantidad-' + producto.idProducto}">Cantidad</label>
+                            <input type="number" th:id="${'cantidad-' + producto.idProducto}" min="1"
+                                   th:max="${producto.stock}" value="1" inputmode="numeric" disabled>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="packaging-summary" aria-live="polite">
+                    <div>
+                        <strong id="resumen-productos">0 productos</strong>
+                        <p><span id="resumen-unidades">0</span> unidades · Total <span id="resumen-total">S/ 0.00</span></p>
+                    </div>
+                    <button class="button button-primary" type="submit" id="btn-crear" th:disabled="${#lists.isEmpty(productos)}">
+                        Generar paquete y QR <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+                <div class="message message-error" id="empaquetador-msg" role="alert" hidden></div>
+                <noscript>
+                    <div class="message message-error" role="alert">
+                        <strong>JavaScript está desactivado.</strong>
+                        <p>Actívalo para armar el paquete y generar los códigos QR.</p>
+                    </div>
+                </noscript>
+            </form>
+        </section>
+
+        <aside class="packaging-side" aria-label="Paquetes recientes">
+            <section class="panel">
+                <div class="section-heading">
+                    <div><p class="eyebrow">Historial</p><h2>Paquetes recientes</h2></div>
+                </div>
+                <div class="empty-state compact-empty" th:if="${#lists.isEmpty(paquetes)}">
+                    <svg class="icon empty-icon" aria-hidden="true"><use href="#icon-paquete"/></svg>
+                    <h3>Aún no hay paquetes</h3>
+                    <p>Cuando generes el primero, aparecerá aquí con sus códigos QR.</p>
+                </div>
+                <ul class="package-list" th:unless="${#lists.isEmpty(paquetes)}">
+                    <li class="package-card" th:each="paquete : ${paquetes}">
+                        <div class="package-card-head">
+                            <strong th:text="${paquete.getnPedido()}">PED-000</strong>
+                            <span class="stock-badge" th:text="${paquete.estado}">Enviado</span>
+                        </div>
+                        <p><span th:text="${paquete.totalUnidades}">0</span> unidades · S/ <span th:text="${#numbers.formatDecimal(paquete.total, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                        <p th:if="${paquete.nombreUsuario != null}" th:text="${'Responsable: ' + paquete.nombreUsuario + ' ' + paquete.apellidoUsuario}">Responsable</p>
+                        <details>
+                            <summary>Ver productos y QR</summary>
+                            <ul class="package-detail-list">
+                                <li th:each="detalle : ${paquete.detalles}">
+                                    <span th:text="${detalle.nombreProducto + ' × ' + detalle.cantidad}">Producto × 1</span>
+                                    <a class="text-link qr-link" th:href="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}" target="_blank" rel="noopener">
+                                        Ver QR<span class="sr-only" th:text="${' de ' + detalle.nombreProducto}"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="panel packaging-help">
+                <svg class="icon service-icon" aria-hidden="true"><use href="#icon-qr"/></svg>
+                <p class="eyebrow">Siguiente paso</p>
+                <h2>Escanea desde el celular</h2>
+                <p class="field-help">Abre el escáner en tu teléfono, permite el acceso a la cámara y apunta al QR del paquete.</p>
+                <a class="text-link" th:href="@{/escaner}">Abrir escáner QR <span aria-hidden="true">→</span></a>
+            </section>
+        </aside>
+    </div>
+</main>
+
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script th:src="@{/js/empaquetador.js}" defer></script>
+</body>
+</html>

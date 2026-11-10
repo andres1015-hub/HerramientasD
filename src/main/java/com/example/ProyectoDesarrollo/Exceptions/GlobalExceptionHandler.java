@@ -14,11 +14,14 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -160,6 +163,31 @@ public class GlobalExceptionHandler {
         log.warn("Petición incompleta en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
         return responder(HttpStatus.BAD_REQUEST,
                 "La petición no contiene todos los datos necesarios", req);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> parametroInvalido(MethodArgumentTypeMismatchException ex,
+                                                           HttpServletRequest req) {
+        log.warn("Parámetro inválido en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return responder(HttpStatus.BAD_REQUEST,
+                "El parámetro '" + ex.getName() + "' no tiene un formato válido", req);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> tipoContenidoNoSoportado(HttpMediaTypeNotSupportedException ex,
+                                                                  HttpServletRequest req) {
+        log.warn("Tipo de contenido no soportado en {} {}: {}",
+                req.getMethod(), req.getRequestURI(), ex.getContentType());
+        return responder(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "El formato de la petición no está soportado. Usa application/json", req);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public ResponseEntity<ErrorResponse> representacionNoAceptable(HttpMediaTypeNotAcceptableException ex,
+                                                                    HttpServletRequest req) {
+        log.warn("Representación no aceptable en {} {}", req.getMethod(), req.getRequestURI());
+        return responder(HttpStatus.NOT_ACCEPTABLE,
+                "No existe una representación disponible para el formato solicitado", req);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

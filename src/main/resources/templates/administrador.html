@@ -24,7 +24,7 @@
         <article class="overview-stat">
             <p class="eyebrow">Equipo</p><p class="stat-number" th:text="${#lists.size(usuarios)}">0</p>
             <h2>Usuarios registrados</h2><p>Personas que forman parte de la operación.</p>
-            <a class="text-link" th:href="@{/(vista='registro')} + '#usuarios'">Consultar usuarios <span aria-hidden="true">→</span></a>
+            <a class="text-link" th:href="@{/usuarios}">Consultar usuarios <span aria-hidden="true">→</span></a>
         </article>
     </section>
     <section class="section-block" aria-labelledby="servicios-titulo">
@@ -32,7 +32,7 @@
         <div class="service-grid">
             <a class="service-card" th:href="@{/(vista='inventario')}"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Busca por nombre, explora por tipo y selecciona artículos desde la galería.</p><span class="text-link">Ver productos <span aria-hidden="true">→</span></span></a>
             <a class="service-card" th:href="@{/(vista='inventario')} + '#movimientos'"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-movimientos"/></svg><h3>Movimientos de stock</h3><p>Un espacio para entradas, salidas y ajustes de las existencias.</p><span class="text-link">Ver movimientos <span aria-hidden="true">→</span></span></a>
-            <a class="service-card" th:href="@{/(vista='registro')}"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Registro y usuarios</h3><p>Consulta el equipo y encuentra el formulario de registro de cuentas.</p><span class="text-link">Ir a usuarios <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/usuarios}"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Equipo y usuarios</h3><p>Consulta las cuentas registradas, sus permisos y su estado de acceso.</p><span class="text-link">Ir a usuarios <span aria-hidden="true">→</span></span></a>
         </div>
     </section>
     <section class="section-block panel" aria-labelledby="reposicion-titulo">
