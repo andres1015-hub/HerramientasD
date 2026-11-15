@@ -26,10 +26,11 @@
     <section class="message message-success packaging-success" th:if="${paqueteCreado != null}" aria-labelledby="creado-titulo">
         <strong id="creado-titulo">Paquete <span th:text="${paqueteCreado.getnPedido()}">PED-000</span> listo.</strong>
         <p>Los códigos QR ya están disponibles. Puedes imprimirlos o escanearlos desde el celular.</p>
+        <button class="button button-secondary qr-print-button" id="btn-imprimir-qr" type="button" hidden>Imprimir códigos QR</button>
         <div class="qr-grid">
             <figure class="qr-card" th:each="detalle : ${paqueteCreado.detalles}">
                 <img th:src="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
-                     th:alt="${'Código QR de ' + detalle.nombreProducto}" width="300" height="300" loading="lazy">
+                     th:alt="${'Código QR de ' + detalle.nombreProducto}" width="300" height="300" loading="eager">
                 <figcaption>
                     <strong th:text="${detalle.nombreProducto}">Producto</strong>
                     <span th:text="${detalle.cantidad + ' unidad(es) · S/ ' + #numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}">1 unidad</span>

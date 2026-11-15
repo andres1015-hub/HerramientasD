@@ -195,6 +195,7 @@
 .packaging-summary p { margin-top: 4px; color: var(--muted); font-size: .8125rem; font-variant-numeric: tabular-nums; }
 .packaging-summary .button { flex: none; }
 .packaging-success { margin-bottom: 24px; }
+.qr-print-button { margin-top: 16px; }
 .packaging-success > p { margin-top: 4px; }
 .packaging-success .qr-grid { margin-block: 20px 12px; }
 .packaging-side { display: grid; gap: 20px; }
@@ -331,3 +332,18 @@
     .scanner-heading .button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .service-card { transition: none; } }
+
+@media print {
+    @page { size: A4; margin: 15mm; }
+    body { display: block; min-height: 0; color: #000; background: #fff; }
+    body > :not(main), main > :not(.packaging-success),
+    .packaging-success > :not(#creado-titulo, .qr-grid) { display: none !important; }
+    .workspace { max-width: none; padding: 0; margin: 0; }
+    .packaging-success { margin: 0; padding: 0; border: 0; color: #000; background: #fff; }
+    #creado-titulo { display: block; margin-bottom: 8mm; font-size: 16pt; }
+    .qr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6mm; }
+    .qr-card { padding: 3mm; border: 1px solid #aaa; break-inside: avoid; page-break-inside: avoid; color: #000; background: #fff; }
+    .qr-card img { width: 40mm; height: 40mm; max-width: none; }
+    .qr-card figcaption { font-size: 10pt; overflow-wrap: anywhere; }
+    .qr-card figcaption span { color: #000; }
+}

@@ -3,6 +3,12 @@
 (function () {
     'use strict';
 
+    var imprimir = document.getElementById('btn-imprimir-qr');
+    if (imprimir) {
+        imprimir.hidden = false;
+        imprimir.addEventListener('click', function () { window.print(); });
+    }
+
     var form = document.getElementById('form-paquete');
     if (!form) {
         return;
