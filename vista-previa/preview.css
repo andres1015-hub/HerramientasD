@@ -1,0 +1,2 @@
+.preview-note { padding: 8px 20px; background: var(--ink); color: var(--surface); text-align: center; font-size: .75rem; }
+@media print { .preview-note { display: none; } }

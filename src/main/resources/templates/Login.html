@@ -26,19 +26,19 @@
             <p>Ingresa con tu DNI y contraseña.</p>
         </div>
         <form th:action="@{/login}" method="post" class="login-form">
-            <div class="message message-error" role="alert" th:if="${param.error}">
+            <div class="message message-error" role="alert" th:if="${param.error != null}">
                 <strong>No se pudo iniciar sesión.</strong>
                 <p>DNI o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo.</p>
             </div>
-            <div class="message message-error" role="alert" th:if="${param.expirada}">
-                <strong>Tu sesión expiró.</strong>
-                <p>Por seguridad, vuelve a iniciar sesión para continuar.</p>
+            <div class="message message-error" role="alert" th:if="${param.expirada != null}">
+                <strong>Tu sesión se cerró en este dispositivo.</strong>
+                <p>Se inició sesión con tu cuenta en otro dispositivo o navegador. Vuelve a ingresar para continuar aquí.</p>
             </div>
             <div class="message message-success" role="status" th:if="${param.registrado != null or exitoRegistro != null}">
                 <strong>Cuenta creada correctamente.</strong>
                 <p th:text="${exitoRegistro != null ? exitoRegistro : 'Ya puedes iniciar sesión con tu DNI y contraseña.'}">Ya puedes iniciar sesión.</p>
             </div>
-            <div class="message message-success" role="status" th:if="${param.logout}">
+            <div class="message message-success" role="status" th:if="${param.logout != null}">
                 <strong>Sesión cerrada correctamente.</strong>
                 <p>Puedes volver a ingresar cuando lo necesites.</p>
             </div>

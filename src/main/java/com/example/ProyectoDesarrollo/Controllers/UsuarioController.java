@@ -29,7 +29,7 @@ public class UsuarioController {
 
     @GetMapping("/miperfil")
     public String cuenta() {
-        return "cuenta";
+        return VISTA_CUENTA;
     }
 
     @GetMapping("/usuarios")
@@ -57,6 +57,6 @@ public class UsuarioController {
             flash.addFlashAttribute("errorCuenta", ex.getMessage());
         }
 
-        return "cuenta";
+        return VISTA_CUENTA;
     }
 }

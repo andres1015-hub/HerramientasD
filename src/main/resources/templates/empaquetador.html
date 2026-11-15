@@ -26,10 +26,11 @@
     <section class="message message-success packaging-success" th:if="${paqueteCreado != null}" aria-labelledby="creado-titulo">
         <strong id="creado-titulo">Paquete <span th:text="${paqueteCreado.getnPedido()}">PED-000</span> listo.</strong>
         <p>Los códigos QR ya están disponibles. Puedes imprimirlos o escanearlos desde el celular.</p>
+        <button class="button button-secondary qr-print-button" id="btn-imprimir-qr" type="button" hidden>Imprimir códigos QR</button>
         <div class="qr-grid">
             <figure class="qr-card" th:each="detalle : ${paqueteCreado.detalles}">
                 <img th:src="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
-                     th:alt="${'Código QR de ' + detalle.nombreProducto}" width="300" height="300" loading="lazy">
+                     th:alt="${'Código QR de ' + detalle.nombreProducto}" width="300" height="300" loading="eager">
                 <figcaption>
                     <strong th:text="${detalle.nombreProducto}">Producto</strong>
                     <span th:text="${detalle.cantidad + ' unidad(es) · S/ ' + #numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}">1 unidad</span>
@@ -125,7 +126,7 @@
                     <li class="package-card" th:each="paquete : ${paquetes}">
                         <div class="package-card-head">
                             <strong th:text="${paquete.getnPedido()}">PED-000</strong>
-                            <span class="stock-badge" th:text="${paquete.estado}">Enviado</span>
+                            <span class="status-badge" th:classappend="${paquete.estado == 'Recibido' ? 'status-success' : (paquete.estado == 'Cancelado' ? 'status-danger' : 'status-info')}" th:text="${paquete.estado}">Enviado</span>
                         </div>
                         <p><span th:text="${paquete.totalUnidades}">0</span> unidades · S/ <span th:text="${#numbers.formatDecimal(paquete.total, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
                         <p th:if="${paquete.nombreUsuario != null}" th:text="${'Responsable: ' + paquete.nombreUsuario + ' ' + paquete.apellidoUsuario}">Responsable</p>

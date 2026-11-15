@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#285442" name="theme-color"/>
+
+
+<title>Empaquetador · HerramientasD</title>
+<link href="../src/main/resources/static/css/app.css" rel="stylesheet"/>
+<link href="preview.css" rel="stylesheet"/></head>
+<body><div class="preview-note">Vista previa · Datos de ejemplo · No guarda cambios</div>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<svg aria-hidden="true" class="icon-library" xmlns="http://www.w3.org/2000/svg">
+<symbol id="icon-catalogo" viewbox="0 0 24 24"><rect height="7" rx="1" width="7" x="3" y="3"></rect><rect height="7" rx="1" width="7" x="14" y="3"></rect><rect height="7" rx="1" width="7" x="3" y="14"></rect><rect height="7" rx="1" width="7" x="14" y="14"></rect></symbol>
+<symbol id="icon-caja" viewbox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z M3 7l9 4 9-4 M12 11v10 M7 5l9 4"></path></symbol>
+<symbol id="icon-movimientos" viewbox="0 0 24 24"><path d="M4 7h16m-4-4 4 4-4 4 M20 17H4m4-4-4 4 4 4"></path></symbol>
+<symbol id="icon-usuarios" viewbox="0 0 24 24"><circle cx="9" cy="7" r="3"></circle><path d="M3 21v-3a6 6 0 0 1 12 0v3 M17 4a3 3 0 0 1 0 6 M18 14a5 5 0 0 1 3 4v3"></path></symbol>
+<symbol id="icon-buscar" viewbox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 6 6"></path></symbol>
+<symbol id="icon-prenda" viewbox="0 0 24 24"><path d="m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z"></path></symbol>
+<symbol id="icon-alerta" viewbox="0 0 24 24"><path d="m12 3 10 18H2Z M12 9v5 M12 17v1"></path></symbol>
+<symbol id="icon-qr" viewbox="0 0 24 24"><path d="M4 4h6v6H4Z M14 4h6v6h-6Z M4 14h6v6H4Z M15 14h2v2h-2Z M19 14h1 M14 19h2 M19 18v2"></path></symbol>
+<symbol id="icon-paquete" viewbox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5Z M3 7v10l9 5 9-5V7 M12 12v10 M7.5 9.5l9-5"></path></symbol>
+</svg>
+<header class="site-header workspace-header">
+<a class="brand" href="administrador.html">HerramientasD<span class="brand-caption">Gestión interna</span></a>
+<button aria-controls="menu-principal" aria-expanded="false" class="button button-secondary navigation-toggle" hidden="" id="menu-toggle" type="button">Menú <span aria-hidden="true">☰</span></button>
+<div class="navigation-menu" id="menu-principal">
+<nav aria-label="Navegación principal" class="workspace-nav">
+<a href="administrador.html">Inicio</a>
+<a aria-current="page" href="empaquetador.html">Empaquetador</a>
+<a href="escaner.html">Escáner QR</a>
+<a href="inventario.html">Inventario</a>
+<a href="usuarios.html">Usuarios</a>
+<a href="cuenta.html">Mi cuenta</a>
+</nav>
+<form action="#">
+<button class="button button-secondary" disabled="" title="Acción no disponible en la vista previa" type="submit">Cerrar sesión</button>
+</form>
+</div>
+</header>
+<script defer="" src="../src/main/resources/static/js/navegacion.js"></script>
+<main class="workspace" id="contenido">
+<header class="page-heading">
+<div>
+<p class="eyebrow">Operaciones / Empaquetado</p>
+<h1>Prepara cada pedido.</h1>
+<p>Selecciona los productos, genera el paquete y obtén un código QR por cada artículo.</p>
+</div>
+<a class="button button-primary" href="escaner.html">Escanear QR <span aria-hidden="true">→</span></a>
+</header>
+<section aria-labelledby="creado-titulo" class="message message-success packaging-success">
+<strong id="creado-titulo">Paquete <span>PED-001</span> listo.</strong>
+<p>Los códigos QR ya están disponibles. Puedes imprimirlos o escanearlos desde el celular.</p>
+<button class="button button-secondary qr-print-button" hidden="" id="btn-imprimir-qr" type="button">Imprimir códigos QR</button>
+<div class="qr-grid">
+<figure class="qr-card">
+<img alt="Código QR de Camiseta" height="300" loading="eager" src="assets/qr-demo.png" width="300"/>
+<figcaption>
+<strong>Camiseta</strong>
+<span>3 unidad(es) · S/ 25.50</span>
+</figcaption>
+</figure>
+</div>
+<p class="field-help">Prueba el flujo completo desde el <a class="text-link" href="escaner.html">escáner QR</a>.</p>
+</section>
+<div class="packaging-layout">
+<section aria-labelledby="nuevo-paquete-titulo" class="panel packaging-panel">
+<div class="section-heading">
+<div>
+<p class="eyebrow">Nuevo paquete</p>
+<h2 id="nuevo-paquete-titulo">Arma el pedido</h2>
+<p class="section-caption">Elige los productos y la cantidad de cada uno.</p>
+</div>
+<span class="section-caption"><span>1</span> productos disponibles</span>
+</div>
+<form action="#" class="packaging-form" id="form-paquete">
+<div class="field">
+<label for="numero-pedido">Número de pedido</label>
+<input aria-describedby="pedido-ayuda" autocomplete="off" id="numero-pedido" maxlength="50" name="numeroPedido" pattern="[A-Za-z0-9][A-Za-z0-9._-]{2,49}" placeholder="Ej. PED-002" required="" type="text"/>
+<p class="field-help" id="pedido-ayuda">Entre 3 y 50 caracteres. Puedes usar letras, números, punto, guion y guion bajo.</p>
+</div>
+<fieldset aria-describedby="productos-ayuda" class="package-products">
+<legend>Productos del paquete</legend>
+<p class="field-help" id="productos-ayuda">Marca un producto para habilitar su cantidad. El stock se descuenta al generar el paquete.</p>
+<div class="package-product">
+<input class="package-product-check" data-precio="25.5" data-stock="50" id="producto-1" type="checkbox" value="1"/>
+<div class="package-product-info">
+<label for="producto-1">
+<strong>Camiseta</strong>
+<span>Ropa · S/ 25.50</span>
+</label>
+</div>
+<span class="stock-badge">50 disp.</span>
+<div class="package-qty">
+<label for="cantidad-1">Cantidad</label>
+<input disabled="" id="cantidad-1" inputmode="numeric" max="50" min="1" type="number" value="1"/>
+</div>
+</div>
+</fieldset>
+<div aria-live="polite" class="packaging-summary">
+<div>
+<strong id="resumen-productos">0 productos</strong>
+<p><span id="resumen-unidades">0</span> unidades · Total <span id="resumen-total">S/ 0.00</span></p>
+</div>
+<button class="button button-primary" disabled="" id="btn-crear" title="Acción no disponible en la vista previa" type="submit">
+                        Generar paquete y QR <span aria-hidden="true">→</span>
+</button>
+</div>
+<div class="message message-error" hidden="" id="empaquetador-msg" role="alert"></div>
+<noscript>
+<div class="message message-error" role="alert">
+<strong>JavaScript está desactivado.</strong>
+<p>Actívalo para armar el paquete y generar los códigos QR.</p>
+</div>
+</noscript>
+</form>
+</section>
+<aside aria-label="Paquetes recientes" class="packaging-side">
+<section class="panel">
+<div class="section-heading">
+<div><p class="eyebrow">Historial</p><h2>Paquetes recientes</h2></div>
+</div>
+<ul class="package-list">
+<li class="package-card">
+<div class="package-card-head">
+<strong>PED-005</strong>
+<span class="status-badge status-success">Recibido</span>
+</div>
+<p><span>2</span> unidades · S/ <span>51.00</span></p>
+<p>Responsable: Juan Pérez</p>
+<details>
+<summary>Ver productos y QR</summary>
+<ul class="package-detail-list">
+<li>
+<span>Camiseta × 2</span>
+<a class="text-link qr-link" href="assets/qr-demo.png" rel="noopener" target="_blank">
+                                        Ver QR<span class="sr-only"> de Camiseta</span>
+</a>
+</li>
+</ul>
+</details>
+</li>
+<li class="package-card">
+<div class="package-card-head">
+<strong>PED-004</strong>
+<span class="status-badge status-info">Enviado</span>
+</div>
+<p><span>2</span> unidades · S/ <span>51.00</span></p>
+<p>Responsable: Juan Pérez</p>
+<details>
+<summary>Ver productos y QR</summary>
+<ul class="package-detail-list">
+<li>
+<span>Camiseta × 2</span>
+<a class="text-link qr-link" href="assets/qr-demo.png" rel="noopener" target="_blank">
+                                        Ver QR<span class="sr-only"> de Camiseta</span>
+</a>
+</li>
+</ul>
+</details>
+</li>
+<li class="package-card">
+<div class="package-card-head">
+<strong>PED-003</strong>
+<span class="status-badge status-danger">Cancelado</span>
+</div>
+<p><span>2</span> unidades · S/ <span>51.00</span></p>
+<p>Responsable: Juan Pérez</p>
+<details>
+<summary>Ver productos y QR</summary>
+<ul class="package-detail-list">
+<li>
+<span>Camiseta × 2</span>
+<a class="text-link qr-link" href="assets/qr-demo.png" rel="noopener" target="_blank">
+                                        Ver QR<span class="sr-only"> de Camiseta</span>
+</a>
+</li>
+</ul>
+</details>
+</li>
+<li class="package-card">
+<div class="package-card-head">
+<strong>PED-002</strong>
+<span class="status-badge status-success">Recibido</span>
+</div>
+<p><span>2</span> unidades · S/ <span>51.00</span></p>
+<p>Responsable: Juan Pérez</p>
+<details>
+<summary>Ver productos y QR</summary>
+<ul class="package-detail-list">
+<li>
+<span>Camiseta × 2</span>
+<a class="text-link qr-link" href="assets/qr-demo.png" rel="noopener" target="_blank">
+                                        Ver QR<span class="sr-only"> de Camiseta</span>
+</a>
+</li>
+</ul>
+</details>
+</li>
+<li class="package-card">
+<div class="package-card-head">
+<strong>PED-001</strong>
+<span class="status-badge status-info">Enviado</span>
+</div>
+<p><span>3</span> unidades · S/ <span>76.50</span></p>
+<p>Responsable: Juan Pérez</p>
+<details>
+<summary>Ver productos y QR</summary>
+<ul class="package-detail-list">
+<li>
+<span>Camiseta × 3</span>
+<a class="text-link qr-link" href="assets/qr-demo.png" rel="noopener" target="_blank">
+                                        Ver QR<span class="sr-only"> de Camiseta</span>
+</a>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</section>
+<section class="panel packaging-help">
+<svg aria-hidden="true" class="icon service-icon"><use href="#icon-qr"></use></svg>
+<p class="eyebrow">Siguiente paso</p>
+<h2>Escanea desde el celular</h2>
+<p class="field-help">Abre el escáner en tu teléfono, permite el acceso a la cámara y apunta al QR del paquete.</p>
+<a class="text-link" href="escaner.html">Abrir escáner QR <span aria-hidden="true">→</span></a>
+</section>
+</aside>
+</div>
+</main>
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script defer="" src="../src/main/resources/static/js/empaquetador.js"></script>
+</body>
+</html>

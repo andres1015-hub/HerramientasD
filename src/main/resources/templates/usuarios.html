@@ -9,7 +9,7 @@
 <body>
 <a class="skip-link" href="#contenido">Ir al contenido</a>
 <th:block th:replace="~{fragments/navegacion :: cabecera('usuarios')}"/>
-<main id="contenido" class="workspace">
+<main id="contenido" class="workspace" th:with="activos=${#lists.size(usuarios.?[estado.name() == 'ACTIVO'])}">
     <header class="page-heading">
         <div>
             <p class="eyebrow">Administración / Personas</p>
@@ -19,6 +19,11 @@
         <a class="button button-secondary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
     </header>
 
+    <section class="users-overview" aria-label="Resumen de cuentas">
+        <article class="overview-stat"><p class="eyebrow">Equipo completo</p><p class="stat-number" th:text="${#lists.size(usuarios)}">0</p><h2>Usuarios registrados</h2></article>
+        <article class="overview-stat"><p class="eyebrow">Acceso habilitado</p><p class="stat-number" th:text="${activos}">0</p><h2>Activos</h2></article>
+        <article class="overview-stat"><p class="eyebrow">Sin acceso</p><p class="stat-number" th:text="${#lists.size(usuarios) - activos}">0</p><h2>Inactivos o eliminados</h2></article>
+    </section>
     <section class="section-block panel" aria-labelledby="usuarios-titulo">
         <div class="section-heading">
             <div><p class="eyebrow">Cuentas registradas</p><h2 id="usuarios-titulo">Usuarios del sistema</h2></div>
@@ -31,18 +36,27 @@
             <p>Las cuentas aparecerán aquí cuando formen parte del sistema.</p>
         </div>
 
+        <div id="usuarios-filtros" class="users-filters" hidden>
+            <div class="field"><label for="usuarios-busqueda">Buscar por nombre o DNI</label><input id="usuarios-busqueda" type="search" autocomplete="off" placeholder="Nombre, apellido o DNI" aria-controls="usuarios-tabla"></div>
+            <div class="field"><label for="usuarios-rol">Rol</label><select id="usuarios-rol" aria-controls="usuarios-tabla"><option value="">Todos los roles</option><option value="ADMINISTRADOR">Administrador</option><option value="USER">Usuario</option><option value="PROVEEDOR">Proveedor</option></select></div>
+            <div class="field"><label for="usuarios-estado">Estado</label><select id="usuarios-estado" aria-controls="usuarios-tabla"><option value="">Todos los estados</option><option value="ACTIVO">Activo</option><option value="INNACTIVO">Inactivo</option><option value="ELIMINADO">Eliminado</option></select></div>
+            <button id="usuarios-limpiar" class="button button-secondary" type="button">Limpiar filtros</button>
+        </div>
+        <p id="usuarios-conteo" class="field-help users-count" role="status" hidden></p>
+        <div id="usuarios-sin-resultados" class="empty-state compact-empty" hidden><svg class="icon empty-icon" aria-hidden="true"><use href="#icon-buscar"/></svg><h3>No encontramos coincidencias</h3><p>Prueba otro nombre o DNI, o limpia los filtros para ver todo el equipo.</p></div>
+        <!-- TODO backend: endpoint cambiar estado -->
         <div class="table-scroll" th:unless="${#lists.isEmpty(usuarios)}" role="region" aria-label="Usuarios registrados" tabindex="0">
-            <table class="users-table">
+            <table id="usuarios-tabla" class="users-table" role="table">
                 <caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption>
-                <thead>
-                <tr><th scope="col">Persona</th><th scope="col">DNI</th><th scope="col">Rol</th><th scope="col">Estado</th></tr>
+                <thead role="rowgroup">
+                <tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">DNI</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th></tr>
                 </thead>
-                <tbody>
-                <tr th:each="usuario : ${usuarios}">
-                    <th scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
-                    <td class="tabular" th:text="${usuario.DNI}">Documento</td>
-                    <td th:text="${usuario.rol}">Rol</td>
-                    <td><span class="stock-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? '' : 'stock-low'}" th:text="${usuario.estado}">Estado</span></td>
+                <tbody role="rowgroup">
+                <tr role="row" th:each="usuario : ${usuarios}" th:attr="data-rol=${usuario.rol},data-estado=${usuario.estado}">
+                    <th role="rowheader" scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
+                    <td role="cell" data-label="DNI" class="tabular" th:text="${usuario.DNI}">Documento</td>
+                    <td role="cell" data-label="Rol" th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'Administrador' : (usuario.rol.name() == 'PROVEEDOR' ? 'Proveedor' : 'Usuario')}">Rol</td>
+                    <td role="cell" data-label="Estado"><span class="status-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? 'status-success' : (usuario.estado.name() == 'ELIMINADO' ? 'status-danger' : 'status-warning')}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Activo' : (usuario.estado.name() == 'ELIMINADO' ? 'Eliminado' : 'Inactivo')}">Estado</span></td>
                 </tr>
                 </tbody>
             </table>
@@ -51,5 +65,6 @@
     </section>
 </main>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script th:src="@{/js/usuarios.js}" defer></script>
 </body>
 </html>

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class InventarioController {
     @GetMapping("/inventario")
     public String inventory(Model model) {
-        return "inventario";
+        return "redirect:/?vista=inventario";
     }
 }
