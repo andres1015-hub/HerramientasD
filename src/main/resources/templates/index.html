@@ -14,25 +14,20 @@
     <th:block sec:authorize="hasRole('ADMINISTRADOR')"><th:block th:replace="~{administrador :: contenido}"/></th:block>
     <main id="contenido" class="workspace empty-state" th:if="${vista == 'administrador'}" sec:authorize="!hasRole('ADMINISTRADOR')"><h1>Acceso de administrador</h1><p>Esta sección está disponible para cuentas con permisos de administración.</p><a class="button button-primary" th:href="@{/}">Volver al inicio</a></main>
     <th:block th:if="${vista == 'inicio'}" sec:authorize="!hasRole('ADMINISTRADOR')">
-<main id="contenido" class="mx-auto w-full max-w-7xl px-5 pt-6 pb-16 sm:px-8 lg:px-16">
-    <header class="rounded-card bg-primary px-6 py-8 text-white sm:px-10 sm:py-12 lg:px-16 lg:py-16">
-        <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-success-surface">Operaciones / Inicio</p>
-        <h1 class="mt-6 max-w-[14ch] text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[1.15] tracking-[-.035em]">Tu espacio de trabajo</h1>
-        <p class="mt-6 max-w-[50ch] break-words text-success-surface" sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>.</p>
-        <p class="mt-6 max-w-[50ch] text-success-surface" sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p>
+<main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div><p class="eyebrow">Operaciones / Inicio</p><h1>Tu espacio de trabajo.</h1>
+        <p sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>. Elige tu siguiente tarea.</p>
+        <p sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p></div>
     </header>
-    <section class="mt-12 sm:mt-16" aria-labelledby="herramientas-titulo">
-        <h2 id="herramientas-titulo" class="mb-4 text-sm font-semibold">Herramientas de trabajo</h2>
-        <article class="flex flex-col items-stretch gap-8 rounded-card border border-rule bg-surface p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12" sec:authorize="!hasRole('PROVEEDOR')" aria-labelledby="empaquetador-titulo">
-            <div>
-                <p class="eyebrow text-xs font-semibold uppercase tracking-[.1em] text-muted">Operaciones / Empaquetado</p>
-                <h3 id="empaquetador-titulo" class="mt-2 text-2xl font-semibold tracking-tight">Empaquetador</h3>
-                <p class="mt-4 max-w-[55ch] text-[.9375rem] text-muted">Accede al espacio de trabajo de empaquetado.</p>
-            </div>
-            <a class="button button-primary lg:flex-none" th:href="@{/paquete}">Ir al empaquetador <span aria-hidden="true">→</span></a>
-        </article>
-        <article class="home-inventory-card" sec:authorize="isAuthenticated()" aria-labelledby="inventario-titulo"><div><p class="eyebrow">Productos / Inventario</p><h3 id="inventario-titulo">Explora el catálogo</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p></div><a class="button button-primary" th:href="@{/(vista='inventario')}">Ver galería <span aria-hidden="true">→</span></a></article>
-        <article class="home-inventory-card" sec:authorize="!hasRole('PROVEEDOR')" aria-labelledby="escaner-inicio-titulo"><div><p class="eyebrow">Operaciones / Escáner QR</p><h3 id="escaner-inicio-titulo">Escanea desde el celular</h3><p>Abre la cámara del teléfono y consulta el paquete de cada código QR.</p></div><a class="button button-primary" th:href="@{/escaner}">Abrir escáner <span aria-hidden="true">→</span></a></article>
+    <section class="section-block" aria-labelledby="herramientas-titulo">
+        <div class="section-heading"><div><p class="eyebrow">Accesos de trabajo</p><h2 id="herramientas-titulo">Tus herramientas</h2></div></div>
+        <div class="service-grid">
+            <a class="service-card" th:href="@{/paquete}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-paquete"/></svg><h3>Empaquetador</h3><p>Selecciona productos, prepara el pedido y genera sus códigos QR.</p><span class="text-link">Ir al empaquetador <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/(vista='inventario')}" sec:authorize="isAuthenticated()"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p><span class="text-link">Ver galería <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/escaner}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-qr"/></svg><h3>Escáner QR</h3><p>Consulta el detalle del paquete desde la cámara de tu celular.</p><span class="text-link">Abrir escáner <span aria-hidden="true">→</span></span></a>
+            <a class="service-card" th:href="@{/(vista='cuenta')}" sec:authorize="hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Mi cuenta</h3><p>Consulta tus datos de acceso y administra tu contraseña.</p><span class="text-link">Ver mi cuenta <span aria-hidden="true">→</span></span></a>
+        </div>
     </section>
 </main>
     </th:block>
