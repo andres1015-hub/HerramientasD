@@ -41,8 +41,8 @@
                 <tr th:each="usuario : ${usuarios}">
                     <th scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
                     <td class="tabular" th:text="${usuario.DNI}">Documento</td>
-                    <td th:text="${usuario.rol}">Rol</td>
-                    <td><span class="stock-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? '' : 'stock-low'}" th:text="${usuario.estado}">Estado</span></td>
+                    <td th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'Administrador' : (usuario.rol.name() == 'PROVEEDOR' ? 'Proveedor' : 'Usuario')}">Rol</td>
+                    <td><span class="status-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? 'status-success' : (usuario.estado.name() == 'ELIMINADO' ? 'status-danger' : 'status-warning')}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Activo' : (usuario.estado.name() == 'ELIMINADO' ? 'Eliminado' : 'Inactivo')}">Estado</span></td>
                 </tr>
                 </tbody>
             </table>

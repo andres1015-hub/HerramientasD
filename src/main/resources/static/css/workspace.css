@@ -1,5 +1,7 @@
 /* Vistas de administración, catálogo y registro. Reutilizan los tokens de legacy.css. */
 :root {
+    --status-info: #345569;
+    --status-info-surface: #eaf0f5;
     --catalog-sage: #e4ece3;
     --catalog-linen: #eee9df;
     --catalog-cloth: #729480;
@@ -84,6 +86,11 @@
 .product-body .stock-badge { margin-block: 8px 24px; }
 .stock-low { color: var(--stock-warning); background: var(--stock-warning-surface); }
 .stock-empty { color: var(--danger); background: var(--danger-surface); }
+.status-badge { display: inline-flex; align-items: center; justify-self: end; width: fit-content; min-height: 28px; padding: 4px 8px; border-radius: 4px; font-size: .75rem; font-weight: 600; line-height: 1.5; }
+.status-info { color: var(--status-info); background: var(--status-info-surface); }
+.status-success { color: var(--primary); background: var(--success-surface); }
+.status-warning { color: var(--stock-warning); background: var(--stock-warning-surface); }
+.status-danger { color: var(--danger); background: var(--danger-surface); }
 .product-checkbox { position: absolute; width: 1px; height: 1px; padding: 0; opacity: 0; }
 .product-select { width: 100%; padding-inline: 12px; margin-top: auto; border: 1px solid var(--primary); color: var(--primary); background: var(--surface); font-size: .8125rem; }
 .product-select > span { width: 100%; }

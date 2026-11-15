@@ -125,7 +125,7 @@
                     <li class="package-card" th:each="paquete : ${paquetes}">
                         <div class="package-card-head">
                             <strong th:text="${paquete.getnPedido()}">PED-000</strong>
-                            <span class="stock-badge" th:text="${paquete.estado}">Enviado</span>
+                            <span class="status-badge" th:classappend="${paquete.estado == 'Recibido' ? 'status-success' : (paquete.estado == 'Cancelado' ? 'status-danger' : 'status-info')}" th:text="${paquete.estado}">Enviado</span>
                         </div>
                         <p><span th:text="${paquete.totalUnidades}">0</span> unidades · S/ <span th:text="${#numbers.formatDecimal(paquete.total, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
                         <p th:if="${paquete.nombreUsuario != null}" th:text="${'Responsable: ' + paquete.nombreUsuario + ' ' + paquete.apellidoUsuario}">Responsable</p>

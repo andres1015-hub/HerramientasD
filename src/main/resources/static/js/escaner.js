@@ -319,6 +319,13 @@
         setCampo('tipo', datos.tipoProducto);
         setCampo('pedido', datos.nPedido);
         setCampo('estado', datos.estadoPaquete);
+        var estado = resultado.querySelector('[data-campo="estado"]');
+        if (estado) {
+            estado.classList.remove('status-info', 'status-success', 'status-danger');
+            estado.classList.add('status-badge');
+            estado.classList.add(datos.estadoPaquete === 'Recibido' ? 'status-success'
+                : (datos.estadoPaquete === 'Cancelado' ? 'status-danger' : 'status-info'));
+        }
         setCampo('cantidad', datos.cantidad !== undefined && datos.cantidad !== null
             ? datos.cantidad + (datos.cantidad === 1 ? ' unidad' : ' unidades')
             : null);
