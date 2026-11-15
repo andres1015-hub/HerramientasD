@@ -69,45 +69,45 @@
 <div aria-label="Usuarios registrados" class="table-scroll" role="region" tabindex="0">
 <table class="users-table" id="usuarios-tabla" role="table">
 <caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption>
-<thead>
-<tr><th scope="col">Persona</th><th scope="col">DNI</th><th scope="col">Rol</th><th scope="col">Estado</th></tr>
+<thead role="rowgroup">
+<tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">DNI</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th></tr>
 </thead>
-<tbody>
-<tr data-estado="ACTIVO" data-rol="ADMINISTRADOR">
-<th scope="row">Juan Pérez</th>
-<td class="tabular" data-label="DNI">01234567</td>
-<td data-label="Rol">Administrador</td>
-<td data-label="Estado"><span class="status-badge status-success">Activo</span></td>
+<tbody role="rowgroup">
+<tr role="row" data-estado="ACTIVO" data-rol="ADMINISTRADOR">
+<th role="rowheader" scope="row">Juan Pérez</th>
+<td role="cell" class="tabular" data-label="DNI">01234567</td>
+<td role="cell" data-label="Rol">Administrador</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-success">Activo</span></td>
 </tr>
-<tr data-estado="ACTIVO" data-rol="ADMINISTRADOR">
-<th scope="row">ADMINISTRADOR Prueba</th>
-<td class="tabular" data-label="DNI">12345678</td>
-<td data-label="Rol">Administrador</td>
-<td data-label="Estado"><span class="status-badge status-success">Activo</span></td>
+<tr role="row" data-estado="ACTIVO" data-rol="ADMINISTRADOR">
+<th role="rowheader" scope="row">ADMINISTRADOR Prueba</th>
+<td role="cell" class="tabular" data-label="DNI">12345678</td>
+<td role="cell" data-label="Rol">Administrador</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-success">Activo</span></td>
 </tr>
-<tr data-estado="ACTIVO" data-rol="USER">
-<th scope="row">Lucía Torres</th>
-<td class="tabular" data-label="DNI">11111111</td>
-<td data-label="Rol">Usuario</td>
-<td data-label="Estado"><span class="status-badge status-success">Activo</span></td>
+<tr role="row" data-estado="ACTIVO" data-rol="USER">
+<th role="rowheader" scope="row">Lucía Torres</th>
+<td role="cell" class="tabular" data-label="DNI">11111111</td>
+<td role="cell" data-label="Rol">Usuario</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-success">Activo</span></td>
 </tr>
-<tr data-estado="ACTIVO" data-rol="PROVEEDOR">
-<th scope="row">Diego Ramos</th>
-<td class="tabular" data-label="DNI">22222222</td>
-<td data-label="Rol">Proveedor</td>
-<td data-label="Estado"><span class="status-badge status-success">Activo</span></td>
+<tr role="row" data-estado="ACTIVO" data-rol="PROVEEDOR">
+<th role="rowheader" scope="row">Diego Ramos</th>
+<td role="cell" class="tabular" data-label="DNI">22222222</td>
+<td role="cell" data-label="Rol">Proveedor</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-success">Activo</span></td>
 </tr>
-<tr data-estado="INNACTIVO" data-rol="USER">
-<th scope="row">María Sánchez</th>
-<td class="tabular" data-label="DNI">33333333</td>
-<td data-label="Rol">Usuario</td>
-<td data-label="Estado"><span class="status-badge status-warning">Inactivo</span></td>
+<tr role="row" data-estado="INNACTIVO" data-rol="USER">
+<th role="rowheader" scope="row">María Sánchez</th>
+<td role="cell" class="tabular" data-label="DNI">33333333</td>
+<td role="cell" data-label="Rol">Usuario</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-warning">Inactivo</span></td>
 </tr>
-<tr data-estado="ELIMINADO" data-rol="PROVEEDOR">
-<th scope="row">Carlos Díaz</th>
-<td class="tabular" data-label="DNI">44444444</td>
-<td data-label="Rol">Proveedor</td>
-<td data-label="Estado"><span class="status-badge status-danger">Eliminado</span></td>
+<tr role="row" data-estado="ELIMINADO" data-rol="PROVEEDOR">
+<th role="rowheader" scope="row">Carlos Díaz</th>
+<td role="cell" class="tabular" data-label="DNI">44444444</td>
+<td role="cell" data-label="Rol">Proveedor</td>
+<td role="cell" data-label="Estado"><span class="status-badge status-danger">Eliminado</span></td>
 </tr>
 </tbody>
 </table>

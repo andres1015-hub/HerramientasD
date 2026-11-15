@@ -38,7 +38,7 @@
 
         <div id="usuarios-filtros" class="users-filters" hidden>
             <div class="field"><label for="usuarios-busqueda">Buscar por nombre o DNI</label><input id="usuarios-busqueda" type="search" autocomplete="off" placeholder="Nombre, apellido o DNI" aria-controls="usuarios-tabla"></div>
-            <div class="field"><label for="usuarios-rol">Rol</label><select id="usuarios-rol" aria-controls="usuarios-tabla"><option value="">Todos los roles</option value="ADMINISTRADOR">Administrador</option><option value="USER">Usuario</option><option value="PROVEEDOR">Proveedor</option></select></div>
+            <div class="field"><label for="usuarios-rol">Rol</label><select id="usuarios-rol" aria-controls="usuarios-tabla"><option value="">Todos los roles</option><option value="ADMINISTRADOR">Administrador</option><option value="USER">Usuario</option><option value="PROVEEDOR">Proveedor</option></select></div>
             <div class="field"><label for="usuarios-estado">Estado</label><select id="usuarios-estado" aria-controls="usuarios-tabla"><option value="">Todos los estados</option><option value="ACTIVO">Activo</option><option value="INNACTIVO">Inactivo</option><option value="ELIMINADO">Eliminado</option></select></div>
             <button id="usuarios-limpiar" class="button button-secondary" type="button">Limpiar filtros</button>
         </div>
@@ -48,15 +48,15 @@
         <div class="table-scroll" th:unless="${#lists.isEmpty(usuarios)}" role="region" aria-label="Usuarios registrados" tabindex="0">
             <table id="usuarios-tabla" class="users-table" role="table">
                 <caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption>
-                <thead>
-                <tr><th scope="col">Persona</th><th scope="col">DNI</th><th scope="col">Rol</th><th scope="col">Estado</th></tr>
+                <thead role="rowgroup">
+                <tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">DNI</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th></tr>
                 </thead>
-                <tbody>
-                <tr th:each="usuario : ${usuarios}" th:attr="data-rol=${usuario.rol},data-estado=${usuario.estado}">
-                    <th scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
-                    <td data-label="DNI" class="tabular" th:text="${usuario.DNI}">Documento</td>
-                    <td data-label="Rol" th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'Administrador' : (usuario.rol.name() == 'PROVEEDOR' ? 'Proveedor' : 'Usuario')}">Rol</td>
-                    <td data-label="Estado"><span class="status-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? 'status-success' : (usuario.estado.name() == 'ELIMINADO' ? 'status-danger' : 'status-warning')}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Activo' : (usuario.estado.name() == 'ELIMINADO' ? 'Eliminado' : 'Inactivo')}">Estado</span></td>
+                <tbody role="rowgroup">
+                <tr role="row" th:each="usuario : ${usuarios}" th:attr="data-rol=${usuario.rol},data-estado=${usuario.estado}">
+                    <th role="rowheader" scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
+                    <td role="cell" data-label="DNI" class="tabular" th:text="${usuario.DNI}">Documento</td>
+                    <td role="cell" data-label="Rol" th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'Administrador' : (usuario.rol.name() == 'PROVEEDOR' ? 'Proveedor' : 'Usuario')}">Rol</td>
+                    <td role="cell" data-label="Estado"><span class="status-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? 'status-success' : (usuario.estado.name() == 'ELIMINADO' ? 'status-danger' : 'status-warning')}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Activo' : (usuario.estado.name() == 'ELIMINADO' ? 'Eliminado' : 'Inactivo')}">Estado</span></td>
                 </tr>
                 </tbody>
             </table>

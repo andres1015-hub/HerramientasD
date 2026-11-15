@@ -13,7 +13,7 @@
         menu.hidden = !menu.hidden;
         boton.setAttribute('aria-expanded', String(!menu.hidden));
     });
-    menu.addEventListener('keydown', function (evento) {
+    boton.closest('.workspace-header').addEventListener('keydown', function (evento) {
         if (evento.key === 'Escape' && movil.matches) {
             menu.hidden = true;
             boton.setAttribute('aria-expanded', 'false');
