@@ -8,30 +8,21 @@
 </head>
 <body>
 <a class="skip-link" href="#contenido">Ir al contenido</a>
-<header class="site-header">
-    <a class="brand" th:href="@{/}">HerramientasD<span class="brand-caption">Gestión interna</span></a>
-    <span class="header-context">Ocurrió un problema</span>
-</header>
-<main id="contenido" class="mx-auto w-full max-w-7xl px-5 pt-6 pb-16 sm:px-8 lg:px-16">
-    <p class="eyebrow" th:text="'Error ' + ${codigoError != null ? codigoError : (status != null ? status : '—')}">Error</p>
-    <h1 class="mt-6 max-w-[14ch] text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[1.15] tracking-[-.035em]"
-        th:text="${tituloError != null ? tituloError : 'Algo salió mal'}">Algo salió mal</h1>
-    <div class="message message-error mt-6" role="alert">
-        <strong>No pudimos completar la operación.</strong>
-        <p th:with="codigo=${codigoError != null ? codigoError : status}"
-           th:text="${codigo == 401 ? 'Tu sesión no está iniciada o ha expirado. Inicia sesión para continuar.'
-                   : (codigo == 403 ? 'No tienes permisos para acceder a esta sección.'
-                   : (codigo == 404 ? 'La página o el recurso solicitado no existe.'
-                   : 'Ocurrió un error inesperado. Vuelve a intentarlo.'))}">Ocurrió un error inesperado. Vuelve a intentarlo.</p>
-        <p th:if="${mensajeError != null}" th:text="${mensajeError}">Detalle del error.</p>
-    </div>
-    <p class="mt-4 text-sm text-muted" th:if="${rutaError != null}">
-        Ruta solicitada: <span th:text="${rutaError}"></span>
-    </p>
-    <div class="mt-6 flex gap-8">
-        <a class="button button-primary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
-        <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
-    </div>
+<th:block th:replace="~{fragments/navegacion :: cabecera('error')}"/>
+<main id="contenido" class="workspace error-workspace" th:with="codigo=${#strings.toString(codigoError != null ? codigoError : (status != null ? status : '500'))}">
+    <header class="page-heading"><div><p class="eyebrow">HerramientasD / Ayuda</p><h1>Retomemos el camino.</h1></div></header>
+    <section class="panel empty-state error-state" aria-labelledby="error-titulo">
+        <svg class="icon error-icon" aria-hidden="true"><use href="#icon-alerta"/></svg>
+        <p class="error-code" th:text="${codigo}">500</p>
+        <h2 id="error-titulo" th:text="${tituloError != null ? tituloError : (codigo == '401' ? 'Inicia sesión para continuar' : (codigo == '403' ? 'No tienes acceso a esta sección' : (codigo == '404' ? 'No encontramos esta página' : 'No pudimos completar la operación')))}">No pudimos completar la operación</h2>
+        <p th:text="${mensajeError != null ? mensajeError : (codigo == '401' ? 'Tu sesión no está iniciada o ha expirado. Accede con tu cuenta para continuar.' : (codigo == '403' ? 'Tu cuenta no tiene los permisos necesarios. Puedes volver a tus herramientas de trabajo.' : (codigo == '404' ? 'Revisa la dirección o vuelve al inicio para encontrar lo que buscas.' : 'Ocurrió un error inesperado. Vuelve a intentarlo en unos momentos.')))}">Vuelve a intentarlo en unos momentos.</p>
+        <p class="error-route" th:if="${rutaError != null}">Ruta solicitada: <span th:text="${rutaError}"></span></p>
+        <div class="error-actions">
+            <a class="button button-primary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
+            <a class="button button-secondary" th:href="@{/(vista='cuenta')}" sec:authorize="isAuthenticated()">Ir a mi cuenta</a>
+        </div>
+    </section>
 </main>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 </body>

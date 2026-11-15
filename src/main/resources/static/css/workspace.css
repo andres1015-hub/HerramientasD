@@ -165,6 +165,13 @@
 .empty-state h3 { font-size: 1.25rem; }
 .empty-icon { width: 40px; height: 40px; margin-bottom: 8px; color: var(--primary); }
 .compact-empty { padding-block: 32px; }
+.error-workspace { max-width: 960px; }
+.error-state { padding: 48px 24px; }
+.error-icon { width: 48px; height: 48px; color: var(--stock-warning); }
+.error-state .error-code { color: var(--primary); font-size: clamp(5rem, 15vw, 8rem); line-height: 1; font-weight: 600; letter-spacing: -.06em; font-variant-numeric: tabular-nums; }
+.error-state h2 { max-width: 28ch; font-size: clamp(1.5rem, 4vw, 2rem); }
+.error-route { font-size: .8125rem; overflow-wrap: anywhere; }
+.error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 16px; }
 .home-inventory-card { display: flex; justify-content: space-between; align-items: center; gap: 32px; padding: 32px; margin-top: 24px; border: 1px solid var(--rule); border-radius: var(--workspace-radius); background: var(--surface); }
 .home-inventory-card h3 { margin-top: 8px; }
 .home-inventory-card p:last-child { margin-top: 16px; color: var(--muted); }
