@@ -141,6 +141,10 @@
 .users-table thead th { background: var(--paper); color: var(--muted); font-size: .75rem; font-weight: 500; }
 .users-table tbody th { font-weight: 600; }
 .tabular { font-variant-numeric: tabular-nums; }
+.users-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.users-filters { display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)) auto; align-items: end; gap: 16px; margin-bottom: 16px; }
+.users-count { margin-bottom: 16px; }
+.users-table tbody th, .users-table td { overflow-wrap: anywhere; }
 .account-options { display: grid; gap: 12px; margin: 0; padding: 0; border: 0; }
 .account-options legend { margin-bottom: 12px; font-size: .875rem; font-weight: 600; }
 .account-options label { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--rule); border-radius: 4px; cursor: pointer; }
@@ -257,6 +261,7 @@
     .registration-context, .registration-access { padding: 32px; }
 }
 @media (max-width: 50rem) {
+    .users-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .workspace-header { flex-wrap: wrap; gap: 16px; }
     .workspace-header .brand { margin-right: auto; }
     .workspace-nav { order: 1; width: 100%; margin-right: 0; }
@@ -274,6 +279,16 @@
     .scanner-result { order: -1; }
 }
 @media (max-width: 35rem) {
+    .users-overview, .users-filters { grid-template-columns: 1fr; }
+    .users-table, .users-table tbody { display: block; }
+    .users-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .users-table tbody { display: grid; gap: 16px; }
+    .users-table tr { display: block; padding: 16px; border: 1px solid var(--rule); border-radius: var(--workspace-radius); }
+    .users-table tbody th { display: block; padding: 0 0 12px; }
+    .users-table td { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
+    .users-table td::before { content: attr(data-label); color: var(--muted); flex: none; }
+    .users-table td:last-child { padding-bottom: 0; border: 0; }
+    .scan-details .status-badge { justify-self: start; }
     .workspace-header { padding: 20px; }
     .workspace-header .button { padding-inline: 12px; font-size: .8125rem; }
     .workspace { padding-inline: 20px; }
