@@ -13,6 +13,8 @@
 .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .workspace { width: 100%; max-width: 1280px; margin-inline: auto; padding: 48px 32px 64px; }
 .workspace-header { gap: 32px; }
+.navigation-menu { display: flex; align-items: center; flex: 1; gap: 16px; min-width: 0; }
+.navigation-menu > form, .navigation-menu > .button { flex: none; }
 .workspace-nav { display: flex; align-items: center; gap: 8px; margin-right: auto; }
 .workspace-nav a { display: flex; align-items: center; min-height: 44px; padding: 8px 16px; border-radius: 4px; color: var(--muted); font-size: .875rem; text-decoration: none; }
 .workspace-nav a:hover { background: var(--rule); color: var(--ink); }
@@ -259,6 +261,13 @@
 .scan-details .scan-code { font-family: var(--font-mono); font-size: .75rem; font-weight: 400; }
 .scanner-footnote { margin-top: 20px; color: var(--muted); font-size: .75rem; text-align: center; }
 
+@media (max-width: 75rem) {
+    .workspace-header { flex-wrap: wrap; }
+    .workspace-header .brand { margin-right: auto; }
+    .navigation-menu { flex-basis: 100%; flex-direction: column; align-items: stretch; padding-top: 16px; border-top: 1px solid var(--rule); }
+    .navigation-menu .workspace-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 0; width: 100%; margin: 0; }
+    .navigation-menu > form .button { width: 100%; }
+}
 @media (max-width: 68rem) {
     .workspace-header { gap: 16px; padding-inline: 32px; }
     .workspace-nav a { padding-inline: 12px; }
