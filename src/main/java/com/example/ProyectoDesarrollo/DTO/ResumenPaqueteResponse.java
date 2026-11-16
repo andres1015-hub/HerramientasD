@@ -3,6 +3,7 @@ package com.example.ProyectoDesarrollo.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Totales del paquete en armado (productos, unidades y monto) con validación de stock. */
 public class ResumenPaqueteResponse {
 
     private int productos;

@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Descripción de los permisos de cada rol que se puede elegir al registrarse.
+ * Antes el texto vivía en registro.js; los permisos reales siguen aplicándose
+ * con SecurityConfig y @PreAuthorize.
+ */
 @Service
 public class RolService {
 

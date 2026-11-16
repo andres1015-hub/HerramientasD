@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 
+/** Administración de usuarios (solo ADMINISTRADOR, validado en el servicio). */
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor

@@ -2,6 +2,7 @@ package com.example.ProyectoDesarrollo.DTO;
 
 import com.example.ProyectoDesarrollo.Models.Usuario;
 
+/** Vista pública de un usuario: nunca expone la contraseña. */
 public class UsuarioResponse {
 
     private Long idUsuario;

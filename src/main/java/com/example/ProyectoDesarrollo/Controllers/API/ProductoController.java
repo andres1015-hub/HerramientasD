@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/** Catálogo e inventario: consulta, alta de productos y movimientos de stock. */
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
@@ -59,6 +60,7 @@ public class ProductoController {
         return new StockResponse(id, inventarioService.registrarSalida(id, request.getCantidad()));
     }
 
+    /** Fija el stock a un valor exacto (solo ADMINISTRADOR). */
     @PutMapping("/{id}/stock")
     public StockResponse ajustar(@PathVariable Long id, @Valid @RequestBody MovimientoStockRequest request) {
         return new StockResponse(id, inventarioService.ajustarStock(id, request.getCantidad()));

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/** Datos para crear un producto del inventario. */
 public class ProductoRequest {
 
     @NotBlank(message = "El nombre del producto es obligatorio")

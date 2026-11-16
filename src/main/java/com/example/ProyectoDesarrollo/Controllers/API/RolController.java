@@ -16,6 +16,7 @@ public class RolController {
 
     private final RolService rolService;
 
+    /** Público: lo consulta el formulario de registro antes de iniciar sesión. */
     @GetMapping("/registro")
     public List<PermisosRolResponse> permisosRegistrables() {
         return rolService.permisosRegistrables();

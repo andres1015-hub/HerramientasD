@@ -7,14 +7,14 @@ import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
 import com.example.ProyectoDesarrollo.Models.Usuario;
 import com.example.ProyectoDesarrollo.Repositories.UsuarioRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.text.Normalizer;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class UsuarioService {
@@ -114,30 +114,65 @@ public class UsuarioService {
         return usuarioRepository.findByEstado(estado);
     }
 
+    /**
+     * Búsqueda combinada para el listado de usuarios (antes se filtraba solo en el navegador).
+     * El texto coincide con nombre, apellido, nombre completo o DNI, sin distinguir
+     * mayúsculas ni tildes. Cualquier criterio nulo o vacío se ignora.
+     */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @Transactional(readOnly = true)
+    public List<Usuario> buscar(String texto, Usuario.Rol rol, Usuario.Estado estado) {
+        String criterio = normalizar(texto);
+        return usuarioRepository.findAll().stream()
+                .filter(u -> rol == null || u.getRol() == rol)
+                .filter(u -> estado == null || u.getEstado() == estado)
+                .filter(u -> criterio.isEmpty() || coincide(u, criterio))
+                .toList();
+    }
+
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
-    public Usuario cambiarEstado(Long idUsuario, Usuario.Estado nuevoEstado){
+    public Usuario cambiarEstado(Long idUsuario, Usuario.Estado nuevoEstado, String dniSolicitante){
         if (nuevoEstado == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "El estado es obligatorio");
+            throw new DatosInvalidosException("El estado es obligatorio");
         }
-        Usuario usuario = obtenerUsuarioActivo(idUsuario);
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+
+        if (usuario.getEstado() == nuevoEstado) {
+            return usuario;
+        }
+        if (dniSolicitante != null && dniSolicitante.equals(usuario.getDNI())) {
+            throw new ReglaNegocioException("No puedes cambiar el estado de tu propia cuenta");
+        }
+        if (usuario.getRol() == Usuario.Rol.ADMINISTRADOR && nuevoEstado != Usuario.Estado.ACTIVO
+                && usuarioRepository.findByRol(Usuario.Rol.ADMINISTRADOR).stream()
+                .filter(u -> u.getEstado() == Usuario.Estado.ACTIVO)
+                .count() <= 1) {
+            throw new ReglaNegocioException("Debe quedar al menos un administrador activo");
+        }
         usuario.setEstado(nuevoEstado);
         return usuarioRepository.save(usuario);
     }
 
-    private Usuario obtenerUsuarioActivo(Long idUsuario){
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        if (usuario.getEstado() == Usuario.Estado.ELIMINADO) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Usuario no encontrado (o eliminado)");
+    private boolean coincide(Usuario u, String criterio) {
+        String nombre = normalizar(u.getNombre());
+        String apellido = normalizar(u.getApelllido());
+        return nombre.contains(criterio)
+                || apellido.contains(criterio)
+                || (nombre + " " + apellido).contains(criterio)
+                || (u.getDNI() != null && u.getDNI().contains(criterio));
+    }
+
+    /** Minúsculas, sin tildes y sin espacios sobrantes. */
+    static String normalizar(String texto) {
+        if (texto == null) {
+            return "";
         }
-        if (usuario.getEstado() == Usuario.Estado.INNACTIVO) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Usuario bloqueado");
-        }
-        return usuario;
+        return Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .toLowerCase(Locale.forLanguageTag("es"))
+                .trim();
     }
 }

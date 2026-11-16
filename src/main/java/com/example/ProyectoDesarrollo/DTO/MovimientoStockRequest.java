@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+/** Cantidad de una entrada o salida de stock, o el nuevo stock en un ajuste. */
 public class MovimientoStockRequest {
 
     @NotNull(message = "La cantidad es obligatoria")
