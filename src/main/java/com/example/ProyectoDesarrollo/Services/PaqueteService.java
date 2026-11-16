@@ -129,6 +129,9 @@ public class PaqueteService {
             if (item == null || item.getIdProducto() == null || item.getCantidad() == null) {
                 throw new DatosInvalidosException("Cada producto debe incluir identificador y cantidad");
             }
+            if (item.getIdProducto() <= 0) {
+                throw new DatosInvalidosException("El identificador del producto no es valido");
+            }
             if (item.getCantidad() < 1 || item.getCantidad() > MAX_UNIDADES_POR_PRODUCTO) {
                 throw new DatosInvalidosException("La cantidad por producto debe estar entre 1 y "
                         + MAX_UNIDADES_POR_PRODUCTO);

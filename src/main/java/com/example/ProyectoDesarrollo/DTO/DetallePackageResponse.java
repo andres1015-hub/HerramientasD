@@ -41,20 +41,24 @@ public class DetallePackageResponse {
         dto.cantidad = d.getCantidad();
         dto.fechaEmision = d.getFechaEmision();
 
-        dto.idPaquete = d.getPaquete().getIdPaquete();
-        dto.nPedido = d.getPaquete().getnPedido();
-        dto.estadoPaquete = d.getPaquete().getEstado().name();
+        if (d.getPaquete() != null) {
+            dto.idPaquete = d.getPaquete().getIdPaquete();
+            dto.nPedido = d.getPaquete().getnPedido();
+            dto.estadoPaquete = d.getPaquete().getEstado() != null ? d.getPaquete().getEstado().name() : null;
 
-        dto.idProducto = d.getProducto().getIdProducto();
+            if (d.getPaquete().getUsuario() != null) {
+                dto.idUsuario = d.getPaquete().getUsuario().getIdUsuarios();
+                dto.nombreUsuario = d.getPaquete().getUsuario().getNombre();
+                dto.apellidoUsuario = d.getPaquete().getUsuario().getApelllido();
+            }
+        }
+
+        if (d.getProducto() != null) {
+            dto.idProducto = d.getProducto().getIdProducto();
+        }
         dto.nombreProducto = d.getNombreProducto();
         dto.tipoProducto = d.getTipoProducto();
         dto.precioUnitario = d.getPrecioUnitario();
-
-        if (d.getPaquete().getUsuario() != null) {
-            dto.idUsuario = d.getPaquete().getUsuario().getIdUsuarios();
-            dto.nombreUsuario = d.getPaquete().getUsuario().getNombre();
-            dto.apellidoUsuario = d.getPaquete().getUsuario().getApelllido();
-        }
 
         return dto;
     }
