@@ -248,7 +248,8 @@
                 headers: (function () {
                     var headers = {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     };
                     if (csrfToken && csrfHeader) {
                         headers[csrfHeader] = csrfToken;

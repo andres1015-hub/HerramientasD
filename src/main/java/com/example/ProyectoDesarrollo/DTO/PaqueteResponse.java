@@ -41,6 +41,9 @@ public class PaqueteResponse {
 
         if (paquete.getDetalles() != null) {
             for (DetallePackage detalle : paquete.getDetalles()) {
+                if (detalle == null) {
+                    continue;
+                }
                 dto.detalles.add(DetallePackageResponse.from(detalle));
                 dto.totalUnidades += detalle.getCantidad();
                 dto.total += detalle.getCantidad() * detalle.getPrecioUnitario();

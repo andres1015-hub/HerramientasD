@@ -5,7 +5,7 @@
 <main id="contenido" class="workspace" th:fragment="contenido"
       th:with="productos=${@inventarioService.listarTodos()}, bajos=${@inventarioService.productosStockBajo(5)}, usuarios=${@usuarioService.listarTodos()}, paquetes=${@paqueteService.listarRecientes()}">
     <header class="page-heading">
-        <div><p class="eyebrow">Administración / Inicio</p><h1>La operación empieza aquí.</h1><p>Productos, existencias y equipo. Todo en un mismo lugar.</p></div>
+        <div><p class="eyebrow">Administración / Inicio</p><h1>La operación empieza aquí.</h1><p>Productos, paquetes y equipo. Todo en un mismo lugar.</p></div>
         <a class="button button-primary" th:href="@{/(vista='inventario')}">Abrir inventario <span aria-hidden="true">↗</span></a>
     </header>
     <section class="overview-grid" aria-label="Resumen de la operación">

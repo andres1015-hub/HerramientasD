@@ -93,6 +93,14 @@ public class GlobalMvcExceptionHandler {
                 "Tu sesión no está iniciada o ha expirado. Inicia sesión para continuar.", req, res, model);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String argumentoInvalido(IllegalArgumentException ex, HttpServletRequest req,
+                                    HttpServletResponse res, Model model) {
+        log.warn("Argumento invalido en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return vistaError(HttpStatus.BAD_REQUEST, "Datos invalidos",
+                ex.getMessage() != null ? ex.getMessage() : "Los datos enviados no son validos.", req, res, model);
+    }
+
     @ExceptionHandler(BindException.class)
     public String formularioInvalido(BindException ex, HttpServletRequest req,
                                      HttpServletResponse res, Model model) {
@@ -118,6 +126,14 @@ public class GlobalMvcExceptionHandler {
         log.warn("Parámetro inválido en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
         return vistaError(HttpStatus.BAD_REQUEST, "Parámetro inválido",
                 "Uno de los parámetros de la dirección no tiene un formato válido.", req, res, model);
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public String tipoContenidoNoSoportado(org.springframework.web.HttpMediaTypeNotSupportedException ex,
+                                           HttpServletRequest req, HttpServletResponse res, Model model) {
+        log.warn("Tipo de contenido no soportado en {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getContentType());
+        return vistaError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Formato no soportado",
+                "El formato de la peticion no esta soportado.", req, res, model);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

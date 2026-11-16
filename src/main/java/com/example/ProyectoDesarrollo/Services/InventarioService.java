@@ -54,13 +54,27 @@ public class InventarioService {
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> productosPorTipo(String tipo) {
-        return inventarioRepository.findByTipo(tipo);
+        if (tipo == null || tipo.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El tipo es obligatorio");
+        }
+        String valor = tipo.trim();
+        if (valor.length() > MAX_TIPO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El tipo es demasiado largo");
+        }
+        return inventarioRepository.findByTipo(valor);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<Producto> buscarPorNombre(String nombre) {
-        return inventarioRepository.findByNombreContainingIgnoreCase(nombre);
+        if (nombre == null || nombre.isBlank()) {
+            return inventarioRepository.findAll();
+        }
+        String valor = nombre.trim();
+        if (valor.length() > MAX_NOMBRE) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre es demasiado largo");
+        }
+        return inventarioRepository.findByNombreContainingIgnoreCase(valor);
     }
 
     /** Búsqueda combinada del catálogo: nombre (parcial) y tipo (exacto, sin distinguir mayúsculas). */
@@ -112,6 +126,9 @@ public class InventarioService {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
     public int registrarEntrada(Long idProducto, int cantidad) {
+        if (idProducto == null || idProducto <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El identificador del producto no es valido");
+        }
         if (cantidad <= 0) {
             throw new DatosInvalidosException("La cantidad debe ser mayor a cero");
         }
@@ -127,6 +144,9 @@ public class InventarioService {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
     public int registrarSalida(Long idProducto, int cantidad) {
+        if (idProducto == null || idProducto <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El identificador del producto no es valido");
+        }
         if (cantidad <= 0) {
             throw new DatosInvalidosException("La cantidad debe ser mayor a cero");
         }
@@ -142,6 +162,9 @@ public class InventarioService {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
     public int ajustarStock(Long idProducto, int nuevoStock) {
+        if (idProducto == null || idProducto <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El identificador del producto no es valido");
+        }
         if (nuevoStock < 0) {
             throw new DatosInvalidosException("El stock no puede ser negativo");
         }

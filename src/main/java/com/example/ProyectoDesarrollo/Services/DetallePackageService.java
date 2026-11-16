@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class DetallePackageService {
 
+    private static final int MAX_CODIGO_QR = 100;
+
     private final DetallePackageRepository repo;
     private final QRService qrService;
 
@@ -37,9 +39,11 @@ public class DetallePackageService {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional(readOnly = true)
     public DetallePackageResponse obtenerPorId(Long id) {
+        if (id == null || id <= 0) {
+            throw new DatosInvalidosException("El identificador del detalle no es valido");
+        }
         DetallePackage detalle = repo.findByIdWithRelations(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Detalle no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Detalle no encontrado"));
         return DetallePackageResponse.from(detalle);
     }
 }

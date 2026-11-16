@@ -19,6 +19,10 @@ import java.util.Locale;
 @Service
 public class UsuarioService {
 
+    private static final int MAX_NOMBRE = 30;
+    private static final int MAX_PASSWORD = 100;
+    private static final int MIN_PASSWORD = 8;
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -35,30 +39,46 @@ public class UsuarioService {
 
         String dni = datos.getDNI() != null ? datos.getDNI().trim() : "";
         if (!dni.matches("\\d{8}")) {
-            throw new DatosInvalidosException("El DNI debe contener exactamente 8 dígitos numéricos");
+            throw new DatosInvalidosException("El DNI debe contener exactamente 8 d��gitos numǸricos");
         }
-        if (datos.getNombre() == null || datos.getNombre().isBlank()) {
-            throw new DatosInvalidosException("El nombre es obligatorio");
+
+        String nombre = datos.getNombre() == null ? "" : datos.getNombre().trim();
+        if (nombre.isBlank() || nombre.length() > MAX_NOMBRE) {
+            throw new DatosInvalidosException("El nombre es obligatorio y no puede superar los " + MAX_NOMBRE + " caracteres");
         }
-        if (datos.getApelllido() == null || datos.getApelllido().isBlank()) {
-            throw new DatosInvalidosException("El apellido es obligatorio");
+        if (!nombre.matches("^[\\p{L} .'-]+$")) {
+            throw new DatosInvalidosException("El nombre contiene caracteres no permitidos");
         }
-        if (datos.getPassword() == null || datos.getPassword().length() < 8
-                || datos.getPassword().length() > 100) {
-            throw new DatosInvalidosException("La contraseña debe tener entre 8 y 100 caracteres");
+
+        String apellido = datos.getApelllido() == null ? "" : datos.getApelllido().trim();
+        if (apellido.isBlank() || apellido.length() > MAX_NOMBRE) {
+            throw new DatosInvalidosException("El apellido es obligatorio y no puede superar los " + MAX_NOMBRE + " caracteres");
         }
+        if (!apellido.matches("^[\\p{L} .'-]+$")) {
+            throw new DatosInvalidosException("El apellido contiene caracteres no permitidos");
+        }
+
+        String password = datos.getPassword();
+        if (password == null || password.length() < MIN_PASSWORD || password.length() > MAX_PASSWORD) {
+            throw new DatosInvalidosException("La contrase��a debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
+        }
+
         if (datos.getRol() == null || datos.getRol() == Usuario.Rol.ADMINISTRADOR) {
-            throw new DatosInvalidosException("El rol seleccionado no está permitido para el registro");
+            throw new DatosInvalidosException("El rol seleccionado no estǭ permitido para el registro");
         }
+        if (datos.getRol() != Usuario.Rol.USER && datos.getRol() != Usuario.Rol.PROVEEDOR) {
+            throw new DatosInvalidosException("Solo puedes registrarte como usuario o proveedor");
+        }
+
         if (usuarioRepository.findByDNI(dni).isPresent()) {
             throw new ReglaNegocioException("Ya existe una cuenta registrada con ese DNI");
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNombre(datos.getNombre().trim());
-        usuario.setApelllido(datos.getApelllido().trim());
+        usuario.setNombre(nombre);
+        usuario.setApelllido(apellido);
         usuario.setDNI(dni);
-        usuario.setPassword(passwordEncoder.encode(datos.getPassword()));
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setRol(datos.getRol());
         usuario.setEstado(Usuario.Estado.ACTIVO);
 
@@ -69,29 +89,38 @@ public class UsuarioService {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public Usuario cambiarPassword(String dni, String passwordActual,
                                    String passwordNueva, String passwordConfirmacion) {
-        Usuario usuario = usuarioRepository.findByDNI(dni)
+        if (dni == null || dni.isBlank()) {
+            throw new RecursoNoEncontradoException("Usuario no encontrado");
+        }
+        String documento = dni.trim();
+        if (!documento.matches("\\d{8}")) {
+            throw new RecursoNoEncontradoException("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioRepository.findByDNI(documento)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
         if (usuario.getEstado() == Usuario.Estado.ELIMINADO) {
             throw new RecursoNoEncontradoException("Usuario no encontrado");
         }
         if (usuario.getEstado() == Usuario.Estado.INNACTIVO) {
-            throw new ReglaNegocioException("La cuenta está bloqueada y no puede cambiar su contraseña");
+            throw new ReglaNegocioException("La cuenta estǭ bloqueada y no puede cambiar su contrase��a");
         }
         if (passwordActual == null || !passwordEncoder.matches(passwordActual, usuario.getPassword())) {
-            throw new DatosInvalidosException("La contraseña actual no es correcta");
+            throw new DatosInvalidosException("La contrase��a actual no es correcta");
         }
-        if (passwordNueva == null || passwordNueva.length() < 8 || passwordNueva.length() > 100) {
-            throw new DatosInvalidosException("La nueva contraseña debe tener entre 8 y 100 caracteres");
+        if (passwordNueva == null || passwordNueva.length() < MIN_PASSWORD || passwordNueva.length() > MAX_PASSWORD) {
+            throw new DatosInvalidosException("La nueva contrase��a debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
         }
         if (!passwordNueva.equals(passwordConfirmacion)) {
-            throw new DatosInvalidosException("La nueva contraseña y su confirmación no coinciden");
+            throw new DatosInvalidosException("La nueva contrase��a y su confirmaci��n no coinciden");
         }
         if (passwordEncoder.matches(passwordNueva, usuario.getPassword())) {
-            throw new ReglaNegocioException("La nueva contraseña debe ser diferente a la actual");
+            throw new ReglaNegocioException("La nueva contrase��a debe ser diferente a la actual");
         }
 
         usuario.setPassword(passwordEncoder.encode(passwordNueva));
@@ -105,11 +134,17 @@ public class UsuarioService {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public List<Usuario> listarPorRol(Usuario.Rol rol){
+        if (rol == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El rol es obligatorio");
+        }
         return usuarioRepository.findByRol(rol);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public List<Usuario> listarPorEstado(Usuario.Estado estado){
+        if (estado == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El estado es obligatorio");
+        }
         return usuarioRepository.findByEstado(estado);
     }
 

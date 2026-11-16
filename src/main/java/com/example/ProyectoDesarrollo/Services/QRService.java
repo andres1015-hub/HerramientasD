@@ -73,6 +73,17 @@ public class QRService {
     }
 
     public byte[] generarPNG(String contenido, int ancho, int alto) {
+        if (contenido == null || contenido.isBlank()) {
+            throw new IllegalArgumentException("El contenido del QR es obligatorio");
+        }
+        if (contenido.length() > MAX_CONTENIDO) {
+            throw new IllegalArgumentException("El contenido del QR es demasiado grande");
+        }
+        if (ancho < MIN_DIMENSION || ancho > MAX_DIMENSION
+                || alto < MIN_DIMENSION || alto > MAX_DIMENSION) {
+            throw new IllegalArgumentException("Las dimensiones del QR no son validas");
+        }
+
         try {
             Map<EncodeHintType, Object> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -87,7 +98,7 @@ public class QRService {
             return out.toByteArray();
 
         } catch (WriterException | IOException e) {
-            throw new RuntimeException("Error generando QR", e);
+            throw new IllegalStateException("Error generando QR", e);
         }
     }
 }
