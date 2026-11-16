@@ -26,7 +26,9 @@ public class ApiDirectAccessFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         if (uri != null && uri.startsWith("/api/")) {
             String modo = request.getHeader("Sec-Fetch-Mode");
-            if ("navigate".equalsIgnoreCase(modo)) {
+            boolean navegacionImagenQr = "GET".equalsIgnoreCase(request.getMethod())
+                    && uri.matches("/api/detalle/[0-9]+/qr");
+            if ("navigate".equalsIgnoreCase(modo) && !navegacionImagenQr) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
