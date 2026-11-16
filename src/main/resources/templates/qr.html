@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#285442">
+    <title th:text="${'QR ' + detalle.nombreProducto + ' · HerramientasD'}">Código QR · HerramientasD</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+<th:block th:replace="~{fragments/navegacion :: cabecera('empaquetador')}"/>
+
+<main id="contenido" class="workspace">
+    <header class="page-heading">
+        <div>
+            <p class="eyebrow">Operaciones / Empaquetado / Código QR</p>
+            <h1>Código QR del artículo.</h1>
+            <p>Pedido <strong th:text="${detalle.getnPedido()}">PED-000</strong> · <span th:text="${detalle.nombreProducto}">Producto</span></p>
+        </div>
+        <a class="button button-secondary" th:href="@{/paquete}"><span aria-hidden="true">←</span> Volver al empaquetador</a>
+    </header>
+
+    <section class="qr-view" aria-label="Código QR y datos del artículo">
+        <div class="panel qr-view-code">
+            <img th:src="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
+                 th:alt="${'Código QR de ' + detalle.nombreProducto + ', pedido ' + detalle.getnPedido()}"
+                 width="300" height="300">
+            <p>Escanéalo con el <a class="text-link" th:href="@{/escaner}">escáner QR</a> para ver el detalle del paquete.</p>
+        </div>
+
+        <div class="panel qr-view-info">
+            <div class="section-heading">
+                <div><p class="eyebrow">Detalle del artículo</p><h2 th:text="${detalle.nombreProducto}">Producto</h2></div>
+                <span class="status-badge" th:classappend="${detalle.estadoPaquete == 'Recibido' ? 'status-success' : (detalle.estadoPaquete == 'Cancelado' ? 'status-danger' : 'status-info')}" th:text="${detalle.estadoPaquete}">Enviado</span>
+            </div>
+
+            <dl class="qr-facts">
+                <dt>Pedido</dt><dd th:text="${detalle.getnPedido()}">PED-000</dd>
+                <dt>Tipo</dt><dd th:text="${detalle.tipoProducto}">Tipo</dd>
+                <dt>Cantidad</dt><dd th:text="${detalle.cantidad + (detalle.cantidad == 1 ? ' unidad' : ' unidades')}">1 unidad</dd>
+                <dt>Precio unitario</dt><dd th:text="${'S/ ' + #numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}">S/ 0.00</dd>
+                <dt>Subtotal</dt><dd th:text="${'S/ ' + #numbers.formatDecimal(detalle.precioUnitario * detalle.cantidad, 1, 'COMMA', 2, 'POINT')}">S/ 0.00</dd>
+                <dt>Responsable</dt><dd th:text="${(detalle.nombreUsuario != null ? detalle.nombreUsuario : '') + ' ' + (detalle.apellidoUsuario != null ? detalle.apellidoUsuario : '')}">Responsable</dd>
+                <dt>Emitido</dt><dd th:text="${#temporals.format(detalle.fechaEmision, 'dd/MM/yyyy HH:mm')}">01/01/2026 00:00</dd>
+                <dt>Código</dt><dd class="qr-code-text" id="qr-codigo" th:text="${detalle.codigoQR}">codigo</dd>
+            </dl>
+
+            <div class="qr-actions">
+                <a class="button button-primary" th:href="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
+                   th:attr="download=${'qr-' + detalle.getnPedido() + '-' + detalle.idDetalles + '.png'}">Descargar PNG</a>
+                <button class="button button-secondary" type="button" id="btn-imprimir-qr" hidden>Imprimir</button>
+                <button class="button button-secondary" type="button" id="btn-copiar-codigo" hidden>Copiar código</button>
+                <a class="button button-secondary" th:href="@{/paquete(creado=${detalle.idPaquete})}">Ver todos los QR del paquete</a>
+            </div>
+            <p class="field-help" id="qr-aviso" role="status" hidden></p>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
+<script th:src="@{/js/qr.js}" defer></script>
+</body>
+</html>

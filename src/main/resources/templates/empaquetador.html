@@ -135,7 +135,7 @@
                             <ul class="package-detail-list">
                                 <li th:each="detalle : ${paquete.detalles}">
                                     <span th:text="${detalle.nombreProducto + ' × ' + detalle.cantidad}">Producto × 1</span>
-                                    <a class="text-link qr-link" th:href="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}" target="_blank" rel="noopener">
+                                    <a class="text-link qr-link" th:href="@{'/paquete/qr/{id}'(id=${detalle.idDetalles})}">
                                         Ver QR<span class="sr-only" th:text="${' de ' + detalle.nombreProducto}"></span>
                                     </a>
                                 </li>

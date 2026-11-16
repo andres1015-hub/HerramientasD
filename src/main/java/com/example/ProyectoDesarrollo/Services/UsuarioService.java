@@ -65,7 +65,6 @@ public class UsuarioService {
         try {
             return usuarioRepository.save(usuario);
         } catch (DataIntegrityViolationException ex) {
-            // Protección ante dos registros simultáneos con el mismo DNI.
             throw new ReglaNegocioException("Ya existe una cuenta registrada con ese DNI");
         }
     }
@@ -114,11 +113,6 @@ public class UsuarioService {
         return usuarioRepository.findByEstado(estado);
     }
 
-    /**
-     * Búsqueda combinada para el listado de usuarios (antes se filtraba solo en el navegador).
-     * El texto coincide con nombre, apellido, nombre completo o DNI, sin distinguir
-     * mayúsculas ni tildes. Cualquier criterio nulo o vacío se ignora.
-     */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional(readOnly = true)
     public List<Usuario> buscar(String texto, Usuario.Rol rol, Usuario.Estado estado) {
@@ -140,17 +134,11 @@ public class UsuarioService {
                 .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
+        if (usuario.getRol() == Usuario.Rol.ADMINISTRADOR) {
+            throw new ReglaNegocioException("No se puede cambiar el estado de un administrador");
+        }
         if (usuario.getEstado() == nuevoEstado) {
             return usuario;
-        }
-        if (dniSolicitante != null && dniSolicitante.equals(usuario.getDNI())) {
-            throw new ReglaNegocioException("No puedes cambiar el estado de tu propia cuenta");
-        }
-        if (usuario.getRol() == Usuario.Rol.ADMINISTRADOR && nuevoEstado != Usuario.Estado.ACTIVO
-                && usuarioRepository.findByRol(Usuario.Rol.ADMINISTRADOR).stream()
-                .filter(u -> u.getEstado() == Usuario.Estado.ACTIVO)
-                .count() <= 1) {
-            throw new ReglaNegocioException("Debe quedar al menos un administrador activo");
         }
         usuario.setEstado(nuevoEstado);
         return usuarioRepository.save(usuario);
@@ -165,7 +153,6 @@ public class UsuarioService {
                 || (u.getDNI() != null && u.getDNI().contains(criterio));
     }
 
-    /** Minúsculas, sin tildes y sin espacios sobrantes. */
     static String normalizar(String texto) {
         if (texto == null) {
             return "";

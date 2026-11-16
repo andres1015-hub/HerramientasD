@@ -349,10 +349,27 @@
 }
 @media (prefers-reduced-motion: reduce) { .service-card { transition: none; } }
 
+/* Página de un código QR */
+.qr-view { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 24px; align-items: start; }
+.qr-view-code { display: grid; justify-items: center; gap: 16px; padding: 24px; text-align: center; }
+.qr-view-code img { display: block; width: 100%; max-width: 300px; height: auto; aspect-ratio: 1; padding: 8px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; image-rendering: pixelated; }
+.qr-view-code p { margin: 0; color: var(--muted); font-size: .8125rem; }
+.qr-view-info { display: grid; gap: 20px; }
+.qr-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 12px 24px; margin: 0; }
+.qr-facts dt { color: var(--muted); font-size: .8125rem; }
+.qr-facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.qr-facts .qr-code-text { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .75rem; font-weight: 500; }
+.qr-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 48rem) {
+    .qr-view { grid-template-columns: minmax(0, 1fr); }
+    .qr-facts { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .qr-facts dd { margin-bottom: 10px; }
+}
+
 @media print {
     @page { size: A4; margin: 15mm; }
     body { display: block; min-height: 0; color: #000; background: #fff; }
-    body > :not(main), main > :not(.packaging-success),
+    body > :not(main), main > :not(.packaging-success, .qr-view),
     .packaging-success > :not(#creado-titulo, .qr-grid) { display: none !important; }
     .workspace { max-width: none; padding: 0; margin: 0; }
     .packaging-success { margin: 0; padding: 0; border: 0; color: #000; background: #fff; }
@@ -362,4 +379,10 @@
     .qr-card img { width: 40mm; height: 40mm; max-width: none; }
     .qr-card figcaption { font-size: 10pt; overflow-wrap: anywhere; }
     .qr-card figcaption span { color: #000; }
+    .qr-view { display: block; }
+    .qr-view .qr-actions { display: none !important; }
+    .qr-view-code, .qr-view-info.panel, .qr-view .panel { padding: 0; border: 0; color: #000; background: #fff; }
+    .qr-view-code img { width: 70mm; height: 70mm; max-width: none; }
+    .qr-view-code { margin-bottom: 8mm; justify-items: start; }
+    .qr-facts dt, .qr-facts dd { color: #000; font-size: 11pt; }
 }
