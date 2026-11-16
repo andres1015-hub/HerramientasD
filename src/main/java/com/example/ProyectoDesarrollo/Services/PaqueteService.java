@@ -2,6 +2,8 @@ package com.example.ProyectoDesarrollo.Services;
 
 import com.example.ProyectoDesarrollo.DTO.CrearPaqueteRequest;
 import com.example.ProyectoDesarrollo.DTO.PaqueteResponse;
+import com.example.ProyectoDesarrollo.DTO.ResumenPaqueteRequest;
+import com.example.ProyectoDesarrollo.DTO.ResumenPaqueteResponse;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
@@ -114,6 +116,94 @@ public class PaqueteService {
         Paquete paquete = paqueteRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Paquete no encontrado"));
         return PaqueteResponse.from(paquete);
+    }
+
+    /**
+     * Calcula productos, unidades y total del paquete en armado y valida el stock
+     * disponible. Es el mismo cálculo que el empaquetador hacía en el navegador.
+     */
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
+    @Transactional(readOnly = true)
+    public ResumenPaqueteResponse calcularResumen(ResumenPaqueteRequest request) {
+        ResumenPaqueteResponse resumen = new ResumenPaqueteResponse();
+        if (request == null || request.getItems() == null || request.getItems().isEmpty()) {
+            return resumen;
+        }
+
+        CrearPaqueteRequest comoPaquete = new CrearPaqueteRequest();
+        comoPaquete.setItems(request.getItems());
+        Map<Long, Integer> cantidades = consolidarItems(comoPaquete);
+        if (cantidades.size() > MAX_PRODUCTOS_POR_PAQUETE) {
+            throw new DatosInvalidosException("Un paquete no puede contener más de "
+                    + MAX_PRODUCTOS_POR_PAQUETE + " productos distintos");
+        }
+
+        double total = 0;
+        int unidades = 0;
+        for (Map.Entry<Long, Integer> entrada : cantidades.entrySet()) {
+            Producto producto = productoRepository.findById(entrada.getKey())
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "Producto no encontrado: " + entrada.getKey()));
+            int cantidad = entrada.getValue();
+            boolean suficiente = producto.getStock() >= cantidad;
+            double subtotal = redondear(producto.getPrecio() * cantidad);
+
+            if (!suficiente) {
+                resumen.setValido(false);
+                resumen.getErrores().add("Stock insuficiente para " + producto.getNombre()
+                        + ". Disponible: " + producto.getStock() + ", solicitado: " + cantidad);
+            }
+            resumen.getLineas().add(new ResumenPaqueteResponse.Linea(producto.getIdProducto(),
+                    producto.getNombre(), cantidad, producto.getStock(), producto.getPrecio(),
+                    subtotal, suficiente));
+            unidades += cantidad;
+            total += subtotal;
+        }
+        resumen.setProductos(cantidades.size());
+        resumen.setUnidades(unidades);
+        resumen.setTotal(redondear(total));
+        return resumen;
+    }
+
+    /**
+     * Enviado -> Recibido o Enviado -> Cancelado. Al cancelar se devuelve el stock
+     * descontado al crear el paquete. Recibido y Cancelado son estados finales.
+     */
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
+    @Transactional
+    public PaqueteResponse cambiarEstado(Long id, Paquete.Estado nuevoEstado) {
+        if (id == null || id <= 0) {
+            throw new DatosInvalidosException("El identificador del paquete no es válido");
+        }
+        if (nuevoEstado == null) {
+            throw new DatosInvalidosException("El estado es obligatorio");
+        }
+        Paquete paquete = paqueteRepository.findByIdWithRelations(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Paquete no encontrado"));
+
+        Paquete.Estado actual = paquete.getEstado();
+        if (actual == nuevoEstado) {
+            throw new ReglaNegocioException("El paquete ya está en estado " + actual);
+        }
+        if (actual != Paquete.Estado.Enviado) {
+            throw new ReglaNegocioException("Un paquete " + actual
+                    + " ya no puede cambiar de estado");
+        }
+
+        if (nuevoEstado == Paquete.Estado.Cancelado) {
+            for (DetallePackage detalle : paquete.getDetalles()) {
+                Producto producto = productoRepository
+                        .findByIdForUpdate(detalle.getProducto().getIdProducto())
+                        .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
+                producto.setStock(producto.getStock() + detalle.getCantidad());
+            }
+        }
+        paquete.setEstado(nuevoEstado);
+        return PaqueteResponse.from(paqueteRepository.saveAndFlush(paquete));
+    }
+
+    private static double redondear(double valor) {
+        return Math.round(valor * 100.0) / 100.0;
     }
 
     /**

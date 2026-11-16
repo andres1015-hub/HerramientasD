@@ -3,6 +3,7 @@ package com.example.ProyectoDesarrollo.Controllers;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
+import com.example.ProyectoDesarrollo.Models.Usuario;
 import com.example.ProyectoDesarrollo.Services.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,14 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuarios")
-    public String usuarios(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+    public String usuarios(@RequestParam(name = "busqueda", required = false) String busqueda,
+                           @RequestParam(name = "rol", required = false) Usuario.Rol rol,
+                           @RequestParam(name = "estado", required = false) Usuario.Estado estado,
+                           Model model) {
+        model.addAttribute("usuarios", usuarioService.buscar(busqueda, rol, estado));
+        model.addAttribute("filtroBusqueda", busqueda == null ? "" : busqueda);
+        model.addAttribute("filtroRol", rol);
+        model.addAttribute("filtroEstado", estado);
         return "usuarios";
     }
 

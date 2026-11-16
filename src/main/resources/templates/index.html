@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title th:text="${vista == 'inventario' ? 'Inventario · HerramientasD' : (vista == 'registro' ? 'Registro · HerramientasD' : (vista == 'cuenta' ? 'Mi cuenta · HerramientasD' : 'Inicio · HerramientasD'))}">Inicio · HerramientasD</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
@@ -14,22 +16,22 @@
     <th:block sec:authorize="hasRole('ADMINISTRADOR')"><th:block th:replace="~{administrador :: contenido}"/></th:block>
     <main id="contenido" class="workspace empty-state" th:if="${vista == 'administrador'}" sec:authorize="!hasRole('ADMINISTRADOR')"><h1>Acceso de administrador</h1><p>Esta sección está disponible para cuentas con permisos de administración.</p><a class="button button-primary" th:href="@{/}">Volver al inicio</a></main>
     <th:block th:if="${vista == 'inicio'}" sec:authorize="!hasRole('ADMINISTRADOR')">
-<main id="contenido" class="workspace">
-    <header class="page-heading">
-        <div><p class="eyebrow">Operaciones / Inicio</p><h1>Tu espacio de trabajo.</h1>
-        <p sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>. Elige tu siguiente tarea.</p>
-        <p sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p></div>
-    </header>
-    <section class="section-block" aria-labelledby="herramientas-titulo">
-        <div class="section-heading"><div><p class="eyebrow">Accesos de trabajo</p><h2 id="herramientas-titulo">Tus herramientas</h2></div></div>
-        <div class="service-grid">
-            <a class="service-card" th:href="@{/paquete}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-paquete"/></svg><h3>Empaquetador</h3><p>Selecciona productos, prepara el pedido y genera sus códigos QR.</p><span class="text-link">Ir al empaquetador <span aria-hidden="true">→</span></span></a>
-            <a class="service-card" th:href="@{/(vista='inventario')}" sec:authorize="isAuthenticated()"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p><span class="text-link">Ver galería <span aria-hidden="true">→</span></span></a>
-            <a class="service-card" th:href="@{/escaner}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-qr"/></svg><h3>Escáner QR</h3><p>Consulta el detalle del paquete desde la cámara de tu celular.</p><span class="text-link">Abrir escáner <span aria-hidden="true">→</span></span></a>
-            <a class="service-card" th:href="@{/(vista='cuenta')}" sec:authorize="hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Mi cuenta</h3><p>Consulta tus datos de acceso y administra tu contraseña.</p><span class="text-link">Ver mi cuenta <span aria-hidden="true">→</span></span></a>
-        </div>
-    </section>
-</main>
+        <main id="contenido" class="workspace">
+            <header class="page-heading">
+                <div><p class="eyebrow">Operaciones / Inicio</p><h1>Tu espacio de trabajo.</h1>
+                    <p sec:authorize="isAuthenticated()">Bienvenido, DNI <span class="user-name" sec:authentication="name"></span>. Elige tu siguiente tarea.</p>
+                    <p sec:authorize="isAnonymous()">Inicia sesión para acceder a las herramientas de trabajo.</p></div>
+            </header>
+            <section class="section-block" aria-labelledby="herramientas-titulo">
+                <div class="section-heading"><div><p class="eyebrow">Accesos de trabajo</p><h2 id="herramientas-titulo">Tus herramientas</h2></div></div>
+                <div class="service-grid">
+                    <a class="service-card" th:href="@{/paquete}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-paquete"/></svg><h3>Empaquetador</h3><p>Selecciona productos, prepara el pedido y genera sus códigos QR.</p><span class="text-link">Ir al empaquetador <span aria-hidden="true">→</span></span></a>
+                    <a class="service-card" th:href="@{/(vista='inventario')}" sec:authorize="isAuthenticated()"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-catalogo"/></svg><h3>Catálogo de productos</h3><p>Encuentra productos, consulta precios y revisa sus existencias.</p><span class="text-link">Ver galería <span aria-hidden="true">→</span></span></a>
+                    <a class="service-card" th:href="@{/escaner}" sec:authorize="!hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-qr"/></svg><h3>Escáner QR</h3><p>Consulta el detalle del paquete desde la cámara de tu celular.</p><span class="text-link">Abrir escáner <span aria-hidden="true">→</span></span></a>
+                    <a class="service-card" th:href="@{/(vista='cuenta')}" sec:authorize="hasRole('PROVEEDOR')"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><h3>Mi cuenta</h3><p>Consulta tus datos de acceso y administra tu contraseña.</p><span class="text-link">Ver mi cuenta <span aria-hidden="true">→</span></span></a>
+                </div>
+            </section>
+        </main>
     </th:block>
 </th:block>
 <th:block th:if="${vista == 'inventario'}">
@@ -43,5 +45,6 @@
 </th:block>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 <script th:if="${vista == 'registro'}" th:src="@{/js/registro.js}" defer></script>
+<script th:if="${vista == 'inventario'}" th:src="@{/js/inventario.js}" defer></script>
 </body>
 </html>

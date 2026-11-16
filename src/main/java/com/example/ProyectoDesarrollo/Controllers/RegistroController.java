@@ -3,6 +3,7 @@ package com.example.ProyectoDesarrollo.Controllers;
 import com.example.ProyectoDesarrollo.DTO.RegistroRequest;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
+import com.example.ProyectoDesarrollo.Services.RolService;
 import com.example.ProyectoDesarrollo.Services.UsuarioService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,9 +22,11 @@ public class RegistroController {
     private static final Logger log = LoggerFactory.getLogger(RegistroController.class);
 
     private final UsuarioService usuarioService;
+    private final RolService rolService;
 
-    public RegistroController(UsuarioService usuarioService) {
+    public RegistroController(UsuarioService usuarioService, RolService rolService) {
         this.usuarioService = usuarioService;
+        this.rolService = rolService;
     }
 
     /**
@@ -34,6 +37,7 @@ public class RegistroController {
     @GetMapping("/registro")
     public String registro(Model model) {
         model.addAttribute("vistaInicial", "registro");
+        model.addAttribute("permisosRoles", rolService.permisosRegistrables());
         return "index";
     }
 

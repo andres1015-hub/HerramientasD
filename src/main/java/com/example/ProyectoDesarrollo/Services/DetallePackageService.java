@@ -2,7 +2,6 @@ package com.example.ProyectoDesarrollo.Services;
 
 import com.example.ProyectoDesarrollo.DTO.DetallePackageResponse;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
-import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Models.DetallePackage;
 import com.example.ProyectoDesarrollo.Repositories.DetallePackageRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +18,21 @@ public class DetallePackageService {
     private static final int MAX_CODIGO_QR = 100;
 
     private final DetallePackageRepository repo;
+    private final QRService qrService;
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional(readOnly = true)
-    public DetallePackageResponse obtenerPorQR(String codigoQR) {
-        if (codigoQR == null || codigoQR.isBlank()) {
-            throw new DatosInvalidosException("El codigo QR es obligatorio");
+    public DetallePackageResponse obtenerPorQR(String contenidoQR) {
+        String codigoQR = qrService.extraerCodigo(contenidoQR);
+        if (codigoQR.isEmpty()) {
+            throw new DatosInvalidosException("El código está vacío. Inténtalo de nuevo.");
         }
-        String codigo = codigoQR.trim();
-        if (codigo.length() > MAX_CODIGO_QR) {
-            throw new DatosInvalidosException("El codigo QR no puede superar los " + MAX_CODIGO_QR + " caracteres");
+        if (codigoQR.length() > QRService.LONGITUD_MAXIMA_CODIGO) {
+            throw new DatosInvalidosException("El código no es válido: supera el largo permitido.");
         }
-
-        DetallePackage detalle = repo.findByCodigoQRWithRelations(codigo)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Codigo QR no valido"));
+        DetallePackage detalle = repo.findByCodigoQRWithRelations(codigoQR)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Código QR no válido"));
         return DetallePackageResponse.from(detalle);
     }
 

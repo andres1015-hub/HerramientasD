@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Usuarios · HerramientasD</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
@@ -44,19 +46,23 @@
         </div>
         <p id="usuarios-conteo" class="field-help users-count" role="status" hidden></p>
         <div id="usuarios-sin-resultados" class="empty-state compact-empty" hidden><svg class="icon empty-icon" aria-hidden="true"><use href="#icon-buscar"/></svg><h3>No encontramos coincidencias</h3><p>Prueba otro nombre o DNI, o limpia los filtros para ver todo el equipo.</p></div>
-        <!-- TODO backend: endpoint cambiar estado -->
+        <div id="usuarios-aviso" class="message" role="alert" hidden></div>
         <div class="table-scroll" th:unless="${#lists.isEmpty(usuarios)}" role="region" aria-label="Usuarios registrados" tabindex="0">
             <table id="usuarios-tabla" class="users-table" role="table">
                 <caption class="sr-only">Nombre, documento, rol y estado de cada usuario</caption>
                 <thead role="rowgroup">
-                <tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">DNI</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th></tr>
+                <tr role="row"><th role="columnheader" scope="col">Persona</th><th role="columnheader" scope="col">DNI</th><th role="columnheader" scope="col">Rol</th><th role="columnheader" scope="col">Estado</th><th role="columnheader" scope="col">Acción</th></tr>
                 </thead>
                 <tbody role="rowgroup">
-                <tr role="row" th:each="usuario : ${usuarios}" th:attr="data-rol=${usuario.rol},data-estado=${usuario.estado}">
+                <tr role="row" th:each="usuario : ${usuarios}" th:attr="data-rol=${usuario.rol},data-estado=${usuario.estado},data-id=${usuario.idUsuarios}">
                     <th role="rowheader" scope="row" th:text="${usuario.nombre + ' ' + usuario.apelllido}">Nombre y apellidos</th>
                     <td role="cell" data-label="DNI" class="tabular" th:text="${usuario.DNI}">Documento</td>
                     <td role="cell" data-label="Rol" th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'Administrador' : (usuario.rol.name() == 'PROVEEDOR' ? 'Proveedor' : 'Usuario')}">Rol</td>
                     <td role="cell" data-label="Estado"><span class="status-badge" th:classappend="${usuario.estado.name() == 'ACTIVO' ? 'status-success' : (usuario.estado.name() == 'ELIMINADO' ? 'status-danger' : 'status-warning')}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Activo' : (usuario.estado.name() == 'ELIMINADO' ? 'Eliminado' : 'Inactivo')}">Estado</span></td>
+                    <td role="cell" data-label="Acción">
+                        <span class="field-help" th:if="${usuario.rol.name() == 'ADMINISTRADOR' or usuario.estado.name() == 'ELIMINADO'}" th:text="${usuario.rol.name() == 'ADMINISTRADOR' ? 'No disponible' : '—'}">—</span>
+                        <button type="button" class="button button-secondary user-state-btn" th:unless="${usuario.rol.name() == 'ADMINISTRADOR' or usuario.estado.name() == 'ELIMINADO'}" th:text="${usuario.estado.name() == 'ACTIVO' ? 'Desactivar' : 'Activar'}" th:attr="aria-label=${(usuario.estado.name() == 'ACTIVO' ? 'Desactivar a ' : 'Activar a ') + usuario.nombre + ' ' + usuario.apelllido}">Desactivar</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

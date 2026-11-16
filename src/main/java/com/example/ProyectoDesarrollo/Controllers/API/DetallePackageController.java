@@ -34,6 +34,12 @@ public class DetallePackageController {
         return ResponseEntity.ok(service.obtenerPorQR(request.getCodigoQR()));
     }
 
+    /** Igual que POST /qr, para enlaces: acepta el código o la URL completa leída del QR. */
+    @GetMapping("/qr")
+    public DetallePackageResponse consultarQR(@RequestParam("codigo") String codigo) {
+        return service.obtenerPorQR(codigo);
+    }
+
     @GetMapping(value = "/{id}/qr", produces = MediaType.IMAGE_PNG_VALUE)
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     public ResponseEntity<byte[]> imagenQRPorId(@PathVariable @Positive Long id, Principal principal) {
