@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Público: inicio, login, auto-registro y recursos estáticos
+                        .requestMatchers(org.springframework.http.HttpMethod.TRACE, "/**").denyAll()
+
                         .requestMatchers("/", "/login", "/registro", "/error", "/css/**", "/js/**",
                                 "/images/**", "/favicon.ico").permitAll()
 
@@ -86,7 +88,13 @@ public class SecurityConfig {
                                 "default-src 'self'; base-uri 'self'; form-action 'self'; "
                                         + "frame-ancestors 'none'; img-src 'self' data:; "
                                         + "style-src 'self'; script-src 'self'; connect-src 'self'; "
-                                        + "media-src 'self' blob:; object-src 'none'")))
+                                        + "media-src 'self' blob:; object-src 'none'"))
+                        .frameOptions(frame -> frame.deny())
+                        .contentTypeOptions(contentType -> {})
+                        .referrerPolicy(referrer -> referrer.policy(
+                                org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .permissionsPolicy(permissions -> permissions.policy(
+                                "camera=(self), geolocation=(), microphone=(), payment=()")))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .sessionFixation(fixation -> fixation.changeSessionId())
