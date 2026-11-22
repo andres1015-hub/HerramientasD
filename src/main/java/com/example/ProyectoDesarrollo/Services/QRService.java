@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
 public class QRService {
 
     public static final int LONGITUD_MAXIMA_CODIGO = 100;
+    private static final int MAX_CONTENIDO = 1000;
+    private static final int MIN_DIMENSION = 100;
+    private static final int MAX_DIMENSION = 1000;
     private static final Pattern RUTA_VER = Pattern.compile("/qr/ver/([^/?#\\s]+)");
 
     /**

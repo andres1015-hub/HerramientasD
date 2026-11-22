@@ -43,7 +43,7 @@ public class PaqueteController {
     public ResponseEntity<PaqueteResponse> crear(@Valid @RequestBody CrearPaqueteRequest request,
                                                  Principal principal) {
         if (principal == null) {
-            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesi��n para empaquetar");
+            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesión para empaquetar");
         }
         PaqueteResponse creado = paqueteService.crear(request, principal.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);

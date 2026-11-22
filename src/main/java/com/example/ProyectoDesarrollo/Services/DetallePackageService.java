@@ -2,6 +2,7 @@ package com.example.ProyectoDesarrollo.Services;
 
 import com.example.ProyectoDesarrollo.DTO.DetallePackageResponse;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
+import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Models.DetallePackage;
 import com.example.ProyectoDesarrollo.Repositories.DetallePackageRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class DetallePackageService {
         if (codigoQR.isEmpty()) {
             throw new DatosInvalidosException("El código está vacío. Inténtalo de nuevo.");
         }
-        if (codigoQR.length() > QRService.LONGITUD_MAXIMA_CODIGO) {
+        if (codigoQR.length() > MAX_CODIGO_QR) {
             throw new DatosInvalidosException("El código no es válido: supera el largo permitido.");
         }
         DetallePackage detalle = repo.findByCodigoQRWithRelations(codigoQR)

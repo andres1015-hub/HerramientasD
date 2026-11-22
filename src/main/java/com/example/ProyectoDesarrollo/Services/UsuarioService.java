@@ -17,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.text.Normalizer;
 import java.util.Comparator;
@@ -49,7 +51,7 @@ public class UsuarioService {
 
         String dni = datos.getDNI() != null ? datos.getDNI().trim() : "";
         if (!dni.matches("\\d{8}")) {
-            throw new DatosInvalidosException("El DNI debe contener exactamente 8 d��gitos numǸricos");
+            throw new DatosInvalidosException("El DNI debe contener exactamente 8 dígitos numéricos");
         }
 
         String nombre = datos.getNombre() == null ? "" : datos.getNombre().trim();
@@ -70,11 +72,11 @@ public class UsuarioService {
 
         String password = datos.getPassword();
         if (password == null || password.length() < MIN_PASSWORD || password.length() > MAX_PASSWORD) {
-            throw new DatosInvalidosException("La contrase��a debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
+            throw new DatosInvalidosException("La contraseña debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
         }
 
         if (datos.getRol() == null || datos.getRol() == Usuario.Rol.ADMINISTRADOR) {
-            throw new DatosInvalidosException("El rol seleccionado no estǭ permitido para el registro");
+            throw new DatosInvalidosException("El rol seleccionado no está permitido para el registro");
         }
         if (datos.getRol() != Usuario.Rol.USER && datos.getRol() != Usuario.Rol.PROVEEDOR) {
             throw new DatosInvalidosException("Solo puedes registrarte como usuario o proveedor");
@@ -118,19 +120,19 @@ public class UsuarioService {
             throw new RecursoNoEncontradoException("Usuario no encontrado");
         }
         if (usuario.getEstado() == Usuario.Estado.INNACTIVO) {
-            throw new ReglaNegocioException("La cuenta estǭ bloqueada y no puede cambiar su contrase��a");
+            throw new ReglaNegocioException("La cuenta está bloqueada y no puede cambiar su contraseña");
         }
         if (passwordActual == null || !passwordEncoder.matches(passwordActual, usuario.getPassword())) {
-            throw new DatosInvalidosException("La contrase��a actual no es correcta");
+            throw new DatosInvalidosException("La contraseña actual no es correcta");
         }
         if (passwordNueva == null || passwordNueva.length() < MIN_PASSWORD || passwordNueva.length() > MAX_PASSWORD) {
-            throw new DatosInvalidosException("La nueva contrase��a debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
+            throw new DatosInvalidosException("La nueva contraseña debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
         }
         if (!passwordNueva.equals(passwordConfirmacion)) {
-            throw new DatosInvalidosException("La nueva contrase��a y su confirmaci��n no coinciden");
+            throw new DatosInvalidosException("La nueva contraseña y su confirmación no coinciden");
         }
         if (passwordEncoder.matches(passwordNueva, usuario.getPassword())) {
-            throw new ReglaNegocioException("La nueva contrase��a debe ser diferente a la actual");
+            throw new ReglaNegocioException("La nueva contraseña debe ser diferente a la actual");
         }
 
         usuario.setPassword(passwordEncoder.encode(passwordNueva));
@@ -365,15 +367,18 @@ public class UsuarioService {
         if (texto.isEmpty()) {
             throw new DatosInvalidosException(campo + " es obligatorio");
         }
-        if (texto.length() > 30) {
-            throw new DatosInvalidosException(campo + " no puede superar los 30 caracteres");
+        if (texto.length() > MAX_NOMBRE) {
+            throw new DatosInvalidosException(campo + " no puede superar los " + MAX_NOMBRE + " caracteres");
+        }
+        if (!texto.matches("^[\\p{L} .'-]+$")) {
+            throw new DatosInvalidosException(campo + " contiene caracteres no permitidos");
         }
         return texto;
     }
 
     private void validarPassword(String valor, String campo) {
-        if (valor == null || valor.length() < 8 || valor.length() > 100) {
-            throw new DatosInvalidosException(campo + " debe tener entre 8 y 100 caracteres");
+        if (valor == null || valor.length() < MIN_PASSWORD || valor.length() > MAX_PASSWORD) {
+            throw new DatosInvalidosException(campo + " debe tener entre " + MIN_PASSWORD + " y " + MAX_PASSWORD + " caracteres");
         }
     }
 
