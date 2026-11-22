@@ -4,6 +4,7 @@ import com.example.ProyectoDesarrollo.Models.DetallePackage;
 import com.example.ProyectoDesarrollo.Models.Paquete;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,10 @@ public class PaqueteResponse {
     private String nombreUsuario;
     private String apellidoUsuario;
 
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCambioEstado;
+    private String motivoCancelacion;
+
     private int totalUnidades;
     private double total;
     private List<DetallePackageResponse> detalles = new ArrayList<>();
@@ -32,6 +37,10 @@ public class PaqueteResponse {
         dto.idPaquete = paquete.getIdPaquete();
         dto.nPedido = paquete.getnPedido();
         dto.estado = paquete.getEstado() != null ? paquete.getEstado().name() : null;
+
+        dto.fechaCreacion=paquete.getFechaCreacion();
+        dto.fechaCambioEstado=paquete.getFechaCambioEstado();
+        dto.motivoCancelacion=paquete.getMotivoCancelacion();
 
         if (paquete.getUsuario() != null) {
             dto.idUsuario = paquete.getUsuario().getIdUsuarios();
@@ -123,4 +132,9 @@ public class PaqueteResponse {
     public void setDetalles(List<DetallePackageResponse> detalles) {
         this.detalles = detalles;
     }
+
+    public LocalDateTime getFechaCreacion(){return fechaCreacion;}
+    public LocalDateTime getFechaCambioEstado(){return fechaCambioEstado;}
+    public String getMotivoCancelacion(){return motivoCancelacion;}
+    public void setMotivoCancelacion(String motivoCancelacion){this.motivoCancelacion=motivoCancelacion;}
 }
