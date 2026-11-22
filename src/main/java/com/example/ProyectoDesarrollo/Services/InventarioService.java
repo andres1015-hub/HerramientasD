@@ -4,6 +4,7 @@ import com.example.ProyectoDesarrollo.DTO.ProductoRequest;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
+import com.example.ProyectoDesarrollo.Models.MovimientoStock;
 import com.example.ProyectoDesarrollo.Models.Producto;
 import com.example.ProyectoDesarrollo.Repositories.InventarioRepository;
 import com.example.ProyectoDesarrollo.Repositories.ProductRepository;
@@ -19,9 +20,13 @@ import java.util.List;
 public class InventarioService {
 
     private static final int MAX_STOCK = 1_000_000;
+    private static final int STOCK_MINIMO_DEFECTO=5;
+    private static final double PRECIO_MAXIMO=1_000_000.0;
 
     private final InventarioRepository inventarioRepository;
     private final ProductRepository productoRepository;
+    private final MovimientoStockService movimientoStockService;
+    private final AuditoriaService auditoria;
 
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
