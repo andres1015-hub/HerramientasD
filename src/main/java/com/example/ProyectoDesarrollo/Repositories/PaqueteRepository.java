@@ -1,6 +1,9 @@
 package com.example.ProyectoDesarrollo.Repositories;
 
 import com.example.ProyectoDesarrollo.Models.Paquete;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +23,11 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
 
     @Query("SELECT COUNT(p) FROM Paquete p WHERE LOWER(p.nPedido) = LOWER(:pedido)")
     long contarPorPedido(@Param("pedido") String pedido);
+
+    @Override
+    @EntityGraph(attributePaths = {"usuario"})
+    Page<Paquete> findAll(Specification<Paquete> spec, Pageable pageble);
+
+    @Query("SELECT p.estado, COUNT(p) FROM Paquete p GROUP BY p.estado")
+    List<Object[]> contarPorEstado();
 }

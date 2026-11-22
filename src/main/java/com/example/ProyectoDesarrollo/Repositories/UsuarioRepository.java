@@ -11,4 +11,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
     Optional<Usuario> findByDNI(String DNI);
     List<Usuario> findByRol(Usuario.Rol rol);
     List<Usuario> findByEstado(Usuario.Estado estado);
+
+    long countByEstado(Usuario.Estado estado);
+    long countByRolAndEstado(Usuario.Rol rol, Usuario.Estado estado);
 }
