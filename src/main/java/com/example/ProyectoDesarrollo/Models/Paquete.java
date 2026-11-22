@@ -31,13 +31,14 @@ public class Paquete {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    /** Nullable: los paquetes anteriores a esta columna quedan sin fecha. */
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_cambio_estado")
     private LocalDateTime fechaCambioEstado;
 
-    @Column(name = "motivo_cancelacion",length = 255)
+    @Column(name = "motivo_cancelacion", length = 255)
     private String motivoCancelacion;
 
     @BatchSize(size = 50)
@@ -45,9 +46,9 @@ public class Paquete {
     private List<DetallePackage> detalles = new ArrayList<>();
 
     @PrePersist
-    public void antesDeGuardar(){
-        if(fechaCreacion==null){
-            fechaCreacion=LocalDateTime.now();
+    public void antesDeGuardar() {
+        if (this.fechaCreacion == null) {
+            this.fechaCreacion = LocalDateTime.now();
         }
     }
 
@@ -77,12 +78,12 @@ public class Paquete {
     public List<DetallePackage> getDetalles() { return detalles; }
     public void setDetalles(List<DetallePackage> detalles) { this.detalles = detalles; }
 
-    public LocalDateTime getFechaCreacion(){return fechaCreacion;}
-    public void setFechaCreacion(LocalDateTime fechaCreacion){this.fechaCreacion=fechaCreacion;}
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
-    public LocalDateTime getFechaCambioEstado(){return fechaCambioEstado;}
-    public void setFechaCambioEstado(LocalDateTime fechaCambioEstado){fechaCambioEstado=this.fechaCambioEstado;}
+    public LocalDateTime getFechaCambioEstado() { return fechaCambioEstado; }
+    public void setFechaCambioEstado(LocalDateTime fechaCambioEstado) { this.fechaCambioEstado = fechaCambioEstado; }
 
-    public String getMotivoCancelacion(){return motivoCancelacion;}
-    public void setMotivoCancelacion(String motivoCancelacion){motivoCancelacion=this.motivoCancelacion;}
+    public String getMotivoCancelacion() { return motivoCancelacion; }
+    public void setMotivoCancelacion(String motivoCancelacion) { this.motivoCancelacion = motivoCancelacion; }
 }

@@ -26,11 +26,15 @@ public class ProductoRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a cero")
     private Double precio;
 
-    @Min(value =0, message = "El stock minimo no puede ser negativo")
-    @Max(value = 1000000, message = "El stock minimo maximo es 1000000")
+    /** Opcional: si no se envía se usa 5. */
+    @Min(value = 0, message = "El stock mínimo no puede ser negativo")
+    @Max(value = 1000000, message = "El stock mínimo máximo es 1000000")
     private Integer stockMinimo;
 
     public ProductoRequest() {}
+
+    public Integer getStockMinimo() { return stockMinimo; }
+    public void setStockMinimo(Integer stockMinimo) { this.stockMinimo = stockMinimo; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -43,7 +47,4 @@ public class ProductoRequest {
 
     public Double getPrecio() { return precio; }
     public void setPrecio(Double precio) { this.precio = precio; }
-
-    public Integer getStockMinimo() {return stockMinimo;}
-    public void setStockMinimo(Integer stockMinimo){this.stockMinimo=stockMinimo;}
 }

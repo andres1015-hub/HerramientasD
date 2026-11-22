@@ -38,9 +38,9 @@ public class PaqueteResponse {
         dto.nPedido = paquete.getnPedido();
         dto.estado = paquete.getEstado() != null ? paquete.getEstado().name() : null;
 
-        dto.fechaCreacion=paquete.getFechaCreacion();
-        dto.fechaCambioEstado=paquete.getFechaCambioEstado();
-        dto.motivoCancelacion=paquete.getMotivoCancelacion();
+        dto.fechaCreacion = paquete.getFechaCreacion();
+        dto.fechaCambioEstado = paquete.getFechaCambioEstado();
+        dto.motivoCancelacion = paquete.getMotivoCancelacion();
 
         if (paquete.getUsuario() != null) {
             dto.idUsuario = paquete.getUsuario().getIdUsuarios();
@@ -133,8 +133,15 @@ public class PaqueteResponse {
         this.detalles = detalles;
     }
 
-    public LocalDateTime getFechaCreacion(){return fechaCreacion;}
-    public LocalDateTime getFechaCambioEstado(){return fechaCambioEstado;}
-    public String getMotivoCancelacion(){return motivoCancelacion;}
-    public void setMotivoCancelacion(String motivoCancelacion){this.motivoCancelacion=motivoCancelacion;}
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public LocalDateTime getFechaCambioEstado() {
+        return fechaCambioEstado;
+    }
+
+    public String getMotivoCancelacion() {
+        return motivoCancelacion;
+    }
 }

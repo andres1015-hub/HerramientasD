@@ -9,14 +9,15 @@ public class CambiarEstadoPaqueteRequest {
     @NotNull(message = "El estado es obligatorio (Enviado, Recibido o Cancelado)")
     private Paquete.Estado estado;
 
+    /** Obligatorio al cancelar; se ignora en los demás estados. */
     @Size(max = 255, message = "El motivo no puede superar los 255 caracteres")
     private String motivo;
 
     public CambiarEstadoPaqueteRequest() {}
 
+    public String getMotivo() { return motivo; }
+    public void setMotivo(String motivo) { this.motivo = motivo; }
+
     public Paquete.Estado getEstado() { return estado; }
     public void setEstado(Paquete.Estado estado) { this.estado = estado; }
-
-    public String getMotivo(){return motivo;}
-    public void setMotivo(String motivo){this.motivo=motivo;}
 }

@@ -17,9 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+/** Bitácora de operaciones: se escribe desde los demás servicios y se consulta solo como ADMINISTRADOR. */
 @Service
 @RequiredArgsConstructor
 public class AuditoriaService {
@@ -28,48 +29,53 @@ public class AuditoriaService {
 
     private final AuditoriaRepository repositorio;
 
-    public static String actorActual(){
-        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
-        if(auth==null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken){
+    /** DNI de la sesión actual, o null si no hay sesión (tareas internas). */
+    public static String actorActual() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return null;
         }
         return auth.getName();
     }
+
+    /** Se une a la transacción de quien lo llama: si la operación falla, el evento tampoco queda. */
     @Transactional
-    public void registrar(String accion, String entidad, Long entidadId, String detalle){
-        AuditoriaEvento evento=new AuditoriaEvento();
+    public void registrar(String accion, String entidad, Long entidadId, String detalle) {
+        AuditoriaEvento evento = new AuditoriaEvento();
         evento.setUsuarioDni(actorActual());
         evento.setAccion(accion);
         evento.setEntidad(entidad);
         evento.setEntidadId(entidadId);
-        if(detalle != null){
-            evento.setDetalle(detalle.length()>MAX_DETALLE ? detalle.substring(0,MAX_DETALLE):detalle);
+        if (detalle != null) {
+            evento.setDetalle(detalle.length() > MAX_DETALLE ? detalle.substring(0, MAX_DETALLE) : detalle);
         }
         repositorio.save(evento);
     }
+
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional(readOnly = true)
-    public PaginaResponse<AuditoriaResponse>buscar(String accion, String entidad, String usuarioDni,
-                                                   LocalDate desde, LocalDate hasta, int pagina, int tamanio){
-        if(desde != null && hasta != null && desde.isAfter((hasta))){
+    public PaginaResponse<AuditoriaResponse> buscar(String accion, String entidad, String usuarioDni,
+                                                    LocalDate desde, LocalDate hasta,
+                                                    int pagina, int tamanio) {
+        if (desde != null && hasta != null && desde.isAfter(hasta)) {
             throw new DatosInvalidosException("La fecha inicial no puede ser posterior a la final");
         }
-        Specification<AuditoriaEvento>spec = (root, query, cb)->cb.conjunction();
-        if(accion != null && !accion.isBlank()){
-            String a=accion.trim().toUpperCase();
-            spec=spec.and((root, query, cb) -> cb.equal(root.get("accion"),a));
+        Specification<AuditoriaEvento> spec = (root, query, cb) -> cb.conjunction();
+        if (accion != null && !accion.isBlank()) {
+            String a = accion.trim().toUpperCase();
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("accion"), a));
         }
-        if(entidad != null && !entidad.isBlank()){
-            String e=entidad.trim().toUpperCase();
-            spec=spec.and((root, query, cb)-> cb.equal(root.get("entidad"),e));
+        if (entidad != null && !entidad.isBlank()) {
+            String e = entidad.trim().toUpperCase();
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("entidad"), e));
         }
-        if(usuarioDni != null && !usuarioDni.isBlank()){
-            String u=usuarioDni.trim();
-            spec=spec.and((root,query,cb)->cb.equal(root.get("usuarioDni"),u));
+        if (usuarioDni != null && !usuarioDni.isBlank()) {
+            String u = usuarioDni.trim();
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("usuarioDni"), u));
         }
-        if(desde !=null){
-            LocalDateTime d=desde.atStartOfDay();
-            spec =spec.and((root,query, cb)->cb.greaterThanOrEqualTo(root.<LocalDateTime>get("fecha"),d));
+        if (desde != null) {
+            LocalDateTime d = desde.atStartOfDay();
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.<LocalDateTime>get("fecha"), d));
         }
         if (hasta != null) {
             LocalDateTime h = hasta.plusDays(1).atStartOfDay();

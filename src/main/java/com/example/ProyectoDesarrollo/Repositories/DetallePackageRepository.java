@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public interface DetallePackageRepository extends JpaRepository<DetallePackage, Long> {
@@ -31,12 +30,14 @@ public interface DetallePackageRepository extends JpaRepository<DetallePackage, 
     """)
     Optional<DetallePackage> findByIdWithRelations(@Param("id") Long id);
 
-    @Query("SELECT COALESCE(SUM(d.cantidad * d.precioUnitario),0.0) FROM DetallePackage d"
-    +"WHERE d.paquete.estado <> :excluido")
-    Double sumarMontoExcluyendo(@Param("excluido")Paquete.Estado excluido);
+    /** Suma de cantidad x precio de los paquetes cuyo estado no es el indicado. */
+    @Query("SELECT COALESCE(SUM(d.cantidad * d.precioUnitario), 0.0) FROM DetallePackage d "
+            + "WHERE d.paquete.estado <> :excluido")
+    Double sumarMontoExcluyendo(@Param("excluido") Paquete.Estado excluido);
 
-    @Query("SELECT d.producto.idProducto, d.nombreProducto, SUM(d.cantidad) FROM DetallePackage d"
-            +"WHERE d.paquete.estado <> :excluido"
-            +"GROUP BY d.producto.idProducto, d.nombreProducto ORDER BY SUM(d.cantidad) DESC")
+    /** Productos más empaquetados: [idProducto, nombre, unidades]. */
+    @Query("SELECT d.producto.idProducto, d.nombreProducto, SUM(d.cantidad) FROM DetallePackage d "
+            + "WHERE d.paquete.estado <> :excluido "
+            + "GROUP BY d.producto.idProducto, d.nombreProducto ORDER BY SUM(d.cantidad) DESC")
     List<Object[]> topProductos(@Param("excluido") Paquete.Estado excluido, Pageable pageable);
 }

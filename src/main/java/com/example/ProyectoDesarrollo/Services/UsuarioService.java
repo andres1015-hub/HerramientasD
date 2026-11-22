@@ -1,6 +1,11 @@
 package com.example.ProyectoDesarrollo.Services;
 
-import com.example.ProyectoDesarrollo.DTO.*;
+import com.example.ProyectoDesarrollo.DTO.PaginaResponse;
+import com.example.ProyectoDesarrollo.DTO.PerfilActualizarRequest;
+import com.example.ProyectoDesarrollo.DTO.RegistroRequest;
+import com.example.ProyectoDesarrollo.DTO.UsuarioActualizarRequest;
+import com.example.ProyectoDesarrollo.DTO.UsuarioCrearRequest;
+import com.example.ProyectoDesarrollo.DTO.UsuarioResponse;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
@@ -29,11 +34,11 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final AuditoriaService auditoria;
 
-    public UsuarioService(UsuarioRepository usuarioRepository,
-                          PasswordEncoder passwordEncoder, AuditoriaService auditoria) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
+                          AuditoriaService auditoria) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.auditoria=auditoria;
+        this.auditoria = auditoria;
     }
 
     @Transactional
@@ -170,8 +175,8 @@ public class UsuarioService {
         if (nuevoEstado == null) {
             throw new DatosInvalidosException("El estado es obligatorio");
         }
-        if(nuevoEstado==Usuario.Estado.ELIMINADO){
-            return eliminar(idUsuario,dniSolicitante);
+        if (nuevoEstado == Usuario.Estado.ELIMINADO) {
+            return eliminar(idUsuario, dniSolicitante);
         }
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
@@ -183,53 +188,58 @@ public class UsuarioService {
         if (usuario.getEstado() == nuevoEstado) {
             return usuario;
         }
-        Usuario.Estado anterior=usuario.getEstado();
+        Usuario.Estado anterior = usuario.getEstado();
         usuario.setEstado(nuevoEstado);
-        Usuario guardado=usuarioRepository.save(usuario);
-        auditoria.registrar("USUARI0_ESTADO","USUARIO",guardado.getIdUsuarios(),
-                guardado.getDNI()+": "+anterior+" → "+nuevoEstado);
+        Usuario guardado = usuarioRepository.save(usuario);
+        auditoria.registrar("USUARIO_ESTADO", "USUARIO", guardado.getIdUsuarios(),
+                guardado.getDNI() + ": " + anterior + " → " + nuevoEstado);
         return guardado;
     }
 
+    // ------------------------------------------------------------------ gestión por el administrador
+
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional(readOnly = true)
-    public Usuario obtenerPorId(Long idUsuario){
+    public Usuario obtenerPorId(Long idUsuario) {
         return usuarioRepository.findById(idUsuario)
-                .orElseThrow(()->new RecursoNoEncontradoException("Usuario no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
     }
 
+    /** Listado paginado con los mismos filtros de {@link #buscar}. */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional(readOnly = true)
     public PaginaResponse<UsuarioResponse> buscarPaginado(String texto, Usuario.Rol rol, Usuario.Estado estado,
-                                                          int pagina, int tamanio){
-        Paginacion.validar(pagina,tamanio);
-        List<UsuarioResponse>todos = buscar(texto,rol,estado).stream()
+                                                          int pagina, int tamanio) {
+        Paginacion.validar(pagina, tamanio);
+        List<UsuarioResponse> todos = buscar(texto, rol, estado).stream()
                 .sorted(Comparator.comparingLong(Usuario::getIdUsuarios))
                 .map(UsuarioResponse::from)
                 .toList();
-        return PaginaResponse.de(todos,pagina,tamanio);
+        return PaginaResponse.de(todos, pagina, tamanio);
     }
 
+    /** Alta de una cuenta hecha por un administrador; puede asignar cualquier rol. */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
-    public Usuario crearPorAdmin(UsuarioCrearRequest datos){
-        if(datos==null){
+    public Usuario crearPorAdmin(UsuarioCrearRequest datos) {
+        if (datos == null) {
             throw new DatosInvalidosException("Los datos del usuario son obligatorios");
         }
-        String dni=datos.getDni()==null ? "": datos.getDni().trim();
-        if(!dni.matches("\\d{8}")){
-            throw new DatosInvalidosException("El DNI debe de contener exactamente 8 digitos numericos");
+        String dni = datos.getDni() == null ? "" : datos.getDni().trim();
+        if (!dni.matches("\\d{8}")) {
+            throw new DatosInvalidosException("El DNI debe contener exactamente 8 dígitos numéricos");
         }
-        String nombre=validarNombrePersona(datos.getNombre(),"El nombre");
-        String apellido=validarNombrePersona(datos.getApellido(),"El apellido");
-        validarPassword(datos.getPassword(),"La contrasena");
-        if(datos.getRol()==null){
+        String nombre = validarNombrePersona(datos.getNombre(), "El nombre");
+        String apellido = validarNombrePersona(datos.getApellido(), "El apellido");
+        validarPassword(datos.getPassword(), "La contraseña");
+        if (datos.getRol() == null) {
             throw new DatosInvalidosException("El rol es obligatorio");
         }
-        if(usuarioRepository.findByDNI(dni).isPresent()){
+        if (usuarioRepository.findByDNI(dni).isPresent()) {
             throw new ReglaNegocioException("Ya existe una cuenta registrada con ese DNI");
         }
-        Usuario usuario=new Usuario();
+
+        Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setApelllido(apellido);
         usuario.setDNI(dni);
@@ -238,62 +248,69 @@ public class UsuarioService {
         usuario.setEstado(Usuario.Estado.ACTIVO);
 
         Usuario guardado;
-        try{
-            guardado=usuarioRepository.save(usuario);
-        }catch (DataIntegrityViolationException ex){
+        try {
+            guardado = usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException ex) {
             throw new ReglaNegocioException("Ya existe una cuenta registrada con ese DNI");
         }
-        auditoria.registrar("USUARIO_CREADO","USUARIO", guardado.getIdUsuarios(),
-                dni+" . rol "+guardado.getRol());
+        auditoria.registrar("USUARIO_CREADO", "USUARIO", guardado.getIdUsuarios(),
+                dni + " · rol " + guardado.getRol());
         return guardado;
     }
 
+    /** Edita nombre, apellido y rol. No permite cambiarse el propio rol ni dejar el sistema sin administradores. */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
-    public Usuario actualizar(Long idUsuario, UsuarioActualizarRequest datos, String dniSolicitante){
-        if(datos==null){
+    public Usuario actualizar(Long idUsuario, UsuarioActualizarRequest datos, String dniSolicitante) {
+        if (datos == null) {
             throw new DatosInvalidosException("Los datos del usuario son obligatorios");
         }
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
-        String nombre=validarNombrePersona(datos.getNombre(),"El nombre");
-        String apellido=validarNombrePersona(datos.getApellido(),"El apellido");
-        if(datos.getRol()==null){
+        String nombre = validarNombrePersona(datos.getNombre(), "El nombre");
+        String apellido = validarNombrePersona(datos.getApellido(), "El apellido");
+        if (datos.getRol() == null) {
             throw new DatosInvalidosException("El rol es obligatorio");
         }
 
-        Usuario.Rol rolAnterior =usuario.getRol();
-        if(datos.getRol() != rolAnterior){
-            if(usuario.getDNI().equals(dniSolicitante)){
-                throw new ReglaNegocioException("No puedes camnbiar tu propio rol");
+        Usuario.Rol rolAnterior = usuario.getRol();
+        if (datos.getRol() != rolAnterior) {
+            if (usuario.getDNI().equals(dniSolicitante)) {
+                throw new ReglaNegocioException("No puedes cambiar tu propio rol");
             }
-            if(rolAnterior==Usuario.Rol.ADMINISTRADOR && usuario.getEstado()==Usuario.Estado.ACTIVO
-                    && usuarioRepository.countByRolAndEstado(Usuario.Rol.ADMINISTRADOR, Usuario.Estado.ACTIVO)<=1){
+            if (rolAnterior == Usuario.Rol.ADMINISTRADOR && usuario.getEstado() == Usuario.Estado.ACTIVO
+                    && usuarioRepository.countByRolAndEstado(Usuario.Rol.ADMINISTRADOR, Usuario.Estado.ACTIVO) <= 1) {
                 throw new ReglaNegocioException("Debe existir al menos un administrador activo");
             }
         }
+
         usuario.setNombre(nombre);
         usuario.setApelllido(apellido);
         usuario.setRol(datos.getRol());
         Usuario guardado = usuarioRepository.save(usuario);
-        auditoria.registrar("USUARIO_ACTUALIZADO","USUARIO",guardado.getIdUsuarios(),
-                guardado.getDNI()+" . rol "+rolAnterior+" → "+guardado.getRol());
+        auditoria.registrar("USUARIO_ACTUALIZADO", "USUARIO", guardado.getIdUsuarios(),
+                guardado.getDNI() + " · rol " + rolAnterior + " → " + guardado.getRol());
         return guardado;
     }
 
+    /** El administrador fija una contraseña nueva (por ejemplo, si la persona la olvidó). */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
-    public void resetearPassword(Long idUsuario, String passwordNueva){
-        Usuario usuario=usuarioRepository.findById(idUsuario)
+    public void resetearPassword(Long idUsuario, String passwordNueva) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
                 .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
-                .orElseThrow(()->new RecursoNoEncontradoException("Usuario no encontrado"));
-        validarPassword(passwordNueva, "La nueva contrasena");
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+        validarPassword(passwordNueva, "La nueva contraseña");
         usuario.setPassword(passwordEncoder.encode(passwordNueva));
         usuarioRepository.save(usuario);
-        auditoria.registrar("USUARIO_PASSWORD_RESET","USUARIO",usuario.getIdUsuarios(),usuario.getDNI());
+        auditoria.registrar("USUARIO_PASSWORD_RESET", "USUARIO", usuario.getIdUsuarios(), usuario.getDNI());
     }
 
+    /**
+     * Baja lógica (estado ELIMINADO): se conservan sus paquetes y su historial.
+     * No se puede eliminar a un administrador ni la propia cuenta.
+     */
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @Transactional
     public Usuario eliminar(Long idUsuario, String dniSolicitante) {
@@ -315,6 +332,16 @@ public class UsuarioService {
         return guardado;
     }
 
+    // ------------------------------------------------------------------ perfil propio
+
+    @Transactional(readOnly = true)
+    public Usuario obtenerPerfil(String dni) {
+        return usuarioRepository.findByDNI(dni)
+                .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+    }
+
+    /** Cada persona edita su nombre y apellido. El DNI y el rol no se pueden cambiar desde aquí. */
     @Transactional
     public Usuario actualizarPerfil(String dni, PerfilActualizarRequest datos) {
         if (datos == null) {
@@ -331,12 +358,7 @@ public class UsuarioService {
         return guardado;
     }
 
-    @Transactional(readOnly = true)
-    public Usuario obtenerPerfil(String dni) {
-        return usuarioRepository.findByDNI(dni)
-                .filter(u -> u.getEstado() != Usuario.Estado.ELIMINADO)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
-    }
+    // ------------------------------------------------------------------ privados
 
     private String validarNombrePersona(String valor, String campo) {
         String texto = valor == null ? "" : valor.trim();

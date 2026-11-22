@@ -19,8 +19,8 @@ public class ProductoResponse {
         dto.tipo = p.getTipo();
         dto.stock = p.getStock();
         dto.precio = p.getPrecio();
-        dto.activo=p.isActivo();
-        dto.stockMinimo=p.getStockMinimo();
+        dto.activo = p.isActivo();
+        dto.stockMinimo = p.getStockMinimo();
         return dto;
     }
 
@@ -29,6 +29,6 @@ public class ProductoResponse {
     public String getTipo() { return tipo; }
     public int getStock() { return stock; }
     public double getPrecio() { return precio; }
-    public boolean isActivo(){return activo;}
-    public int getStockMinimo(){return stockMinimo;}
+    public boolean isActivo() { return activo; }
+    public int getStockMinimo() { return stockMinimo; }
 }

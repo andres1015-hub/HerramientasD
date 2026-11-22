@@ -6,13 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
+public interface PaqueteRepository extends JpaRepository<Paquete, Long>, JpaSpecificationExecutor<Paquete> {
 
     @EntityGraph(attributePaths = {"usuario", "detalles", "detalles.producto"})
     List<Paquete> findAllByOrderByIdPaqueteDesc();
@@ -24,9 +25,10 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     @Query("SELECT COUNT(p) FROM Paquete p WHERE LOWER(p.nPedido) = LOWER(:pedido)")
     long contarPorPedido(@Param("pedido") String pedido);
 
+    /** Listado filtrado y paginado; carga el usuario junto con el paquete. */
     @Override
     @EntityGraph(attributePaths = {"usuario"})
-    Page<Paquete> findAll(Specification<Paquete> spec, Pageable pageble);
+    Page<Paquete> findAll(Specification<Paquete> spec, Pageable pageable);
 
     @Query("SELECT p.estado, COUNT(p) FROM Paquete p GROUP BY p.estado")
     List<Object[]> contarPorEstado();

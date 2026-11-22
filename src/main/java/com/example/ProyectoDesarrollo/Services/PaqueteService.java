@@ -1,10 +1,19 @@
 package com.example.ProyectoDesarrollo.Services;
 
-import com.example.ProyectoDesarrollo.DTO.*;
+import com.example.ProyectoDesarrollo.DTO.CrearPaqueteRequest;
+import com.example.ProyectoDesarrollo.DTO.PaginaResponse;
+import com.example.ProyectoDesarrollo.DTO.PaqueteResponse;
+import com.example.ProyectoDesarrollo.DTO.PaqueteResumenResponse;
+import com.example.ProyectoDesarrollo.DTO.ResumenPaqueteRequest;
+import com.example.ProyectoDesarrollo.DTO.ResumenPaqueteResponse;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
-import com.example.ProyectoDesarrollo.Models.*;
+import com.example.ProyectoDesarrollo.Models.DetallePackage;
+import com.example.ProyectoDesarrollo.Models.MovimientoStock;
+import com.example.ProyectoDesarrollo.Models.Paquete;
+import com.example.ProyectoDesarrollo.Models.Producto;
+import com.example.ProyectoDesarrollo.Models.Usuario;
 import com.example.ProyectoDesarrollo.Repositories.PaqueteRepository;
 import com.example.ProyectoDesarrollo.Repositories.ProductRepository;
 import com.example.ProyectoDesarrollo.Repositories.UsuarioRepository;
@@ -15,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +43,7 @@ public class PaqueteService {
     private final PaqueteRepository paqueteRepository;
     private final ProductRepository productoRepository;
     private final UsuarioRepository usuarioRepository;
-    private final MovimientoStockService movimientoStockService;
+    private final MovimientoStockService movimientoService;
     private final AuditoriaService auditoria;
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
@@ -84,19 +92,19 @@ public class PaqueteService {
                             "Producto no encontrado: " + entrada.getKey()));
 
             int cantidad = entrada.getValue();
-            if(!producto.isActivo()){
-                throw  new ReglaNegocioException("El producto "+ producto.getNombre()
-                +" esta inactivo y no se puede empaquetar");
+            if (!producto.isActivo()) {
+                throw new ReglaNegocioException("El producto " + producto.getNombre()
+                        + " está inactivo y no se puede empaquetar");
             }
             if (producto.getStock() < cantidad) {
                 throw new ReglaNegocioException("Stock insuficiente para " + producto.getNombre()
                         + ". Disponible: " + producto.getStock() + ", solicitado: " + cantidad);
             }
 
-            int stockAnterior=producto.getStock();
+            int stockAnterior = producto.getStock();
             producto.setStock(stockAnterior - cantidad);
-            movimientoStockService.registrar(producto, MovimientoStock.Tipo.PAQUETE,cantidad,stockAnterior,
-                    producto.getStock(),pedido);
+            movimientoService.registrar(producto, MovimientoStock.Tipo.PAQUETE, cantidad,
+                    stockAnterior, producto.getStock(), pedido);
 
             DetallePackage detalle = new DetallePackage();
             detalle.setPaquete(paquete);
@@ -106,8 +114,8 @@ public class PaqueteService {
         }
 
         Paquete guardado = paqueteRepository.saveAndFlush(paquete);
-        auditoria.registrar("PAQUETE_CREADO","PAQUETE",guardado.getIdPaquete(),
-                pedido + " . "+cantidades.size()+" producto(s");
+        auditoria.registrar("PAQUETE_CREADO", "PAQUETE", guardado.getIdPaquete(),
+                pedido + " · " + cantidades.size() + " producto(s)");
         return PaqueteResponse.from(guardado);
     }
 
@@ -158,13 +166,13 @@ public class PaqueteService {
                     .orElseThrow(() -> new RecursoNoEncontradoException(
                             "Producto no encontrado: " + entrada.getKey()));
             int cantidad = entrada.getValue();
-            boolean suficiente = producto.getStock() >= cantidad;
+            boolean suficiente = producto.getStock() >= cantidad && producto.isActivo();
             double subtotal = redondear(producto.getPrecio() * cantidad);
 
-            if(!producto.isActivo()){
+            if (!producto.isActivo()) {
                 resumen.setValido(false);
-                resumen.getErrores().add("El producto "+producto.getNombre()+" esta inactivo");
-            }else if (!suficiente) {
+                resumen.getErrores().add("El producto " + producto.getNombre() + " está inactivo");
+            } else if (!suficiente) {
                 resumen.setValido(false);
                 resumen.getErrores().add("Stock insuficiente para " + producto.getNombre()
                         + ". Disponible: " + producto.getStock() + ", solicitado: " + cantidad);
@@ -181,6 +189,7 @@ public class PaqueteService {
         return resumen;
     }
 
+    /** Atajo sin motivo (sirve para marcar como Recibido). */
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
     public PaqueteResponse cambiarEstado(Long id, Paquete.Estado nuevoEstado) {
@@ -188,8 +197,9 @@ public class PaqueteService {
     }
 
     /**
-     * Enviado -> Recibido o Enviado -> Cancelado. Al cancelar se devuelve el stock
-     * descontado al crear el paquete. Recibido y Cancelado son estados finales.
+     * Enviado -> Recibido o Enviado -> Cancelado. Cancelar exige un motivo y devuelve el stock
+     * descontado al crear el paquete (queda registrado como DEVOLUCION). Recibido y Cancelado
+     * son estados finales.
      */
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional
@@ -211,67 +221,71 @@ public class PaqueteService {
             throw new ReglaNegocioException("Un paquete " + actual
                     + " ya no puede cambiar de estado");
         }
-        if(nuevoEstado==Paquete.Estado.Enviado){
+        if (nuevoEstado == Paquete.Estado.Enviado) {
             throw new ReglaNegocioException("Un paquete no puede volver al estado Enviado");
         }
 
-        String motivoLimpio = motivo ==null ? "" : motivo.trim();
+        String motivoLimpio = motivo == null ? "" : motivo.trim();
         if (nuevoEstado == Paquete.Estado.Cancelado) {
-            if(motivoLimpio.length()<3 || motivoLimpio.length()>255){
-                throw new DatosInvalidosException("Indica el motivo de la cancelacion (entre 3 y 255 caracteres");
+            if (motivoLimpio.length() < 3 || motivoLimpio.length() > 255) {
+                throw new DatosInvalidosException(
+                        "Indica el motivo de la cancelación (entre 3 y 255 caracteres)");
             }
             for (DetallePackage detalle : paquete.getDetalles()) {
                 Producto producto = productoRepository
                         .findByIdForUpdate(detalle.getProducto().getIdProducto())
                         .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
-                int stockAnterior =producto.getStock();
+                int stockAnterior = producto.getStock();
                 producto.setStock(stockAnterior + detalle.getCantidad());
-                movimientoStockService.registrar(producto, MovimientoStock.Tipo.DEVOLUCION, detalle.getCantidad(),
-                        stockAnterior,producto.getStock(),"Cancelacion "+ paquete.getnPedido());
+                movimientoService.registrar(producto, MovimientoStock.Tipo.DEVOLUCION, detalle.getCantidad(),
+                        stockAnterior, producto.getStock(), "Cancelación " + paquete.getnPedido());
             }
             paquete.setMotivoCancelacion(motivoLimpio);
         }
         paquete.setEstado(nuevoEstado);
         paquete.setFechaCambioEstado(LocalDateTime.now());
-        Paquete guardado=paqueteRepository.saveAndFlush(paquete);
+        Paquete guardado = paqueteRepository.saveAndFlush(paquete);
 
-        auditoria.registrar("PAQUETE_ESTADO","PAQUETE",guardado.getIdPaquete(),
-                guardado.getnPedido()+": "+actual +" → "+nuevoEstado
-        +(nuevoEstado== Paquete.Estado.Cancelado ? " ("+motivoLimpio+")":""));
+        auditoria.registrar("PAQUETE_ESTADO", "PAQUETE", guardado.getIdPaquete(),
+                guardado.getnPedido() + ": " + actual + " → " + nuevoEstado
+                        + (nuevoEstado == Paquete.Estado.Cancelado ? " (" + motivoLimpio + ")" : ""));
         return PaqueteResponse.from(guardado);
     }
 
-    public static Specification<Paquete>especificacion(Paquete.Estado estado, String pedido, LocalDate desde,
-                                                       LocalDate hasta){
-        if(desde != null && hasta != null && desde.isAfter(hasta)){
+    /** Filtros combinables del listado de paquetes; todos opcionales. Reutilizado por el export a CSV. */
+    public static Specification<Paquete> especificacion(Paquete.Estado estado, String pedido,
+                                                        LocalDate desde, LocalDate hasta) {
+        if (desde != null && hasta != null && desde.isAfter(hasta)) {
             throw new DatosInvalidosException("La fecha inicial no puede ser posterior a la final");
         }
-        Specification<Paquete>spec=(root, query, cb) -> cb.conjunction();
-        if(estado!=null){
-            spec=spec.and((root, query, cb)->cb.equal(root.get("estado"),estado));
+        Specification<Paquete> spec = (root, query, cb) -> cb.conjunction();
+        if (estado != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("estado"), estado));
         }
-        String texto=pedido ==null ? "": pedido.trim().toLowerCase();
-        if(!texto.isEmpty()){
-            String patron="%"+texto.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")+"%";
-            spec=spec.and((root,query,cb)->cb.like(cb.lower(root.<String>get("nPedido")),patron,'\\'));
+        String texto = pedido == null ? "" : pedido.trim().toLowerCase();
+        if (!texto.isEmpty()) {
+            String patron = "%" + texto.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.<String>get("nPedido")), patron, '\\'));
         }
-        if(desde != null){
-            LocalDateTime d=desde.atStartOfDay();
-            spec =spec.and((root,query,cb)->cb.greaterThanOrEqualTo(root.<LocalDateTime>get("fechaCreacion"),d));
+        if (desde != null) {
+            LocalDateTime d = desde.atStartOfDay();
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.<LocalDateTime>get("fechaCreacion"), d));
         }
-        if(hasta !=null){
-            LocalDateTime h=hasta.plusDays(1).atStartOfDay();
-            spec=spec.and((root, query, cb) -> cb.lessThan(root.<LocalDateTime>get("fechaCreacion"),h));
+        if (hasta != null) {
+            LocalDateTime h = hasta.plusDays(1).atStartOfDay();
+            spec = spec.and((root, query, cb) -> cb.lessThan(root.<LocalDateTime>get("fechaCreacion"), h));
         }
         return spec;
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR','USER')")
+    /** Historial completo de paquetes, del más reciente al más antiguo. */
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     @Transactional(readOnly = true)
-    public PaginaResponse<PaqueteResumenResponse>buscar(Paquete.Estado estado, String pedido,
-                                                        LocalDate desde, LocalDate hasta, int pagina, int tamanio){
-        Page<Paquete> resultado=paqueteRepository.findAll(especificacion(estado,pedido,desde,hasta),
-                Paginacion.de(pagina,tamanio, Sort.by(Sort.Direction.DESC,"idPaquete")));
+    public PaginaResponse<PaqueteResumenResponse> buscar(Paquete.Estado estado, String pedido,
+                                                         LocalDate desde, LocalDate hasta,
+                                                         int pagina, int tamanio) {
+        Page<Paquete> resultado = paqueteRepository.findAll(especificacion(estado, pedido, desde, hasta),
+                Paginacion.de(pagina, tamanio, Sort.by(Sort.Direction.DESC, "idPaquete")));
         return PaginaResponse.de(resultado.map(PaqueteResumenResponse::from));
     }
 

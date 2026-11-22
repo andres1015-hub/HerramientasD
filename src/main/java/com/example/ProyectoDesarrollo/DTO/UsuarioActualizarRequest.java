@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/** Edición de nombre, apellido y rol de un usuario por un administrador. */
 public class UsuarioActualizarRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -18,29 +19,14 @@ public class UsuarioActualizarRequest {
     @NotNull(message = "El rol es obligatorio")
     private Usuario.Rol rol;
 
-    public UsuarioActualizarRequest(){}
+    public UsuarioActualizarRequest() {}
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public Usuario.Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Usuario.Rol rol) {
-        this.rol = rol;
-    }
+    public Usuario.Rol getRol() { return rol; }
+    public void setRol(Usuario.Rol rol) { this.rol = rol; }
 }
