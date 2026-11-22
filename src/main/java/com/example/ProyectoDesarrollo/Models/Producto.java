@@ -1,10 +1,12 @@
 package com.example.ProyectoDesarrollo.Models;
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@BatchSize(size=50)
 @Table(name="Producto")
 public class Producto {
 
@@ -21,6 +23,12 @@ public class Producto {
     private String tipo;
     @Column(name = "precio",nullable = false,length = 50)
     private double precio;
+
+    @Column(name = "activo",nullable = false,columnDefinition = "boolean default true")
+    private boolean activo=true;
+
+    @Column(name = "stock_minimo",nullable = false, columnDefinition = "integer default 5")
+    private int stockMinimo=5;
 
     @OneToMany(mappedBy = "producto")
     private List<DetallePackage>detalles=new ArrayList<>();
@@ -84,4 +92,10 @@ public class Producto {
     public void setDetalles(List<DetallePackage> detalles) {
         this.detalles = detalles;
     }
+
+    public boolean isActivo(){return activo;}
+    public void setActivo(boolean activo){this.activo=activo;}
+
+    public int getStockMinimo(){return stockMinimo;}
+    public void setStockMinimo(int stockMinimo){this.stockMinimo=stockMinimo;}
 }

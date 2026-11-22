@@ -1,7 +1,9 @@
 package com.example.ProyectoDesarrollo.Models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +31,25 @@ public class Paquete {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_cambio_estado")
+    private LocalDateTime fechaCambioEstado;
+
+    @Column(name = "motivo_cancelacion",length = 255)
+    private String motivoCancelacion;
+
+    @BatchSize(size = 50)
     @OneToMany(mappedBy = "paquete", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePackage> detalles = new ArrayList<>();
+
+    @PrePersist
+    public void antesDeGuardar(){
+        if(fechaCreacion==null){
+            fechaCreacion=LocalDateTime.now();
+        }
+    }
 
     public Paquete() {
     }
@@ -57,4 +76,13 @@ public class Paquete {
 
     public List<DetallePackage> getDetalles() { return detalles; }
     public void setDetalles(List<DetallePackage> detalles) { this.detalles = detalles; }
+
+    public LocalDateTime getFechaCreacion(){return fechaCreacion;}
+    public void setFechaCreacion(LocalDateTime fechaCreacion){this.fechaCreacion=fechaCreacion;}
+
+    public LocalDateTime getFechaCambioEstado(){return fechaCambioEstado;}
+    public void setFechaCambioEstado(LocalDateTime fechaCambioEstado){fechaCambioEstado=this.fechaCambioEstado;}
+
+    public String getMotivoCancelacion(){return motivoCancelacion;}
+    public void setMotivoCancelacion(String motivoCancelacion){motivoCancelacion=this.motivoCancelacion;}
 }
