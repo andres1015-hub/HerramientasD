@@ -1,4 +1,52 @@
 /* Vistas de administración, catálogo y registro. Reutilizan los tokens de legacy.css. */
+/* Operaciones: misma paleta, controles comunes y tablas con lectura móvil. */
+.ops-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; align-items: end; margin-block: 24px; }
+.ops-filters input, .ops-filters select, .ops-form input, .ops-form select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--control-border); border-radius: 4px; padding: 8px 12px; background: var(--surface); color: var(--ink); font: inherit; }
+.ops-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 16px; }
+.ops-actions .button { min-height: 44px; font-size: .8125rem; padding: 8px 12px; }
+.ops-product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 24px; }
+.ops-product { display: flex; flex-direction: column; gap: 16px; min-width: 0; border-top: 4px solid var(--primary); }
+.ops-product h3 { font-size: 1.25rem; overflow-wrap: anywhere; }
+.ops-product .status-badge { align-self: flex-start; }
+.ops-product .ops-actions { margin-top: auto; }
+.ops-price { font-size: 1.75rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ops-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 24px; font-size: .875rem; }
+.ops-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+.ops-table th, .ops-table td { text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); padding: 16px 12px; overflow-wrap: anywhere; }
+.ops-table th { color: var(--muted); font-weight: 600; }
+.ops-table td { font-variant-numeric: tabular-nums; }
+.ops-table tr:last-child td { border-bottom: 0; }
+.ops-dialog { width: min(880px, calc(100% - 32px)); max-height: calc(100svh - 32px); margin: auto; padding: 32px; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); color: var(--ink); }
+.ops-dialog::backdrop { background: rgb(24 40 32 / .45); }
+.ops-dialog h2 { padding-right: 80px; font-size: 1.5rem; }
+.ops-form { display: grid; gap: 20px; }
+.dialog-close { justify-self: end; }
+.ops-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-block: 24px; }
+.ops-kpis .panel:first-child { background: var(--primary); color: var(--surface); }
+.ops-kpis .panel:first-child .eyebrow { color: var(--success-surface); }
+.ops-value { font-size: clamp(1.25rem, 2.5vw, 2rem); font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; margin-top: 16px; overflow-wrap: anywhere; }
+.ops-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 24px; }
+.ops-summary-grid h3 { font-size: 1rem; margin-bottom: 16px; }
+.ops-breakdown { display: grid; grid-template-columns: 1fr auto; gap: 12px; font-size: .875rem; }
+.ops-breakdown dd { margin: 0; font-weight: 600; }
+.account-personal { margin-bottom: 24px; max-width: 640px; }
+.account-personal h2 { margin-bottom: 24px; }
+.ops-notice { margin-block: 16px; }
+[aria-busy="true"] { cursor: progress; }
+.button:disabled, .button[aria-disabled="true"] { opacity: .65; cursor: not-allowed; }
+@media (min-width: 821px) { .workspace-nav { flex-wrap: wrap; gap: 0; } .workspace-nav a { padding-inline: 8px; } }
+@media (max-width: 1024px) { .ops-product-grid, .ops-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ops-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+    .ops-product-grid, .ops-summary-grid { grid-template-columns: 1fr; }
+    .ops-filters { grid-template-columns: 1fr; }
+    .ops-table, .ops-table tbody, .ops-table tr, .ops-table td { display: block; width: 100%; }
+    .ops-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .ops-table tr { padding-block: 16px; border-bottom: 1px solid var(--rule); }
+    .ops-table td { border: 0; padding: 8px 0; }
+    .ops-table td::before { content: attr(data-label); display: block; color: var(--muted); font-size: .75rem; margin-bottom: 4px; }
+    .ops-dialog { padding: 20px; }
+    .ops-kpis .panel { padding: 16px; }
+}
 :root {
     --status-info: #345569;
     --status-info-surface: #eaf0f5;

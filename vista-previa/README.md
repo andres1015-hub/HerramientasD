@@ -1,7 +1,8 @@
-# Vistas previas
+# Vista previa — 23/11/2026
 
-Abre `administrador.html` en un navegador para recorrer las nuevas vistas sin iniciar Spring ni PostgreSQL. También puedes abrir directamente `empaquetador.html`, `escaner.html`, `usuarios.html` o `error.html`.
+Ejecuta desde la raíz: `python -m http.server 18081 --bind 127.0.0.1`.
+Abre http://localhost:18081/vista-previa/demo-administrador.html.
 
-Usan el CSS compilado del proyecto y el mismo HTML renderizado por Thymeleaf, con datos de ejemplo. El menú, los filtros de usuarios y la impresión QR funcionan en local. La creación de paquetes, la cámara, las consultas y el cierre de sesión están deshabilitados. El QR incluido es únicamente de demostración.
+Las siete páginas demo-*.html usan los estilos y operaciones.js reales; demo-datos.js solo proporciona datos ficticios, sin solicitudes al backend. Los filtros, diálogos y páginas permiten revisar el comportamiento. Guardar y descargar están deshabilitados. Las vistas anteriores se conservan.
 
-Después de cambiar los estilos, ejecuta `npm run build:css` en la raíz del repositorio.
+Regenera CSS con `npm run build:css`; no edites app.css manualmente.

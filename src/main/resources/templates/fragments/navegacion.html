@@ -25,6 +25,9 @@
             <a th:href="@{/escaner}" th:attr="aria-current=${vista == 'escaner' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Escáner QR</a>
             <a th:href="@{/(vista='inventario')}" th:attr="aria-current=${vista == 'inventario' ? 'page' : null}" sec:authorize="isAuthenticated()">Inventario</a>
             <a th:href="@{/usuarios}" th:attr="aria-current=${vista == 'usuarios' ? 'page' : null}" sec:authorize="hasRole('ADMINISTRADOR')">Usuarios</a>
+            <a th:href="@{/(vista='historial')}" th:attr="aria-current=${vista == 'historial' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Paquetes</a>
+            <a th:href="@{/(vista='movimientos')}" th:attr="aria-current=${vista == 'movimientos' ? 'page' : null}" sec:authorize="hasRole('ADMINISTRADOR')">Movimientos</a>
+            <a th:href="@{/(vista='auditoria')}" th:attr="aria-current=${vista == 'auditoria' ? 'page' : null}" sec:authorize="hasRole('ADMINISTRADOR')">Auditoría</a>
             <a th:href="@{/(vista='cuenta')}" th:attr="aria-current=${vista == 'cuenta' ? 'page' : null}" sec:authorize="isAuthenticated()">Mi cuenta</a>
         </nav>
         <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">

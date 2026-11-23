@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"><body>
+<th:block th:fragment="contenido">
+<main id="contenido" class="workspace" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">
+<header class="page-heading"><div><p class="eyebrow">Operaciones / Historial de paquetes</p><h1>Historial de paquetes</h1><p>Consulta pedidos, revisa sus artículos y sigue cada entrega.</p></div><a class="button button-secondary" th:href="@{/}">Volver al inicio</a></header>
+<section class="panel" data-module="historial" th:attr="data-admin=${#authorization.expression('hasRole(''ADMINISTRADOR'')')}" hidden aria-label="Historial de paquetes"></section>
+<noscript><p class="message">Activa JavaScript para consultar y filtrar este historial.</p></noscript>
+</main>
+<main id="contenido" class="workspace empty-state" sec:authorize="!hasAnyRole('ADMINISTRADOR', 'USER')"><h1>Acceso restringido</h1><p>Tu cuenta no tiene permisos para esta sección.</p><a class="button button-primary" th:href="@{/}">Volver al inicio</a></main>
+</th:block></body></html>

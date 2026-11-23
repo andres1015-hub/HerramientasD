@@ -8,6 +8,8 @@
         <div><p class="eyebrow">Operaciones / Inventario</p><h1>Tu catálogo, a la vista.</h1><p>Encuentra productos y revisa lo que tienes disponible.</p></div>
         <a class="button button-primary" href="#nuevo-producto" sec:authorize="hasRole('ADMINISTRADOR')">Agregar producto <span aria-hidden="true">+</span></a>
     </header>
+    <section class="panel" data-module="inventario" th:attr="data-admin=${#authorization.expression('hasRole(''ADMINISTRADOR'')')}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')" hidden aria-label="Catálogo paginado"></section>
+    <div th:attr="data-ops-fallback=${#authorization.expression('hasAnyRole(''ADMINISTRADOR'', ''USER'')') ? 'true' : null}">
     <section class="catalog-toolbar" aria-label="Buscar y filtrar productos">
         <form method="get" th:action="@{/}" class="catalog-search" role="search">
             <input type="hidden" name="vista" value="inventario">
@@ -38,7 +40,7 @@
                         <span class="product-code" th:text="${'ART. ' + producto.idProducto}">ART. 0</span>
                         <h3 th:text="${producto.nombre}">Nombre del producto</h3>
                         <p class="product-price">S/ <span th:text="${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
-                        <p class="stock-badge" th:classappend="${producto.stock == 0 ? 'stock-empty' : (producto.stock &lt;= 5 ? 'stock-low' : '')}" th:text="${producto.stock == 0 ? 'Agotado' : producto.stock + ' disponibles'}">Disponibilidad</p>
+                        <p class="stock-badge" th:classappend="${producto.stock == 0 ? 'stock-empty' : (producto.stock &lt;= producto.stockMinimo ? 'stock-low' : '')}" th:text="${producto.stock == 0 ? 'Agotado' : producto.stock + ' disponibles'}">Disponibilidad</p>
                         <input class="product-checkbox" type="checkbox" name="productos" th:id="${'seleccion-' + producto.idProducto}" th:value="${producto.idProducto}" th:disabled="${producto.stock &lt;= 0}" th:attr="aria-label=${'Seleccionar ' + producto.nombre}">
                         <label class="button product-select" th:for="${'seleccion-' + producto.idProducto}"><span class="select-idle">Agregar a selección <span aria-hidden="true">+</span></span><span class="select-done">Seleccionado <span aria-hidden="true">✓</span></span><span class="select-unavailable">Sin existencias</span></label>
                     </div>
@@ -48,6 +50,8 @@
         </form>
         <p class="catalog-footnote" th:unless="${#lists.isEmpty(productos)}">Las ilustraciones identifican el tipo de artículo; no son fotografías del producto.</p>
     </section>
+    </div>
+    <noscript><p class="message">Activa JavaScript para usar la administración paginada. El catálogo de consulta continúa disponible para proveedores.</p></noscript>
     <section class="section-block" sec:authorize="hasRole('ADMINISTRADOR')" aria-labelledby="gestion-titulo">
         <div class="section-heading"><div><p class="eyebrow">Gestión de existencias</p><h2 id="gestion-titulo">Organiza tu inventario</h2></div></div>
         <div id="inventario-msg" class="message message-success" role="status" hidden></div>
@@ -56,7 +60,7 @@
                 <form id="form-producto" method="post" class="management-form" aria-describedby="producto-msg" novalidate>
                     <div class="field"><label for="producto-nombre">Nombre</label><input id="producto-nombre" name="nombre" maxlength="50" required placeholder="Ej. Camiseta de algodón"></div>
                     <div class="field"><label for="producto-tipo">Tipo</label><input id="producto-tipo" name="tipo" maxlength="30" required placeholder="Ej. Ropa"></div>
-                    <div class="form-columns"><div class="field"><label for="producto-precio">Precio (S/)</label><input id="producto-precio" name="precio" type="number" min="0" step="0.01" required></div><div class="field"><label for="producto-stock">Stock inicial</label><input id="producto-stock" name="stock" type="number" min="0" step="1" required></div></div>
+                    <div class="form-columns"><div class="field"><label for="producto-precio">Precio (S/)</label><input id="producto-precio" name="precio" type="number" min="0.01" step="0.01" required></div><div class="field"><label for="producto-stock">Stock inicial</label><input id="producto-stock" name="stock" type="number" min="0" step="1" required></div></div>
                     <div id="producto-msg" class="message message-error" role="alert" hidden></div><button id="btn-producto" type="submit" class="button button-primary">Guardar producto</button>
                 </form>
             </details>

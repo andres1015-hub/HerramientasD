@@ -3,6 +3,7 @@
 <body>
 <main id="contenido" class="workspace" th:fragment="contenido">
     <header class="page-heading"><div><p class="eyebrow">Personas / Mi cuenta</p><h1>Tu acceso, en tus manos.</h1><p>Consulta tu identificación y administra tu contraseña.</p></div><a class="text-link" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a></header>
+    <section class="panel account-personal" data-module="cuenta" hidden aria-label="Datos personales"></section>
     <div class="account-layout">
         <aside class="panel account-summary" aria-labelledby="identificacion-titulo"><svg class="icon service-icon" aria-hidden="true"><use href="#icon-usuarios"/></svg><p class="eyebrow">Tu identificación</p><h2 id="identificacion-titulo">Cuenta de trabajo</h2><dl><dt>DNI de acceso</dt><dd class="tabular" sec:authentication="name"></dd><dt>Permisos de la sesión</dt><dd sec:authorize="hasRole('ADMINISTRADOR')">Administrador</dd><dd sec:authorize="hasRole('PROVEEDOR')">Proveedor</dd><dd sec:authorize="!hasRole('ADMINISTRADOR') and !hasRole('PROVEEDOR')">Usuario</dd></dl><p class="field-help">Los permisos corresponden a los que reconoce la sesión actual.</p></aside>
         <section class="panel account-security" aria-labelledby="seguridad-titulo"><div class="form-heading"><p class="eyebrow">Seguridad</p><h2 id="seguridad-titulo">Cambiar contraseña</h2><p>Mantén tu acceso personal protegido.</p></div>

@@ -21,12 +21,13 @@
         <a class="button button-secondary" th:href="@{/}">Volver al inicio <span aria-hidden="true">→</span></a>
     </header>
 
-    <section class="users-overview" aria-label="Resumen de cuentas">
+    <section class="panel" data-module="usuarios" th:attr="data-dni=${#authentication.name}" hidden aria-label="Administración de usuarios"></section>
+    <section data-ops-fallback class="users-overview" aria-label="Resumen de cuentas">
         <article class="overview-stat"><p class="eyebrow">Equipo completo</p><p class="stat-number" th:text="${#lists.size(usuarios)}">0</p><h2>Usuarios registrados</h2></article>
         <article class="overview-stat"><p class="eyebrow">Acceso habilitado</p><p class="stat-number" th:text="${activos}">0</p><h2>Activos</h2></article>
         <article class="overview-stat"><p class="eyebrow">Sin acceso</p><p class="stat-number" th:text="${#lists.size(usuarios) - activos}">0</p><h2>Inactivos o eliminados</h2></article>
     </section>
-    <section class="section-block panel" aria-labelledby="usuarios-titulo">
+    <section data-ops-fallback class="section-block panel" aria-labelledby="usuarios-titulo">
         <div class="section-heading">
             <div><p class="eyebrow">Cuentas registradas</p><h2 id="usuarios-titulo">Usuarios del sistema</h2></div>
             <span class="section-caption"><span th:text="${#lists.size(usuarios)}">0</span> usuarios registrados</span>
@@ -72,5 +73,6 @@
 </main>
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
 <script th:src="@{/js/usuarios.js}" defer></script>
+<script th:src="@{/js/operaciones.js}" defer></script>
 </body>
 </html>
