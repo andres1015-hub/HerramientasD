@@ -6,8 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
@@ -136,6 +139,22 @@ public class GlobalMvcExceptionHandler {
                 "El formato de la peticion no esta soportado.", req, res, model);
     }
 
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public String tipoRespuestaNoAceptable(HttpMediaTypeNotAcceptableException ex,
+                                           HttpServletRequest req, HttpServletResponse res, Model model) {
+        log.warn("Formato de respuesta no aceptable en {} {}", req.getMethod(), req.getRequestURI());
+        return vistaError(HttpStatus.NOT_ACCEPTABLE, "Formato de respuesta no soportado",
+                "No hay una representación disponible para el formato solicitado.", req, res, model);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public String cuerpoNoLegible(HttpMessageNotReadableException ex,
+                                  HttpServletRequest req, HttpServletResponse res, Model model) {
+        log.warn("Cuerpo de petición no legible en {} {}", req.getMethod(), req.getRequestURI());
+        return vistaError(HttpStatus.BAD_REQUEST, "Petición inválida",
+                "El cuerpo de la petición está vacío o tiene un formato inválido.", req, res, model);
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public String metodoNoSoportado(HttpRequestMethodNotSupportedException ex, HttpServletRequest req,
                                     HttpServletResponse res, Model model) {
@@ -150,6 +169,14 @@ public class GlobalMvcExceptionHandler {
         log.error("Violación de integridad de datos en {}", req.getRequestURI(), ex);
         return vistaError(HttpStatus.CONFLICT, "Operación no permitida",
                 "La operación entra en conflicto con datos existentes.", req, res, model);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public String accesoDatos(DataAccessException ex, HttpServletRequest req,
+                              HttpServletResponse res, Model model) {
+        log.error("Error de acceso a datos en {} {}", req.getMethod(), req.getRequestURI(), ex);
+        return vistaError(HttpStatus.INTERNAL_SERVER_ERROR, "Error al consultar los datos",
+                "No se pudo completar la operación. Inténtalo más tarde.", req, res, model);
     }
 
     @ExceptionHandler(Exception.class)

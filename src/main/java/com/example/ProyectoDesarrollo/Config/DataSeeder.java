@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -23,8 +24,10 @@ public class DataSeeder {
                                ProductRepository pr,
                                PaqueteRepository par,
                                PasswordEncoder encoder,
-                               DetallePackageRepository dr) {
+                               DetallePackageRepository dr,
+                               @Value("${DEMO_ADMIN_PASSWORD:}") String demoAdminPassword) {
         return args -> {
+            validarPasswordDemo(demoAdminPassword);
 
             // ---- User: idempotent insert ----
             Usuario u;
@@ -33,13 +36,15 @@ public class DataSeeder {
                 u.setNombre("Juan");
                 u.setApelllido("Pérez");
                 u.setDNI("01234567");
-                u.setPassword(encoder.encode("1234"));
+                u.setPassword(encoder.encode(demoAdminPassword));
                 u.setEstado(Usuario.Estado.ACTIVO);
                 u.setRol(Usuario.Rol.ADMINISTRADOR);
                 ur.save(u);
                 System.out.println(">>> Usuario insertado");
             } else {
                 u = ur.findByDNI("01234567").orElseThrow();
+                u.setPassword(encoder.encode(demoAdminPassword));
+                ur.save(u);
                 System.out.println(">>> Usuario ya existe, no se inserta");
             }
 
@@ -76,5 +81,12 @@ public class DataSeeder {
             System.out.println(">>> fechaEmision:    " + d.getFechaEmision());
             System.out.println("==================================================");
         };
+    }
+
+    private static void validarPasswordDemo(String password) {
+        if (password == null || password.length() < 12 || password.length() > 100) {
+            throw new IllegalStateException(
+                    "DEMO_ADMIN_PASSWORD debe tener entre 12 y 100 caracteres para activar el perfil demo");
+        }
     }
 }
