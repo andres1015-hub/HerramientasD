@@ -26,7 +26,7 @@
             <img th:src="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
                  th:alt="${'Código QR de ' + detalle.nombreProducto + ', pedido ' + detalle.getnPedido()}"
                  width="300" height="300">
-            <p>Escanéalo con el <a class="text-link" th:href="@{/escaner}">escáner QR</a> para ver el detalle del paquete.</p>
+            <p>Escanéalo con el <a class="text-link" th:href="@{/escaner}">consulta QR</a> para ver el detalle del paquete.</p>
         </div>
 
         <div class="panel qr-view-info">
@@ -49,16 +49,14 @@
             <div class="qr-actions">
                 <a class="button button-primary" th:href="@{'/api/detalle/{id}/qr'(id=${detalle.idDetalles})}"
                    th:attr="download=${'qr-' + detalle.getnPedido() + '-' + detalle.idDetalles + '.png'}">Descargar PNG</a>
-                <button class="button button-secondary" type="button" id="btn-imprimir-qr" hidden>Imprimir</button>
-                <button class="button button-secondary" type="button" id="btn-copiar-codigo" hidden>Copiar código</button>
+                <p class="field-help">Para imprimir utiliza el menú Imprimir de tu navegador (Ctrl+P).</p>
                 <a class="button button-secondary" th:href="@{/paquete(creado=${detalle.idPaquete})}">Ver todos los QR del paquete</a>
             </div>
-            <p class="field-help" id="qr-aviso" role="status" hidden></p>
         </div>
     </section>
 </main>
 
 <footer class="site-footer"><span>HerramientasD</span><span>Uso interno</span></footer>
-<script th:src="@{/js/qr.js}" defer></script>
+
 </body>
 </html>

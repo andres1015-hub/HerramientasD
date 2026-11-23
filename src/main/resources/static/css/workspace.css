@@ -1,4 +1,13 @@
 /* Vistas de administración, catálogo y registro. Reutilizan los tokens de legacy.css. */
+.java-nav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.java-nav a { min-height:44px; padding:8px; display:inline-flex; align-items:center; border-radius:4px; font-size:.875rem; text-decoration:none; }
+.java-nav a[aria-current="page"] { background:var(--success-surface); color:var(--primary); font-weight:600; }
+.ops-form { margin-block:24px; }
+.ops-form > .field { max-width:640px; }
+.ops-form input[type="checkbox"] { width:20px; min-height:20px; }
+.confirmation { display:flex; gap:12px; align-items:center; padding:16px; background:var(--paper); }
+.ops-summary-grid h2 { font-size:1.125rem; margin-bottom:16px; }
+@media(max-width:820px) { .workspace-header { flex-wrap:wrap; gap:16px; } .java-nav { width:100%; order:3; } .workspace-header > form { margin-left:auto; } }
 /* Operaciones: misma paleta, controles comunes y tablas con lectura móvil. */
 .ops-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; align-items: end; margin-block: 24px; }
 .ops-filters input, .ops-filters select, .ops-form input, .ops-form select { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--control-border); border-radius: 4px; padding: 8px 12px; background: var(--surface); color: var(--ink); font: inherit; }

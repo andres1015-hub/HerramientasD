@@ -1,18 +1,21 @@
-# Alcance frontend — 23/11/2026
+# Matriz del frontend
 
-Base: develop-2, 8e3e294. Trabajo en frontend-diseno-operaciones.
+## Arquitectura
 
-| Vista | Funcionalidad | Endpoint | Rol | Archivos |
-| --- | --- | --- | --- | --- |
-| Inventario | Página, filtros, tipos, alertas | GET /api/productos/paginado, /tipos, /alertas | ADMINISTRADOR, USER | inventario.html, operaciones.js |
-| Inventario | Editar y activar | GET/PUT /api/productos/{id}, PATCH /{id}/activo | ADMINISTRADOR | inventario.html, operaciones.js |
-| Inventario | Alta y movimientos existentes | POST /api/productos, POST /{id}/entrada, /salida, PUT /{id}/stock | ADMINISTRADOR en UI | inventario.js (conservado) |
-| Movimientos | Historial y CSV filtrado | GET /api/movimientos, /api/productos/{id}/movimientos, /api/reportes/movimientos.csv | ADMINISTRADOR | movimientos.html, operaciones.js |
-| Usuarios | Página, alta, edición, contraseña, estado | /api/usuarios/pagina, /{id}, POST /, PUT /{id}, POST /{id}/password, PATCH /{id}/estado | ADMINISTRADOR | usuarios.html, operaciones.js |
-| Paquetes | Historial, detalle, recepción, cancelación | GET /api/paquetes, /{id}, PATCH /{id}/estado | ADMINISTRADOR, USER | historial.html, operaciones.js |
-| Cuenta | Datos propios y edición | GET/PUT /miperfil/datos | Cualquier sesión | cuenta.html, operaciones.js |
-| Panel | KPIs reales y CSV | GET /api/reportes/resumen, /productos.csv, /paquetes.csv | ADMINISTRADOR | administrador.html, operaciones.js |
-| Auditoría | Bitácora filtrada, sin edición | GET /api/auditoria | ADMINISTRADOR | auditoria.html, operaciones.js |
-| Integración | Rutas por vista y navegación | /?vista=… | Según vista | index.html, fragments/navegacion.html |
+Las interacciones se procesan en Java con Spring MVC y los servicios existentes. Thymeleaf genera las páginas HTML en el servidor; CSS define su presentación. No se ejecuta JavaScript en el navegador y no se requiere Node ni npm.
 
-PROVEEDOR conserva catálogo renderizado por Thymeleaf; /api/** lo excluye en SecurityConfig. Cuenta propia usa /miperfil/datos. No se modifica Java. No se incorpora eliminación de cuentas.
+| Vista | Funciones | Lógica Java y acceso | Plantillas |
+| --- | --- | --- | --- |
+| Panel | Indicadores de inventario, usuarios y paquetes; exportación CSV | ReporteService; solo ADMINISTRADOR | operaciones.html, fragmentos/operaciones/panel.html |
+| Inventario | Filtros, páginas, alta, edición, activación y movimientos de stock | InventarioService; lectura para sesión autenticada, cambios para ADMINISTRADOR | fragmentos/operaciones/productos.html |
+| Usuarios | Búsqueda, páginas, alta, edición, restablecimiento y estado | UsuarioService; solo ADMINISTRADOR | fragmentos/operaciones/usuarios.html |
+| Paquetes | Filtros, páginas, detalle, recepción y cancelación con motivo | PaqueteService; ADMINISTRADOR y USER | fragmentos/operaciones/paquetes.html |
+| Empaquetador | Selección de productos y creación de pedidos | PaqueteService e InventarioService; ADMINISTRADOR y USER | fragmentos/operaciones/empaquetador.html |
+| Movimientos | Historial filtrable y exportación CSV | MovimientoStockService y ReporteService; solo ADMINISTRADOR | fragmentos/operaciones/movimientos.html |
+| Auditoría | Consulta filtrable, paginada y de solo lectura | AuditoriaService; solo ADMINISTRADOR | fragmentos/operaciones/auditoria.html |
+| Cuenta | Edición de nombre y apellido; contraseña existente | UsuarioService; sesión autenticada | fragmentos/operaciones/cuenta.html |
+| Consulta QR | Consulta manual y lectura de imagen PNG/JPEG mediante ZXing en Java | DetallePackageService; ADMINISTRADOR y USER | fragmentos/operaciones/qr.html |
+
+Las escrituras son formularios POST con protección CSRF de Spring Security. Los mensajes de resultado se renderizan en el servidor. Las reglas de negocio, permisos y cálculos continúan en los servicios existentes.
+
+La lectura QR desde una imagen funciona en Java. En móviles, el selector puede abrir la cámara para tomar una foto; no hay lector de video en vivo porque eso requeriría código en el navegador.

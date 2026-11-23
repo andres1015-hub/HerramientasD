@@ -1,8 +1,5 @@
-# Vista previa — 23/11/2026
+# Vista previa
 
-Ejecuta desde la raíz: `python -m http.server 18081 --bind 127.0.0.1`.
-Abre http://localhost:18081/vista-previa/demo-administrador.html.
+La vista funcional requiere ejecutar la aplicación Spring Boot. Inicia el proyecto con las instrucciones de FRONTEND_ENTREGA_20261123.md y abre http://localhost:18082.
 
-Las siete páginas demo-*.html usan los estilos y operaciones.js reales; demo-datos.js solo proporciona datos ficticios, sin solicitudes al backend. Los filtros, diálogos y páginas permiten revisar el comportamiento. Guardar y descargar están deshabilitados. Las vistas anteriores se conservan.
-
-Regenera CSS con `npm run build:css`; no edites app.css manualmente.
+Las pantallas se renderizan en Java con Thymeleaf y CSS; no hay demos HTML estáticas ni dependencias JavaScript para esta interfaz.
