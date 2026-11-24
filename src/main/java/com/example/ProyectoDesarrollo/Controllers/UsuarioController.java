@@ -3,12 +3,10 @@ package com.example.ProyectoDesarrollo.Controllers;
 import com.example.ProyectoDesarrollo.Exceptions.DatosInvalidosException;
 import com.example.ProyectoDesarrollo.Exceptions.RecursoNoEncontradoException;
 import com.example.ProyectoDesarrollo.Exceptions.ReglaNegocioException;
-import com.example.ProyectoDesarrollo.Models.Usuario;
 import com.example.ProyectoDesarrollo.Services.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +18,7 @@ import java.security.Principal;
 public class UsuarioController {
 
     private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
-    private static final String VISTA_CUENTA = "redirect:/?vista=cuenta";
+    private static final String VISTA_CUENTA = "redirect:/operaciones/cuenta";
 
     private final UsuarioService usuarioService;
 
@@ -34,15 +32,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuarios")
-    public String usuarios(@RequestParam(name = "busqueda", required = false) String busqueda,
-                           @RequestParam(name = "rol", required = false) Usuario.Rol rol,
-                           @RequestParam(name = "estado", required = false) Usuario.Estado estado,
-                           Model model) {
-        model.addAttribute("usuarios", usuarioService.buscar(busqueda, rol, estado));
-        model.addAttribute("filtroBusqueda", busqueda == null ? "" : busqueda);
-        model.addAttribute("filtroRol", rol);
-        model.addAttribute("filtroEstado", estado);
-        return "usuarios";
+    public String usuarios() {
+        return "redirect:/operaciones/usuarios";
     }
 
     @PostMapping("/miperfil/password")

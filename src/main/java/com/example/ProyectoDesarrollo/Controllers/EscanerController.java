@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class EscanerController  {
     @GetMapping("/escaner")
     public String escaner(){
-        return "escaner";
+        return "redirect:/operaciones/qr";
     }
 }

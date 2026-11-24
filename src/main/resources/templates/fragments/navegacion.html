@@ -1,8 +1,4 @@
-﻿<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<body>
-<th:block th:fragment="cabecera(vista)">
-    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"><body><th:block th:fragment="cabecera(vista)">    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <symbol id="icon-catalogo" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
         <symbol id="icon-caja" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4Z M3 7l9 4 9-4 M12 11v10 M7 5l9 4"/></symbol>
         <symbol id="icon-movimientos" viewBox="0 0 24 24"><path d="M4 7h16m-4-4 4 4-4 4 M20 17H4m4-4-4 4 4 4"/></symbol>
@@ -15,25 +11,4 @@
         <symbol id="icon-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4Z M14 4h6v6h-6Z M4 14h6v6H4Z M15 14h2v2h-2Z M19 14h1 M14 19h2 M19 18v2"/></symbol>
         <symbol id="icon-paquete" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5Z M3 7v10l9 5 9-5V7 M12 12v10 M7.5 9.5l9-5"/></symbol>
     </svg>
-    <header class="site-header workspace-header">
-        <a class="brand" th:href="@{/}">HerramientasD<span class="brand-caption">Gestión interna</span></a>
-        <button class="button button-secondary navigation-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal" hidden>Menú <span aria-hidden="true">☰</span></button>
-        <div id="menu-principal" class="navigation-menu">
-        <nav class="workspace-nav" aria-label="Navegación principal">
-            <a th:href="@{/}" th:attr="aria-current=${vista == 'inicio' or vista == 'administrador' ? 'page' : null}">Inicio</a>
-            <a th:href="@{/paquete}" th:attr="aria-current=${vista == 'empaquetador' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Empaquetador</a>
-            <a th:href="@{/escaner}" th:attr="aria-current=${vista == 'escaner' ? 'page' : null}" sec:authorize="hasAnyRole('ADMINISTRADOR', 'USER')">Escáner QR</a>
-            <a th:href="@{/(vista='inventario')}" th:attr="aria-current=${vista == 'inventario' ? 'page' : null}" sec:authorize="isAuthenticated()">Inventario</a>
-            <a th:href="@{/usuarios}" th:attr="aria-current=${vista == 'usuarios' ? 'page' : null}" sec:authorize="hasRole('ADMINISTRADOR')">Usuarios</a>
-            <a th:href="@{/(vista='cuenta')}" th:attr="aria-current=${vista == 'cuenta' ? 'page' : null}" sec:authorize="isAuthenticated()">Mi cuenta</a>
-        </nav>
-        <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
-            <button class="button button-secondary" type="submit">Cerrar sesión</button>
-        </form>
-        <a class="button button-primary" th:href="@{/login}" sec:authorize="isAnonymous()">Iniciar sesión</a>
-        </div>
-    </header>
-    <script th:src="@{/js/navegacion.js}" defer></script>
-</th:block>
-</body>
-</html>
+<header class="site-header workspace-header"><a class="brand" th:href="@{/}">HerramientasD<span class="brand-caption">Gestión interna</span></a><nav class="java-nav" aria-label="Navegación principal"><a th:href="@{/}" th:attr="aria-current=${vista == 'panel' or vista == 'inicio' ? 'page' : null}">Inicio</a><th:block sec:authorize="hasAnyRole('ADMINISTRADOR','USER')"><a th:href="@{/operaciones/empaquetador}" th:attr="aria-current=${vista == 'empaquetador' ? 'page' : null}">Empaquetador</a><a th:href="@{/operaciones/qr}" th:attr="aria-current=${vista == 'qr' ? 'page' : null}">Consultar QR</a><a th:href="@{/operaciones/paquetes}" th:attr="aria-current=${vista == 'paquetes' ? 'page' : null}">Paquetes</a></th:block><a sec:authorize="isAuthenticated()" th:href="@{/operaciones/productos}" th:attr="aria-current=${vista == 'productos' ? 'page' : null}">Inventario</a><th:block sec:authorize="hasRole('ADMINISTRADOR')"><a th:href="@{/operaciones/usuarios}" th:attr="aria-current=${vista == 'usuarios' ? 'page' : null}">Usuarios</a><a th:href="@{/operaciones/movimientos}" th:attr="aria-current=${vista == 'movimientos' ? 'page' : null}">Movimientos</a><a th:href="@{/operaciones/auditoria}" th:attr="aria-current=${vista == 'auditoria' ? 'page' : null}">Auditoría</a></th:block><a sec:authorize="isAuthenticated()" th:href="@{/operaciones/cuenta}" th:attr="aria-current=${vista == 'cuenta' ? 'page' : null}">Mi cuenta</a></nav><form sec:authorize="isAuthenticated()" method="post" th:action="@{/logout}"><button class="button button-secondary" type="submit">Cerrar sesión</button></form></header></th:block></body></html>

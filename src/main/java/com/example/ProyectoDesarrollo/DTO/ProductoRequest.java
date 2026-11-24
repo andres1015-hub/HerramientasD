@@ -1,6 +1,7 @@
 package com.example.ProyectoDesarrollo.DTO;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,15 @@ public class ProductoRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor a cero")
     private Double precio;
 
+    /** Opcional: si no se envía se usa 5. */
+    @Min(value = 0, message = "El stock mínimo no puede ser negativo")
+    @Max(value = 1000000, message = "El stock mínimo máximo es 1000000")
+    private Integer stockMinimo;
+
     public ProductoRequest() {}
+
+    public Integer getStockMinimo() { return stockMinimo; }
+    public void setStockMinimo(Integer stockMinimo) { this.stockMinimo = stockMinimo; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

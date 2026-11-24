@@ -2,7 +2,10 @@ package com.example.ProyectoDesarrollo.Controllers.API;
 
 import com.example.ProyectoDesarrollo.DTO.DetallePackageResponse;
 import com.example.ProyectoDesarrollo.DTO.DetalleQrRequest;
+import com.example.ProyectoDesarrollo.DTO.PaqueteResponse;
+import com.example.ProyectoDesarrollo.Models.Paquete;
 import com.example.ProyectoDesarrollo.Services.DetallePackageService;
+import com.example.ProyectoDesarrollo.Services.PaqueteService;
 import com.example.ProyectoDesarrollo.Services.QRService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -22,6 +25,7 @@ public class DetallePackageController {
 
     private final DetallePackageService service;
     private final QRService qrService;
+    private final PaqueteService paqueteService;
 
     @PostMapping(value = "/qr", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,9 +33,18 @@ public class DetallePackageController {
     public ResponseEntity<DetallePackageResponse> escanearQR(
             @Valid @RequestBody DetalleQrRequest request, Principal principal) {
         if (principal == null) {
-            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesi��n para escanear");
+            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesión para escanear");
         }
         return ResponseEntity.ok(service.obtenerPorQR(request.getCodigoQR()));
+    }
+
+    /** Marca como Recibido el paquete al que pertenece el QR leído (Enviado -> Recibido). */
+    @PostMapping(value = "/qr/recibir", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
+    public PaqueteResponse recibirPorQR(@Valid @RequestBody DetalleQrRequest request) {
+        DetallePackageResponse detalle = service.obtenerPorQR(request.getCodigoQR());
+        return paqueteService.cambiarEstado(detalle.getIdPaquete(), Paquete.Estado.Recibido, null);
     }
 
     /** Igual que POST /qr, para enlaces: acepta el código o la URL completa leída del QR. */
@@ -44,7 +57,7 @@ public class DetallePackageController {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'USER')")
     public ResponseEntity<byte[]> imagenQRPorId(@PathVariable @Positive Long id, Principal principal) {
         if (principal == null) {
-            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesi��n para ver el QR");
+            throw new AuthenticationCredentialsNotFoundException("Debes iniciar sesión para ver el QR");
         }
         DetallePackageResponse dto = service.obtenerPorId(id);
         byte[] png = qrService.generarPNG(dto.getCodigoQR(), 300, 300);
