@@ -51,7 +51,7 @@ public class UsuarioController {
                     passwordNueva, passwordConfirmacion);
             flash.addFlashAttribute("exitoCuenta", "Contraseña actualizada correctamente.");
         } catch (DatosInvalidosException | ReglaNegocioException | RecursoNoEncontradoException ex) {
-            log.warn("Cambio de contraseña rechazado para {}: {}", principal.getName(), ex.getMessage());
+            log.warn("Cambio de contraseña rechazado: {}", ex.getMessage());
             flash.addFlashAttribute("errorCuenta", ex.getMessage());
         }
 

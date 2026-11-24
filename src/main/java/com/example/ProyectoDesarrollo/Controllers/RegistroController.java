@@ -57,7 +57,7 @@ public class RegistroController {
         try {
             usuarioService.registrar(datos);
         } catch (DatosInvalidosException | ReglaNegocioException ex) {
-            log.warn("Registro rechazado para el DNI {}: {}", datos.getDNI(), ex.getMessage());
+            log.warn("Registro rechazado: {}", ex.getMessage());
             flash.addFlashAttribute("errorRegistro", ex.getMessage());
             return "redirect:/registro";
         }
